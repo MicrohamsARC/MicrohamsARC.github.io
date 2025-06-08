@@ -1,0 +1,10 @@
+title: MicroHAMS
+email: microhams@radiolab.me
+description: >
+  A community for Amateur Radio enthusiasts.
+baseurl: ""      # the subpath of your site, e.g. /blog
+url: "https://microhams.github.io"
+theme: minima
+plugins:
+  - jekyll-feed
+permalink: pretty
