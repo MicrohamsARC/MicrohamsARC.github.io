@@ -1,0 +1,10 @@
+- title: Home
+  url: "/"
+- title: About
+  url: "/about/"
+- title: Membership
+  url: "/membership/"
+- title: Events
+  url: "/events/"
+- title: Contact
+  url: "/contact/"
