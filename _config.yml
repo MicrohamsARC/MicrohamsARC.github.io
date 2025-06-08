@@ -4,7 +4,9 @@ description: >
   A community for Amateur Radio enthusiasts.
 baseurl: ""      # the subpath of your site, e.g. /blog
 url: "https://microhams.github.io"
-theme: jekyll-theme-minimal
-plugins:
-  - jekyll-feed
 permalink: pretty
+
+theme: minima
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
