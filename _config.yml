@@ -1,3 +1,23 @@
+theme: minimal-mistakes-jekyll
+
+plugins:
+  - jekyll-include-cache
+  - jekyll-feed
+  - jekyll-seo-tag
+
+defaults:
+  - scope:
+      path: ""    # all files
+      type: "posts"
+    values:
+      layout: "single"
+
+  - scope:
+      path: ""    # all files
+      type: "pages"  # Jekyll’s “pages” (any .md/.html not in _posts)
+    values:
+      layout: "default"
+
 title: MicroHAMS
 email: microhams@radiolab.me
 description: >
@@ -5,8 +25,3 @@ description: >
 baseurl: ""      # the subpath of your site, e.g. /blog
 url: "https://microhams.github.io"
 permalink: pretty
-
-theme: minima
-plugins:
- - jekyll-feed
- - jekyll-seo-tag

@@ -1,7 +1,6 @@
 ---
-layout: page
+layout: default
 title: Membership
-enabled: true
 permalink: /membership/
 ---
 
