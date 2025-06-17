@@ -1,3 +1,2 @@
-name: Disable default Pages build
-# By having no events, this overrides the auto-generated workflow
+# Disable default GitHub Pages build workflow
 on: []
