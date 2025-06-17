@@ -1,6 +1,3 @@
-name: pages build and deployment
-# override GitHub's auto-managed Pages workflow
-on: []
 name: CI for GitHub Pages
 on:
   push:
