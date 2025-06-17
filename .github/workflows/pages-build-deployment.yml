@@ -1,2 +1,2 @@
-# Disable default GitHub Pages build workflow
-on: []
+name: Disable default Pages build
+on: none
