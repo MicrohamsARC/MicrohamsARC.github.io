@@ -1,17 +1,19 @@
-name: CI for GitHub Pages
+name: Build and deploy Jekyll site to GitHub Pages
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   pages:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    permissions:
-      pages: write
-      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,13 +28,15 @@ jobs:
         run: bundle install
 
       - name: Build site with Jekyll
-        run: bundle exec jekyll build --destination site
+        run: bundle exec jekyll build --destination _site
 
-      - name: Upload site artifact
+      - name: Configure Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: site
+          path: _site
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v1
