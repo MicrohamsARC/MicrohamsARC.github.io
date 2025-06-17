@@ -23,7 +23,7 @@ jobs:
       - name: Set up Ruby & Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.x'
+          ruby-version: '3.2.8'
           bundler-cache: true
 
       - name: Install dependencies
