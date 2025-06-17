@@ -1,8 +1,5 @@
 name: GitHub Pages CI/CD
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: none
 
 jobs:
   build-and-deploy:
