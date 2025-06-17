@@ -1,65 +1,41 @@
-# GitHub Pages CI workflow for Jekyll + Minimal Mistakes
+name: pages build and deployment
+# override GitHub's auto-managed Pages workflow
+on: []
 name: CI for GitHub Pages
-
 on:
   push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  pages:
     runs-on: ubuntu-latest
-    concurrency:
-      group: pages-build
-      cancel-in-progress: true
-
+    environment:
+      name: github-pages
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
-
-      - name: Cache Ruby gems
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+          bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle config set path 'vendor/bundle'
-          bundle install --jobs 4 --retry 3
+        run: bundle install
 
       - name: Build site with Jekyll
-        run: bundle exec jekyll build --destination public
+        run: bundle exec jekyll build --destination site
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v2
-
-      - name: Upload artifact for Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: public
+          path: site
 
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        id: deployment
+        uses: actions/deploy-pages@v1
