@@ -1,2 +1,26 @@
-name: Disable default Pages build
-on: none
+name: GitHub Pages CI/CD
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.x'
+      - name: Install dependencies
+        run: bundle install
+      - name: Build site with Jekyll
+        run: bundle exec jekyll build --verbose
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
