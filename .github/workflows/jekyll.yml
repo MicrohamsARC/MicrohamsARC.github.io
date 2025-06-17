@@ -1,17 +1,22 @@
-name: Build & Deploy Site
+# GitHub Pages CI workflow for Jekyll + Minimal Mistakes
+name: CI for GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
-  contents: read    # for actions/checkout
-  pages: write      # for deploy-pages
-  id-token: write   # for authenticate-pages
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages-build
+      cancel-in-progress: true
 
     steps:
       - name: Checkout repository
@@ -20,20 +25,31 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: '3.2'
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
       - name: Install dependencies
         run: |
-          gem install bundler
-          bundle install
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
 
-      - name: Build site
-        run: bundle exec jekyll build --destination _site
+      - name: Build site with Jekyll
+        run: bundle exec jekyll build --destination public
 
-      - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v1
+      - name: Configure Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: public
 
   deploy:
     needs: build
@@ -44,4 +60,4 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
