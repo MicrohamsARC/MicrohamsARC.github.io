@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies & rebuild
         run: |
           bundle install --jobs 4 --retry 3
-          bundle exec jekyll build --destination _site
+          JEKYLL_ENV=production bundle exec jekyll build --destination _site
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

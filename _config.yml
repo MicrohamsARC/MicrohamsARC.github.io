@@ -39,11 +39,16 @@ author:
   bio: "A community for Amateur Radio enthusiasts."
   location: "Worldwide"
 
-# Navigation example (customize as needed)
-nav:
-  - title: "Home"
-    url: "/"
-  - title: "About"
-    url: "/about/"
-  - title: "Contact"
-    url: "/contact/"
+# Navigation for Minimal Mistakes
+navigation:
+  main:
+    - title: "Home"
+      url: /
+    - title: "About"
+      url: /about/
+    - title: "Contact"
+      url: /contact/
+    - title: "Events"
+      url: /events/
+    - title: "Blog"
+      url: /blog/
