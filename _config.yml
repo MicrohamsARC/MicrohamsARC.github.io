@@ -4,6 +4,10 @@ plugins:
   - jekyll-include-cache
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-archives
+  - jekyll-paginate
+  - jekyll-paginate-v2
 
 defaults:
   - scope:
@@ -25,3 +29,21 @@ description: >
 baseurl: ""      # the subpath of your site, e.g. /blog
 url: "https://microhams.github.io"
 permalink: pretty
+
+# Minimal Mistakes settings
+minimal_mistakes_skin: "default"
+logo: "/assets/images/logo.png" # update if you have a logo
+author:
+  name: "MicroHAMS"
+  avatar: "/assets/images/avatar.png" # update if you have an avatar
+  bio: "A community for Amateur Radio enthusiasts."
+  location: "Worldwide"
+
+# Navigation example (customize as needed)
+nav:
+  - title: "Home"
+    url: "/"
+  - title: "About"
+    url: "/about/"
+  - title: "Contact"
+    url: "/contact/"
