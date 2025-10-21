@@ -1,0 +1,303 @@
+---
+/**
+ * Search Bar - Client-Side Content Search
+ * Vignelli: "Design is a discipline"
+ * Minimal, fast, systematic search
+ */
+
+interface Props {
+  placeholder?: string;
+}
+
+const { placeholder = 'Search articles and docs...' } = Astro.props;
+---
+
+<div class="search-container">
+  <div class="search-bar">
+    <svg class="search-bar__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/>
+      <line x1="12.5" y1="12.5" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <input 
+      type="search" 
+      id="search-input"
+      class="search-bar__input"
+      placeholder={placeholder}
+      aria-label="Search content"
+    />
+    <button 
+      id="search-clear" 
+      class="search-bar__clear"
+      aria-label="Clear search"
+      type="button"
+      style="display: none;"
+    >
+      ×
+    </button>
+  </div>
+  
+  <div id="search-results" class="search-results" style="display: none;">
+    <div class="search-results__inner">
+      <!-- Results populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  .search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast);
+  }
+
+  .search-bar:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .search-bar__icon {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .search-bar__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    outline: none;
+  }
+
+  .search-bar__input::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  .search-bar__clear {
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    background: var(--color-surface-muted);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .search-bar__clear:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    right: 0;
+    max-height: 24rem;
+    overflow-y: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-dropdown);
+  }
+
+  .search-results__inner {
+    padding: var(--space-2);
+  }
+
+  .search-result {
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .search-result:hover {
+    background: var(--color-surface-muted);
+  }
+
+  .search-result__title {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
+
+  .search-result__excerpt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .search-result__type {
+    display: inline-block;
+    padding: 0.125rem var(--space-2);
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+    background: var(--color-surface-muted);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .search-empty {
+    padding: var(--space-6);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+</style>
+
+<script>
+  // Vignelli: "Systematic approach"
+  // Fetch search index and implement search
+  
+  interface SearchItem {
+    title: string;
+    slug: string;
+    description: string;
+    type: 'article' | 'doc' | 'project';
+  }
+
+  let searchIndex: SearchItem[] = [];
+
+  // Fetch search data
+  async function loadSearchIndex() {
+    try {
+      // TODO: Replace with actual API endpoint or static JSON
+      // For now, we'll use a placeholder
+      const response = await fetch('/search-index.json');
+      if (response.ok) {
+        searchIndex = await response.json();
+      }
+    } catch (error) {
+      console.warn('Search index not available:', error);
+      // Fallback: empty index
+      searchIndex = [];
+    }
+  }
+
+  // Simple search algorithm
+  function search(query: string): SearchItem[] {
+    if (!query || query.length < 2) return [];
+    
+    const lowerQuery = query.toLowerCase();
+    
+    return searchIndex.filter(item => {
+      return (
+        item.title.toLowerCase().includes(lowerQuery) ||
+        item.description.toLowerCase().includes(lowerQuery)
+      );
+    }).slice(0, 8); // Limit to 8 results
+  }
+
+  // Render results
+  function renderResults(results: SearchItem[], query: string) {
+    const container = document.querySelector('.search-results__inner');
+    const resultsDiv = document.getElementById('search-results');
+    
+    if (!container || !resultsDiv) return;
+
+    if (results.length === 0) {
+      container.innerHTML = `
+        <div class="search-empty">
+          No results found for "${query}"
+        </div>
+      `;
+      resultsDiv.style.display = 'block';
+      return;
+    }
+
+    container.innerHTML = results.map(item => `
+      <a href="/${item.type}s/${item.slug}" class="search-result" style="display: block; text-decoration: none;">
+        <div class="search-result__title">${item.title}</div>
+        <div class="search-result__excerpt">${item.description}</div>
+        <span class="search-result__type">${item.type}</span>
+      </a>
+    `).join('');
+    
+    resultsDiv.style.display = 'block';
+  }
+
+  // Hide results
+  function hideResults() {
+    const resultsDiv = document.getElementById('search-results');
+    if (resultsDiv) {
+      resultsDiv.style.display = 'none';
+    }
+  }
+
+  // Initialize search
+  async function initSearch() {
+    await loadSearchIndex();
+
+    const input = document.getElementById('search-input') as HTMLInputElement;
+    const clearBtn = document.getElementById('search-clear');
+    
+    if (!input || !clearBtn) return;
+
+    // Search on input
+    input.addEventListener('input', (e) => {
+      const query = (e.target as HTMLInputElement).value;
+      
+      // Show/hide clear button
+      clearBtn.style.display = query ? 'block' : 'none';
+      
+      if (query.length >= 2) {
+        const results = search(query);
+        renderResults(results, query);
+      } else {
+        hideResults();
+      }
+    });
+
+    // Clear search
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      clearBtn.style.display = 'none';
+      hideResults();
+      input.focus();
+    });
+
+    // Close on escape
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        hideResults();
+        input.blur();
+      }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      const searchContainer = document.querySelector('.search-container');
+      if (searchContainer && !searchContainer.contains(e.target as Node)) {
+        hideResults();
+      }
+    });
+  }
+
+  // Run after idle
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearch);
+  } else {
+    requestIdleCallback ? requestIdleCallback(initSearch) : setTimeout(initSearch, 0);
+  }
+</script>

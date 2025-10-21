@@ -1,0 +1,197 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "MicroHAMS" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - paragraph [ref=e7]: A community-driven resource for amateur radio enthusiasts
+      - navigation [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Meetings" [ref=e11] [cursor=pointer]:
+              - /url: /events
+          - listitem [ref=e12]:
+            - link "Articles" [ref=e13] [cursor=pointer]:
+              - /url: /articles
+          - listitem [ref=e14]:
+            - link "Docs" [ref=e15] [cursor=pointer]:
+              - /url: /docs
+          - listitem [ref=e16]:
+            - link "Projects" [ref=e17] [cursor=pointer]:
+              - /url: /projects
+          - listitem [ref=e18]:
+            - link "About" [ref=e19] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=e20]:
+            - button "Toggle dark mode" [ref=e21] [cursor=pointer]:
+              - img [ref=e22]
+              - img [ref=e28]
+  - main [ref=e30]:
+    - generic [ref=e33]:
+      - generic [ref=e35]:
+        - heading "Articles" [level=1] [ref=e36]
+        - paragraph [ref=e37]: Technical guides, tutorials, and in-depth articles covering all aspects of amateur radio.
+      - generic [ref=e39]:
+        - heading "Filter by Tag" [level=2] [ref=e40]
+        - list [ref=e41]:
+          - listitem [ref=e42]:
+            - link "field-day" [ref=e43] [cursor=pointer]:
+              - /url: /tags/field-day
+          - listitem [ref=e44]:
+            - link "filters" [ref=e45] [cursor=pointer]:
+              - /url: /tags/filters
+          - listitem [ref=e46]:
+            - link "interference" [ref=e47] [cursor=pointer]:
+              - /url: /tags/interference
+          - listitem [ref=e48]:
+            - link "hf" [ref=e49] [cursor=pointer]:
+              - /url: /tags/hf
+          - listitem [ref=e50]:
+            - link "20-meters" [ref=e51] [cursor=pointer]:
+              - /url: /tags/20-meters
+          - listitem [ref=e52]:
+            - link "diy" [ref=e53] [cursor=pointer]:
+              - /url: /tags/diy
+          - listitem [ref=e54]:
+            - link "sdr" [ref=e55] [cursor=pointer]:
+              - /url: /tags/sdr
+          - listitem [ref=e56]:
+            - link "beginner" [ref=e57] [cursor=pointer]:
+              - /url: /tags/beginner
+          - listitem [ref=e58]:
+            - link "hardware" [ref=e59] [cursor=pointer]:
+              - /url: /tags/hardware
+          - listitem [ref=e60]:
+            - link "digital-modes" [ref=e61] [cursor=pointer]:
+              - /url: /tags/digital-modes
+          - listitem [ref=e62]:
+            - link "ft8" [ref=e63] [cursor=pointer]:
+              - /url: /tags/ft8
+          - listitem [ref=e64]:
+            - link "psk31" [ref=e65] [cursor=pointer]:
+              - /url: /tags/psk31
+      - generic [ref=e67]:
+        - article [ref=e68] [cursor=pointer]:
+          - generic [ref=e69]:
+            - heading "Building Helical Resonator Filters for Field Day Isolation" [level=2] [ref=e70]:
+              - link "Building Helical Resonator Filters for Field Day Isolation" [ref=e71]:
+                - /url: /articles/helical-resonator-filters-field-day
+            - paragraph [ref=e72]: A summary of practical HF helical resonator filters that can help isolate multiple 20-meter stations during Field Day operations.
+          - generic [ref=e74]:
+            - time [ref=e75]: October 20, 2025
+            - generic [ref=e76]: By MicroHAMS
+          - list [ref=e78]:
+            - listitem [ref=e79]:
+              - link "field-day" [ref=e80]:
+                - /url: /tags/field-day
+            - listitem [ref=e81]:
+              - link "filters" [ref=e82]:
+                - /url: /tags/filters
+            - listitem [ref=e83]:
+              - link "interference" [ref=e84]:
+                - /url: /tags/interference
+            - listitem [ref=e85]:
+              - link "hf" [ref=e86]:
+                - /url: /tags/hf
+            - listitem [ref=e87]:
+              - link "20-meters" [ref=e88]:
+                - /url: /tags/20-meters
+            - listitem [ref=e89]:
+              - link "diy" [ref=e90]:
+                - /url: /tags/diy
+        - article [ref=e91] [cursor=pointer]:
+          - generic [ref=e92]:
+            - heading "Getting Started with Software Defined Radio" [level=2] [ref=e93]:
+              - link "Getting Started with Software Defined Radio" [ref=e94]:
+                - /url: /articles/getting-started-with-sdr
+            - paragraph [ref=e95]: An introduction to SDR technology for amateur radio operators, covering basic concepts and popular hardware options.
+          - generic [ref=e97]:
+            - time [ref=e98]: October 14, 2024
+            - generic [ref=e99]: By MicroHAMS Team
+            - generic [ref=e100]: tutorials
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - link "sdr" [ref=e104]:
+                - /url: /tags/sdr
+            - listitem [ref=e105]:
+              - link "beginner" [ref=e106]:
+                - /url: /tags/beginner
+            - listitem [ref=e107]:
+              - link "hardware" [ref=e108]:
+                - /url: /tags/hardware
+        - article [ref=e109] [cursor=pointer]:
+          - generic [ref=e110]:
+            - heading "Digital Modes Guide" [level=2] [ref=e111]:
+              - link "Digital Modes Guide" [ref=e112]:
+                - /url: /articles/digital-modes-guide
+            - paragraph [ref=e113]: Comprehensive guide to digital communication modes in amateur radio
+          - generic [ref=e115]:
+            - time [ref=e116]: October 9, 2024
+            - generic [ref=e117]: By MicroHAMS Team
+            - generic [ref=e118]: guides
+          - list [ref=e120]:
+            - listitem [ref=e121]:
+              - link "digital-modes" [ref=e122]:
+                - /url: /tags/digital-modes
+            - listitem [ref=e123]:
+              - link "ft8" [ref=e124]:
+                - /url: /tags/ft8
+            - listitem [ref=e125]:
+              - link "psk31" [ref=e126]:
+                - /url: /tags/psk31
+  - contentinfo [ref=e127]:
+    - generic [ref=e128]:
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - paragraph [ref=e131]: MicroHAMS
+          - paragraph [ref=e132]: Amateur Radio Community
+        - generic [ref=e133]:
+          - paragraph [ref=e134]: Navigation
+          - navigation [ref=e135]:
+            - list [ref=e136]:
+              - listitem [ref=e137]:
+                - link "Home" [ref=e138] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e139]:
+                - link "Events" [ref=e140] [cursor=pointer]:
+                  - /url: /events
+              - listitem [ref=e141]:
+                - link "Articles" [ref=e142] [cursor=pointer]:
+                  - /url: /articles
+              - listitem [ref=e143]:
+                - link "Docs" [ref=e144] [cursor=pointer]:
+                  - /url: /docs
+              - listitem [ref=e145]:
+                - link "Projects" [ref=e146] [cursor=pointer]:
+                  - /url: /projects
+        - generic [ref=e147]:
+          - paragraph [ref=e148]: Connect
+          - list [ref=e149]:
+            - listitem [ref=e150]:
+              - link "GitHub" [ref=e151] [cursor=pointer]:
+                - /url: https://github.com/microhams
+            - listitem [ref=e152]:
+              - link "Contact" [ref=e153] [cursor=pointer]:
+                - /url: /contact
+      - paragraph [ref=e155]:
+        - text: © 2025 MicroHAMS. Built with
+        - link "Astro" [ref=e156] [cursor=pointer]:
+          - /url: https://astro.build
+        - text: .
+  - generic [ref=e159]:
+    - button "Menu" [ref=e160]:
+      - img [ref=e162]
+      - generic: Menu
+    - button "Inspect" [ref=e166]:
+      - img [ref=e168]
+      - generic: Inspect
+    - button "Audit" [ref=e170]:
+      - img [ref=e172]
+      - generic: Audit
+    - button "Settings" [ref=e175]:
+      - img [ref=e177]
+      - generic: Settings
+```

@@ -1,0 +1,60 @@
+{
+  "name": "microhams",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:visual": "playwright test --grep @visual",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
+    "type-check": "astro check && tsc --noEmit",
+    "verify": "node scripts/verify-versions.js",
+    "ci": "npm run lint && npm run type-check && npm run test:all && npm run build",
+    "docker:build": "docker build -t microhams-ci -f .docker/Dockerfile .",
+    "docker:test": "docker run --rm -v $(pwd):/workspace microhams-ci npm run ci",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@types/leaflet": "^1.9.21",
+    "astro": "^5.14.8",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^22.8.7",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.38.0",
+    "eslint-plugin-astro": "^1.2.4",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "globals": "^16.4.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "playwright-core": "^1.56.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.11",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,astro}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md}": [
+      "prettier --write"
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+---
+/**
+ * Theme Toggle - Dark/Light Mode Switcher
+ * Vignelli: "Discipline is the key"
+ * Minimal, functional, systematic
+ */
+---
+
+<button 
+  id="theme-toggle" 
+  class="theme-toggle"
+  aria-label="Toggle dark mode"
+  type="button"
+>
+  <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+    <line x1="10" y1="2" x2="10" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="10" y1="16" x2="10" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="18" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="4" y1="10" x2="2" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="15.5" y1="4.5" x2="14.1" y2="5.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="5.9" y1="14.1" x2="4.5" y2="15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="15.5" y1="15.5" x2="14.1" y2="14.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="5.9" y1="5.9" x2="4.5" y2="4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17 10.5C16.1 13.5 13.4 15.5 10.5 15.5C7 15.5 4 12.5 4 9C4 6.1 6 3.4 9 2.5C5.5 3 3 6 3 9.5C3 13.4 6.1 16.5 10 16.5C13.5 16.5 16.5 14 17 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .theme-toggle:hover {
+    background: var(--color-surface-muted);
+    border-color: var(--color-border);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .theme-toggle__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity var(--transition-fast);
+  }
+
+  .theme-toggle__icon--sun {
+    opacity: 1;
+  }
+
+  .theme-toggle__icon--moon {
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__icon--sun {
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__icon--moon {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  // Vignelli: "Systematic, not spontaneous"
+  // Initialize theme from localStorage or system preference
+  function initTheme() {
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = stored || (prefersDark ? 'dark' : 'light');
+    
+    document.documentElement.setAttribute('data-theme', theme);
+    return theme;
+  }
+
+  // Toggle theme and persist
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+
+  // Initialize on load
+  initTheme();
+
+  // Attach toggle handler
+  const button = document.getElementById('theme-toggle');
+  if (button) {
+    button.addEventListener('click', toggleTheme);
+  }
+
+  // Listen for system preference changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
+  });
+</script>

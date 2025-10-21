@@ -1,0 +1,110 @@
+---
+/**
+ * Articles Index Page
+ * 
+ * Lists all published articles with filtering by tags
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { publishedFilter } from '../../utils/content';
+
+// Get all published articles, sorted by date
+const articles = (await getCollection('articles', publishedFilter))
+  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+
+// Extract all unique tags
+const allTags: string[] = [...new Set(articles.flatMap(article => (article.data.tags ?? []) as string[]))];
+---
+
+<BaseLayout title="Articles" description="Technical articles and guides for amateur radio operators">
+  <div class="region">
+    <div class="wrapper">
+      <div class="stack-8">
+        <!-- Page Header -->
+        <header class="center text-center">
+          <div class="stack-4">
+            <h1>Articles</h1>
+            <p class="lead mx-auto">
+              Technical guides, tutorials, and in-depth articles covering all aspects of amateur radio.
+            </p>
+          </div>
+        </header>
+
+        <!-- Tag Filter -->
+        {allTags.length > 0 && (
+          <div class="center">
+            <div class="stack-2">
+              <h2 class="h6">Filter by Tag</h2>
+              <ul class="tag-list">
+                {allTags.map((tag) => (
+                  <li>
+                    <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        <!-- Articles List -->
+        <div class="center">
+          <div class="stack-8">
+            {articles.map((article) => (
+              <article class="card" data-variant="interactive">
+                <div class="card__header">
+                  <h2 class="card__title">
+                    <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
+                      {article.data.title}
+                    </a>
+                  </h2>
+                  {article.data.description && (
+                    <p class="card__description">{article.data.description}</p>
+                  )}
+                </div>
+
+                <div class="card__content">
+                  <div class="cluster">
+                    {article.data.date && (
+                      <time class="text-sm text-muted" datetime={article.data.date.toISOString()}>
+                        {article.data.date.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    )}
+                    {article.data.author && (
+                      <span class="text-sm text-muted">By {article.data.author}</span>
+                    )}
+                    {article.data.category && (
+                      <span class="badge">{article.data.category}</span>
+                    )}
+                  </div>
+                </div>
+
+                {article.data.tags?.length > 0 && (
+                  <div class="card__footer">
+                    <ul class="tag-list">
+                      {article.data.tags.map(tag => (
+                        <li>
+                          <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {articles.length === 0 && (
+          <div class="center text-center">
+            <p class="text-muted">No articles found. Check back soon!</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

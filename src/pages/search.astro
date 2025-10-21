@@ -1,0 +1,41 @@
+---
+/**
+ * Search Page - Demonstrates SearchBar Island
+ * Vignelli: "Design is a discipline"
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchBar from '../components/SearchBar.astro';
+---
+
+<BaseLayout 
+  title="Search"
+  description="Search articles, docs, and projects"
+>
+  <section class="region">
+    <div class="wrapper">
+      <div class="center--measure">
+        <div class="stack-8">
+          <div class="stack-4 text-center">
+            <h1>Search</h1>
+            <p class="lead">Find articles, documentation, and projects</p>
+          </div>
+          
+          <SearchBar />
+          
+          <div class="box--lg" style="background: var(--color-surface-muted); border-radius: var(--radius-md);">
+            <div class="stack-2">
+              <p class="text-sm font-semibold">Search tips:</p>
+              <ul class="text-sm" style="margin: 0; padding-left: var(--space-6);">
+                <li>Type at least 2 characters to see results</li>
+                <li>Search matches titles and descriptions</li>
+                <li>Results show up to 8 items</li>
+                <li>Press ESC to close results</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

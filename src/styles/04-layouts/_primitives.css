@@ -1,0 +1,583 @@
+/**
+ * Layout Primitives - Composable Building Blocks
+ * 
+ * Following Vignelli Canon principles:
+ * - Grid-based layouts with mathematical precision
+ * - Spacing derived from typographic scale (Perfect Fourth 1.333)
+ * - White space as active design element, not emptiness
+ * - Systematic approach: predictable, repeatable, rational
+ * - No arbitrary values - everything relates to the base unit
+ * 
+ * The grid is invisible structure that keeps everything in place.
+ */
+
+/* ========================================
+   STACK - Vertical Rhythm
+   Creates consistent vertical spacing using the space scale
+    ======================================== */.stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.stack > * {
+  margin-block: 0;
+}
+
+/* Spacing scale derived from Perfect Fourth (1.333) */
+.stack-xs,
+.stack-1,
+.stack-2,
+.stack-3,
+.stack-4,
+.stack-5,
+.stack-6,
+.stack-8,
+.stack-12,
+.stack-16 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.stack-xs > *,
+.stack-1 > *,
+.stack-2 > *,
+.stack-3 > *,
+.stack-4 > *,
+.stack-5 > *,
+.stack-6 > *,
+.stack-8 > *,
+.stack-12 > *,
+.stack-16 > * {
+  margin-block: 0;
+}
+
+.stack-xs { gap: var(--space-1); }  /* 4px - Micro spacing */
+.stack-1 { gap: var(--space-1); }
+.stack-2 { gap: var(--space-2); }   /* 8px - Tight grouping */
+.stack-3 { gap: var(--space-3); }   /* 12px - Related items */
+.stack-4 { gap: var(--space-4); }   /* 16px - Base rhythm (most common) */
+.stack-5 { gap: var(--space-5); }   /* 20px - Loose grouping */
+.stack-6 { gap: var(--space-6); }   /* 24px - Section spacing */
+.stack-8 { gap: var(--space-8); }   /* 32px - Major sections */
+.stack-12 { gap: var(--space-12); } /* 48px - Page sections */
+.stack-16 { gap: var(--space-16); } /* 64px - Hero sections */
+
+/* Recursive stack - applies to nested elements */
+.stack[data-recursive="true"] * {
+  margin-block: 0;
+}
+
+/* ========================================
+   CLUSTER - Horizontal Grouping
+   Groups items with consistent spacing and flexible wrapping
+    ======================================== */.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cluster-gap, var(--space-4));
+  align-items: center;
+}
+
+/* Spacing variations */
+.cluster--xs { --cluster-gap: var(--space-1); }
+.cluster--sm { --cluster-gap: var(--space-2); }
+.cluster--md { --cluster-gap: var(--space-4); }
+.cluster--lg { --cluster-gap: var(--space-6); }
+.cluster--xl { --cluster-gap: var(--space-8); }
+
+/* Legacy class names for backwards compatibility */
+.cluster-1 { gap: var(--space-1); }
+.cluster-2 { gap: var(--space-2); }
+.cluster-3 { gap: var(--space-3); }
+.cluster-4 { gap: var(--space-4); }
+.cluster-6 { gap: var(--space-6); }
+
+/* Cluster alignment variations */
+.cluster--start { justify-content: flex-start; }
+.cluster--center { justify-content: center; }
+.cluster--end { justify-content: flex-end; }
+.cluster--between { justify-content: space-between; }
+.cluster--around { justify-content: space-around; }
+.cluster--evenly { justify-content: space-evenly; }
+
+/* Vertical alignment */
+.cluster--align-start { align-items: flex-start; }
+.cluster--align-center { align-items: center; }
+.cluster--align-end { align-items: flex-end; }
+.cluster--align-baseline { align-items: baseline; }
+
+/* ========================================
+   CENTER - Contained Content
+   Centers content with max-width for optimal readability
+    ======================================== */.center {
+  box-sizing: content-box;
+  max-inline-size: var(--center-width, var(--width-normal));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.center--narrow { --center-width: var(--width-narrow); }
+.center--normal { --center-width: var(--width-normal); }
+.center--wide { --center-width: var(--width-wide); }
+.center--full { --center-width: var(--width-full); }
+
+/* Measure-based centering for optimal readability */
+.center--measure { --center-width: var(--measure-optimal); }
+.center--measure-narrow { --center-width: var(--measure-narrow); }
+.center--measure-wide { --center-width: var(--measure-wide); }
+
+/* Intrinsic centering - centers child that fits */
+.center--intrinsic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Text centering utility */
+.center--text {
+  text-align: center;
+}
+
+/* ========================================
+   BOX - Consistent Internal Spacing
+   Adds consistent internal spacing with discipline
+    ======================================== */.box {
+  padding: var(--box-padding, var(--space-4));
+  outline: var(--box-border-width, 0) solid transparent;
+}
+
+/* Padding scale - derived from spatial system */
+.box--xs { --box-padding: var(--space-2); }  /* 8px */
+.box--sm { --box-padding: var(--space-3); }  /* 12px */
+.box--md { --box-padding: var(--space-4); }  /* 16px - Base */
+.box--lg { --box-padding: var(--space-6); }  /* 24px */
+.box--xl { --box-padding: var(--space-8); }  /* 32px */
+.box--2xl { --box-padding: var(--space-12); } /* 48px */
+
+/* Asymmetric padding for specific use cases */
+.box--inset-squish {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+}
+
+.box--inset-stretch {
+  padding-block: var(--space-6);
+  padding-inline: var(--space-4);
+}
+
+/* Box with border - emphasis on structure */
+.box--bordered {
+  outline: 1px solid var(--color-border);
+  outline-offset: -1px;
+  border-radius: var(--radius-md);
+}
+
+.box--bordered-thick {
+  outline: 2px solid var(--color-border);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+}
+
+/* Box with background */
+.box--surface {
+  background-color: var(--color-surface);
+}
+
+.box--surface-muted {
+  background-color: var(--color-surface-muted);
+}
+
+.box--surface-raised {
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   SIDEBAR - Asymmetric Layout
+   Content with sidebar (flexible breakpoint)
+   ======================================== */
+
+.sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gutter);
+}
+
+.sidebar > :first-child {
+  flex-basis: 20rem;
+  flex-grow: 1;
+}
+
+.sidebar > :last-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 50%;
+}
+
+/* Flip sidebar to right */
+.sidebar--reverse {
+  flex-direction: row-reverse;
+}
+
+/* ========================================
+   SWITCHER - Responsive Column Layout
+   Switches between horizontal and vertical
+   ======================================== */
+
+.switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gutter);
+}
+
+.switcher > * {
+  flex-grow: 1;
+  flex-basis: calc((30rem - 100%) * 999);
+}
+
+/* ========================================
+   GRID - Responsive Grid Layout
+   Auto-fit grid with minimum column width
+   Flexible, responsive grid system
+   ======================================== */
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap, var(--gutter));
+}
+
+/* Gap variations */
+.grid--gap-sm { --grid-gap: var(--space-2); }
+.grid--gap-md { --grid-gap: var(--space-4); }
+.grid--gap-lg { --grid-gap: var(--space-6); }
+.grid--gap-xl { --grid-gap: var(--space-8); }
+
+/* Auto-fit: fills space with columns as they fit */
+.grid--auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-width, 250px), 100%), 1fr));
+}
+
+/* Auto-fill: creates columns even if empty */
+.grid--auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min-width, 250px), 100%), 1fr));
+}
+
+/* Minimum column width variations */
+.grid--min-narrow { --grid-min-width: 200px; }
+.grid--min-normal { --grid-min-width: 250px; }
+.grid--min-wide { --grid-min-width: 300px; }
+.grid--min-full { --grid-min-width: 400px; }
+
+/* Fixed column grids for predictable structure */
+.grid--2 { grid-template-columns: repeat(2, 1fr); }
+.grid--3 { grid-template-columns: repeat(3, 1fr); }
+.grid--4 { grid-template-columns: repeat(4, 1fr); }
+.grid--6 { grid-template-columns: repeat(6, 1fr); }
+.grid--12 { grid-template-columns: repeat(12, 1fr); } /* Classic 12-column grid */
+
+/* Golden ratio grid (1.618:1) for harmonious proportions */
+.grid--golden {
+  grid-template-columns: 1fr 1.618fr;
+}
+
+.grid--golden-reverse {
+  grid-template-columns: 1.618fr 1fr;
+}
+
+/* Asymmetric grids for hierarchy */
+.grid--sidebar {
+  grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr);
+}
+
+.grid--sidebar-reverse {
+  grid-template-columns: minmax(0, 3fr) minmax(200px, 1fr);
+}
+
+@media (max-width: 768px) {
+  .grid--2,
+  .grid--3,
+  .grid--4,
+  .grid--6,
+  .grid--12,
+  .grid--golden,
+  .grid--golden-reverse,
+  .grid--sidebar,
+  .grid--sidebar-reverse {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   COVER - Full Height Section
+   Makes a section fill viewport height
+   ======================================== */
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100vh;
+  padding: var(--gutter);
+}
+
+.cover > * {
+  margin-block: var(--space-4);
+}
+
+.cover > :first-child:not(.cover__centered) {
+  margin-block-start: 0;
+}
+
+.cover > :last-child:not(.cover__centered) {
+  margin-block-end: 0;
+}
+
+.cover__centered {
+  margin-block: auto;
+}
+
+/* ========================================
+   FRAME - Aspect Ratio Container
+   Maintains aspect ratio for media
+   ======================================== */
+
+.frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.frame--square { aspect-ratio: 1 / 1; }
+.frame--portrait { aspect-ratio: 3 / 4; }
+.frame--landscape { aspect-ratio: 4 / 3; }
+.frame--widescreen { aspect-ratio: 16 / 9; }
+.frame--ultrawide { aspect-ratio: 21 / 9; }
+
+.frame > * {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* ========================================
+   REGION - Section with Vertical Space
+   Adds consistent vertical spacing between page sections
+   Good design is a matter of discipline and systematic thinking
+             all the available information about it."
+   ======================================== */
+
+.region {
+  padding-block: var(--region-space, var(--space-12));
+}
+
+/* Region size variations */
+.region--xs { --region-space: var(--space-4); }   /* 16px */
+.region--sm { --region-space: var(--space-8); }   /* 32px */
+.region--md { --region-space: var(--space-12); }  /* 48px - Base */
+.region--lg { --region-space: var(--section-gap); } /* 64px */
+.region--xl { --region-space: var(--space-32); }  /* 128px */
+
+/* Legacy class names */
+.region--small {
+  padding-block: var(--space-8);
+}
+
+.region--large {
+  padding-block: var(--section-gap-large);
+}
+
+/* Asymmetric regions for visual hierarchy */
+.region--top-only {
+  padding-block-start: var(--region-space, var(--section-gap));
+  padding-block-end: 0;
+}
+
+.region--bottom-only {
+  padding-block-start: 0;
+  padding-block-end: var(--region-space, var(--section-gap));
+}
+
+/* ========================================
+   FLOW - Prose Spacing
+   Adds consistent vertical rhythm to prose content
+   Uses the "lobotomized owl" selector for elegant spacing
+    ======================================== */.flow > * + * {
+  margin-block-start: var(--flow-space, var(--space-4));
+}
+
+.flow--xs { --flow-space: var(--space-1); }
+.flow--sm { --flow-space: var(--space-2); }
+.flow--md { --flow-space: var(--space-4); }
+.flow--lg { --flow-space: var(--space-6); }
+.flow--xl { --flow-space: var(--space-8); }
+
+/* Legacy class names */
+.flow--tight {
+  --flow-space: var(--space-2);
+}
+
+.flow--loose {
+  --flow-space: var(--space-6);
+}
+
+/* Exception: Preserve tighter spacing for specific elements */
+.flow > h2 + *,
+.flow > h3 + *,
+.flow > h4 + * {
+  margin-block-start: var(--space-3);
+}
+
+.flow > * + h2,
+.flow > * + h3,
+.flow > * + h4 {
+  margin-block-start: var(--space-8);
+}
+
+/* ========================================
+   MODULAR GRID - Mathematical Precision
+    A flexible grid system based on module relationships
+   "The grid is the most powerful tool in graphic design"
+   ======================================== */
+
+.modular-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-modules, 12), 1fr);
+  gap: var(--grid-gap, var(--gutter));
+}
+
+/* Module span utilities */
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }
+.span-10 { grid-column: span 10; }
+.span-11 { grid-column: span 11; }
+.span-12 { grid-column: span 12; }
+
+/* Module positioning */
+.start-1 { grid-column-start: 1; }
+.start-2 { grid-column-start: 2; }
+.start-3 { grid-column-start: 3; }
+.start-4 { grid-column-start: 4; }
+.start-5 { grid-column-start: 5; }
+.start-6 { grid-column-start: 6; }
+.start-7 { grid-column-start: 7; }
+
+/* Responsive grid - collapses to single column on mobile */
+@media (max-width: 768px) {
+  .modular-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .span-1, .span-2, .span-3, .span-4,
+  .span-5, .span-6, .span-7, .span-8,
+  .span-9, .span-10, .span-11, .span-12 {
+    grid-column: span 1;
+  }
+}
+
+/* ========================================
+   PROPORTION - Golden Ratio Layouts
+   The rule of proportion creates visual harmony
+    Using phi (φ = 1.618) for mathematically balanced layouts
+   ======================================== */
+
+.proportion--golden {
+  display: grid;
+  grid-template-columns: 1fr 1.618fr;
+  gap: var(--gutter);
+}
+
+.proportion--golden-thirds {
+  display: grid;
+  grid-template-columns: 1fr 1.618fr 2.618fr;
+  gap: var(--gutter);
+}
+
+/* Perfect Fourth (1.333) - matches typography scale */
+.proportion--fourth {
+  display: grid;
+  grid-template-columns: 1fr 1.333fr;
+  gap: var(--gutter);
+}
+
+/* Classic thirds */
+.proportion--thirds {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--gutter);
+}
+
+/* Asymmetric emphasis */
+.proportion--emphasis-left {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gutter);
+}
+
+.proportion--emphasis-right {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--gutter);
+}
+
+@media (max-width: 768px) {
+  .proportion--golden,
+  .proportion--golden-thirds,
+  .proportion--fourth,
+  .proportion--thirds,
+  .proportion--emphasis-left,
+  .proportion--emphasis-right {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   WRAPPER - Page Container
+   Main page wrapper with max width for content containment
+   ======================================== */
+
+.wrapper {
+  max-inline-size: var(--wrapper-width, var(--width-full));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Width variations */
+.wrapper--narrow { --wrapper-width: var(--width-narrow); }
+.wrapper--normal { --wrapper-width: var(--width-normal); }
+.wrapper--wide { --wrapper-width: var(--width-wide); }
+.wrapper--full { --wrapper-width: var(--width-full); }
+.wrapper--bleed { 
+  max-inline-size: none;
+  padding-inline: 0;
+}
+
+/* Responsive gutter adjustments - Flush left alignment */
+@media (max-width: 768px) {
+  .wrapper {
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-4);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .wrapper {
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-6);
+  }
+}
+
+@media (min-width: 1025px) {
+  .wrapper {
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-8);
+  }
+}

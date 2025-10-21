@@ -1,0 +1,246 @@
+---
+/**
+ * Homepage - MicroHAMS
+ * 
+ * Demonstrates design system and layout primitives
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { isPublished, publishedAndFeaturedFilter } from '../utils/content';
+
+// Get featured content (published only)
+const articles = await getCollection('articles', publishedAndFeaturedFilter);
+const projects = await getCollection('projects', ({ data }) => isPublished(data) && data.status === 'active');
+
+// Get upcoming featured events (published only)
+const allEvents = await getCollection('events', publishedAndFeaturedFilter);
+const now = new Date();
+const upcomingEvents = allEvents
+  .filter(event => event.data.eventDate >= now)
+  .sort((a, b) => a.data.eventDate.getTime() - b.data.eventDate.getTime())
+  .slice(0, 1); // Get the next upcoming featured event
+---
+
+<BaseLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
+  <!-- Featured Story / Hero -->
+  {upcomingEvents.length > 0 ? (
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-6">
+          <!-- Kicker -->
+          <div class="stack-2">
+            <span class="badge" data-variant="accent">Upcoming Event</span>
+            <h1 class="text-5xl">{upcomingEvents[0].data.title}</h1>
+          </div>
+          
+          <!-- Lede -->
+          {upcomingEvents[0].data.description && (
+            <p class="lead" style="max-inline-size: var(--measure-comfortable);">
+              {upcomingEvents[0].data.description}
+            </p>
+          )}
+          
+          <!-- Event Details Grid -->
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6);">
+            <div class="stack-2">
+              <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Date</div>
+              <time datetime={upcomingEvents[0].data.eventDate.toISOString()} class="text-base">
+                {upcomingEvents[0].data.eventDate.toLocaleDateString('en-US', { 
+                  weekday: 'long',
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </time>
+            </div>
+            
+            {upcomingEvents[0].data.startTime && (
+              <div class="stack-2">
+                <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Time</div>
+                <div class="text-base">{upcomingEvents[0].data.startTime}</div>
+              </div>
+            )}
+            
+            <div class="stack-2">
+              <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Format</div>
+              <div class="text-base">
+                In-Person {upcomingEvents[0].data.virtualLink && '+ Virtual'}
+              </div>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="cluster" style="gap: var(--space-3);">
+            <a href={`/events/${upcomingEvents[0].slug}`} class="button" data-variant="primary">
+              Event Details →
+            </a>
+            {upcomingEvents[0].data.virtualLink && (
+              <a href={upcomingEvents[0].data.virtualLink} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
+                Join Virtual Meeting
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-6">
+          <h1 class="text-5xl">Amateur Radio<br />Community & Resources</h1>
+          <p class="lead" style="max-inline-size: var(--measure-comfortable);">
+            Technical articles, projects, documentation, and community events 
+            for amateur radio enthusiasts in the Puget Sound area.
+          </p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Section Divider -->
+  <div class="wrapper">
+    <hr style="margin-block: var(--space-4); border-color: var(--color-border);" />
+  </div>
+
+  <!-- Featured Articles - Magazine Grid -->
+  {articles.length > 0 && (
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-8">
+          <div class="stack-2">
+            <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Featured</h2>
+            <h3 class="text-3xl">Recent Articles</h3>
+          </div>
+          
+          <!-- Two-column magazine layout -->
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);">
+            {articles.slice(0, 3).map((article: typeof articles[number]) => (
+              <article class="stack-3">
+                <div class="stack-2">
+                  {article.data.tags && article.data.tags.length > 0 && (
+                    <span class="badge">{article.data.tags[0]}</span>
+                  )}
+                  <h4 class="text-2xl">
+                    <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
+                      {article.data.title}
+                    </a>
+                  </h4>
+                </div>
+                {article.data.description && (
+                  <p style="color: var(--color-text-muted);">{article.data.description}</p>
+                )}
+                {article.data.date && (
+                  <time class="text-sm" style="color: var(--color-text-subtle);" datetime={article.data.date.toISOString()}>
+                    {article.data.date.toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </time>
+                )}
+              </article>
+            ))}
+          </div>
+          
+          <div>
+            <a href="/articles" style="font-weight: var(--font-weight-medium);">
+              All Articles →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Section Divider -->
+  <div class="wrapper">
+    <hr style="margin-block: var(--space-4); border-color: var(--color-border);" />
+  </div>
+
+  <!-- Active Projects - List Layout -->
+  {projects.length > 0 && (
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-8">
+          <div class="stack-2">
+            <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Projects</h2>
+            <h3 class="text-3xl">Active Development</h3>
+          </div>
+          
+          <!-- List layout for projects -->
+          <div class="stack-6">
+            {projects.slice(0, 3).map((project: typeof projects[number]) => (
+              <article class="stack-3" style="padding-block-end: var(--space-6); border-block-end: 1px solid var(--color-border);">
+                <div class="cluster cluster--between">
+                  <h4 class="text-xl">
+                    <a href={`/projects/${project.slug}`} style="text-decoration: none; color: inherit;">
+                      {project.data.title}
+                    </a>
+                  </h4>
+                  <span class="badge" data-variant="accent">{project.data.status}</span>
+                </div>
+                {project.data.description && (
+                  <p style="color: var(--color-text-muted); max-inline-size: var(--measure-wide);">{project.data.description}</p>
+                )}
+                {project.data.technologies?.length > 0 && (
+                  <ul class="tag-list">
+                    {project.data.technologies.slice(0, 4).map((tech: string) => (
+                      <li class="tag">{tech}</li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
+          
+          <div>
+            <a href="/projects" style="font-weight: var(--font-weight-medium);">
+              All Projects →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Footer Editorial Section -->
+  <section class="region" style="background-color: var(--color-surface-muted);">
+    <div class="wrapper">
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-12);">
+        <div class="stack-4">
+          <h3 class="text-xl">About MicroHAMS</h3>
+          <p style="color: var(--color-text-muted);">
+            A dynamic organization of amateur radio enthusiasts in the Puget Sound area 
+            dedicated to inspiring, informing, and educating through hands-on experimentation.
+          </p>
+          <a href="/about" style="font-weight: var(--font-weight-medium);">
+            Learn More →
+          </a>
+        </div>
+        
+        <div class="stack-4">
+          <h3 class="text-xl">Documentation</h3>
+          <p style="color: var(--color-text-muted);">
+            Technical guides, reference materials, and educational resources 
+            for amateur radio operators of all skill levels.
+          </p>
+          <a href="/docs" style="font-weight: var(--font-weight-medium);">
+            Browse Docs →
+          </a>
+        </div>
+        
+        <div class="stack-4">
+          <h3 class="text-xl">Events</h3>
+          <p style="color: var(--color-text-muted);">
+            Monthly meetings, workshops, and special events featuring presentations 
+            from experts and community members.
+          </p>
+          <a href="/events" style="font-weight: var(--font-weight-medium);">
+            View Calendar →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

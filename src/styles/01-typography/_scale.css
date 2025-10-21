@@ -1,0 +1,197 @@
+/**
+ * TYPOGRAPHIC SCALE - Golden Ratio with Harmonic Proportions
+ * 
+ * The grid provides invisible structure for all typography.
+ * 
+ * Base System:
+ * - Golden Ratio (φ = 1.618) for major scale progression
+ * - Perfect Fourth (1.333) and Major Third (1.25) for intermediate steps
+ * - Base unit: 16px (1rem) - sacred minimum for readability
+ * - Harmonic rhythm: 24px baseline grid (1.5 × 16px)
+ * 
+ * Awards-worthy typography requires mathematical precision and optical adjustment.
+ */
+
+:root {
+  /* ========================================
+     BASELINE GRID
+     24px baseline (1.5rem) - Tufte's preference
+     All vertical rhythm derives from this
+     ======================================== */
+  
+  --baseline: 1.5rem;           /* 24px - Universal vertical rhythm */
+  --baseline-half: 0.75rem;     /* 12px - Half rhythm */
+  --baseline-quarter: 0.375rem; /* 6px - Micro adjustments */
+  
+  /* ========================================
+     FONT SIZE SCALE
+     Golden Ratio (φ) with Harmonic Thirds/Fourths
+     
+     Formula: size(n) = base × φ^n
+     Intermediate steps use Perfect Fourth (1.333)
+     
+     Sizes optimized for screen (96 DPI) and print (300 DPI)
+     ======================================== */
+  
+  /* Micro Typography - Captions, footnotes, marginalia */
+  --text-2xs: 0.694rem;        /* 11.1px - φ^-2 - Smallest readable */
+  --text-xs: 0.833rem;         /* 13.3px - φ^-1.5 - Footnotes */
+  --text-sm: 0.875rem;         /* 14px - Captions, labels */
+  
+  /* Body Typography - Primary reading sizes */
+  --text-base: 1rem;           /* 16px - φ^0 - Sacred minimum (WCAG) */
+  --text-md: 1.125rem;         /* 18px - Enhanced body text */
+  --text-lg: 1.25rem;          /* 20px - Major Third - Large body */
+  
+  /* Display Typography - Headings and emphasis */
+  --text-xl: 1.333rem;         /* 21.3px - Perfect Fourth - H4 */
+  --text-2xl: 1.618rem;        /* 25.9px - φ^1 - Golden! - H3 */
+  --text-3xl: 2.027rem;        /* 32.4px - φ^1.25 - H2 */
+  --text-4xl: 2.618rem;        /* 41.9px - φ^1.618 - H1 */
+  --text-5xl: 3.236rem;        /* 51.8px - φ^2 - Display */
+  --text-6xl: 4.236rem;        /* 67.8px - φ^2.5 - Hero */
+  --text-7xl: 5.236rem;        /* 83.8px - φ^3 - Massive */
+  
+  /* ========================================
+     LINE HEIGHT (Leading) - Harmonic Ratios
+     Based on baseline grid and golden ratio
+     
+     "Leading is to typography what negative space is to composition."
+     ======================================== */
+  
+  --leading-none: 1;            /* Display text only */
+  --leading-tightest: 1.111;    /* 1/φ - Super condensed */
+  --leading-tight: 1.25;        /* Major Third - Headlines */
+  --leading-snug: 1.333;        /* Perfect Fourth - Subheads */
+  --leading-normal: 1.5;        /* Baseline grid - Body (optimal) */
+  --leading-relaxed: 1.618;     /* Golden Ratio - Airy body */
+  --leading-loose: 1.777;       /* φ + 0.16 - Maximum readability */
+  --leading-extra-loose: 2;     /* Double spacing */
+  
+  /* ========================================
+     MEASURE (Line Length) - Optimal Reading
+     
+     Bringhurst's ideal: 45-75 characters
+     Tufte's preference: 55-65 characters
+     Golden mean: 60 characters
+     ======================================== */
+  
+  --measure-compact: 45ch;      /* Narrow columns, sidebars */
+  --measure-optimal: 60ch;      /* Primary body text (golden) */
+  --measure-comfortable: 65ch;  /* Maximum for sustained reading */
+  --measure-wide: 75ch;         /* Wide layouts, technical content */
+  --measure-full: 90ch;         /* Maximum before eye fatigue */
+  
+  /* ========================================
+     TRACKING (Letter Spacing) - Optical Adjustment
+     
+     Negative tracking for display sizes (optical compression)
+     Positive tracking for all-caps and small sizes
+     ======================================== */
+  
+  --tracking-tightest: -0.05em;   /* -50 - Display text, large sizes */
+  --tracking-tight: -0.025em;     /* -25 - Headlines */
+  --tracking-normal: 0;           /* 0 - Body text (never touch!) */
+  --tracking-wide: 0.025em;       /* +25 - All-caps, UI labels */
+  --tracking-wider: 0.05em;       /* +50 - Small text (<14px) */
+  --tracking-widest: 0.1em;       /* +100 - Extreme spacing */
+  
+  /* ========================================
+     FONT WEIGHTS - Variable Font Axis
+     Precise control for hierarchy and emphasis
+     ======================================== */
+  
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;      /* Body text */
+  --font-weight-medium: 500;      /* Emphasis */
+  --font-weight-semibold: 600;    /* Strong emphasis */
+  --font-weight-bold: 700;        /* Headings */
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;       /* Display */
+  
+  /* ========================================
+     PARAGRAPH SPACING - Vertical Rhythm
+     All spacing is multiple of baseline grid
+     ======================================== */
+  
+  --paragraph-spacing: var(--baseline);         /* 24px - Standard */
+  --paragraph-spacing-tight: var(--baseline-half); /* 12px - Compact */
+  --paragraph-spacing-loose: calc(var(--baseline) * 1.5); /* 36px - Airy */
+  
+  /* ========================================
+     INDENTATION - Classical Typography
+     First-line indent for paragraph distinction
+     ======================================== */
+  
+  --indent-standard: 1.5em;       /* Classical (1.5× font size) */
+  --indent-generous: 2em;         /* Prominent paragraphs */
+  --indent-subtle: 1em;           /* Minimal distinction */
+}
+
+/**
+ * RESPONSIVE SCALING
+ * Fluid typography using clamp() for optimal reading at all sizes
+ * 
+ * Formula: clamp(min, preferred, max)
+ * Preferred: calc(base + (scale × viewport))
+ */
+
+@media screen and (min-width: 20em) {
+  :root {
+    /* Fluid body text: 16px @ 320px → 18px @ 1920px */
+    --text-base-fluid: clamp(
+      1rem,                    /* 16px minimum */
+      0.9rem + 0.3125vw,      /* Scales with viewport */
+      1.125rem                /* 18px maximum */
+    );
+    
+    /* Fluid display text: scales more aggressively */
+    --text-4xl-fluid: clamp(
+      2.618rem,               /* 41.9px minimum */
+      1.5rem + 3.5vw,        /* Aggressive scaling */
+      4.236rem               /* 67.8px maximum */
+    );
+  }
+}
+
+/**
+ * PRINT OPTIMIZATIONS
+ * Award-worthy typography extends to print
+ */
+
+@media print {
+  :root {
+    /* Increase body size for print readability */
+    --text-base: 11pt;        /* Print point size */
+    --leading-normal: 1.4;    /* Tighter for print */
+    
+    /* Adjust margins for print bleed */
+    --print-bleed: 0.125in;
+  }
+  
+  body {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+  }
+}
+
+/**
+ * ACCESSIBILITY OVERRIDES
+ * Respect user preferences for reduced motion and contrast
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    /* Remove smooth scrolling for motion sensitivity */
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    /* Increase contrast for high-contrast mode */
+    --font-weight-normal: 500;
+    --font-weight-bold: 800;
+  }
+}

@@ -1,0 +1,204 @@
+---
+/**
+ * Individual Event Page
+ * 
+ * Dynamic route for displaying individual event details
+ */
+
+import { getCollection, getEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventMap from '../../components/EventMap.astro';
+import { publishedFilter } from '../../utils/content';
+
+export const getStaticPaths = (async () => {
+  const events = await getCollection('events', publishedFilter);
+  return events.map((event) => ({
+    params: { slug: event.slug },
+    props: { event },
+  }));
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.params;
+const event = await getEntry('events', slug!);
+
+if (!event) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await event.render();
+
+// Format date helper
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+// Check if event is upcoming
+const isUpcoming = event.data.eventDate >= new Date();
+---
+
+<BaseLayout 
+  title={event.data.title}
+  description={event.data.description || `Event on ${formatDate(event.data.eventDate)}`}
+>
+  <article>
+    <!-- Event Header -->
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-6">
+          <!-- Breadcrumb -->
+          <nav aria-label="Breadcrumb">
+            <ol class="cluster text-xs" style="--cluster-gap: var(--space-xs); list-style: none; padding: 0;">
+              <li><a href="/">Home</a></li>
+              <li aria-hidden="true">/</li>
+              <li><a href="/events">Events</a></li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page">{event.data.title}</li>
+            </ol>
+          </nav>
+
+          <!-- Event Meta -->
+          <div class="stack-4">
+            <div class="cluster" style="--cluster-gap: var(--space-xs);">
+              <span class="badge" data-variant={isUpcoming ? 'success' : 'default'}>
+                {isUpcoming ? 'Upcoming' : 'Past Event'}
+              </span>
+              <span class="badge" data-variant="primary">
+                {event.data.eventType}
+              </span>
+              {event.data.featured && (
+                <span class="badge" data-variant="accent">Featured</span>
+              )}
+            </div>
+
+            <h1 class="text-4xl">{event.data.title}</h1>
+
+            {event.data.description && (
+              <p class="lead">{event.data.description}</p>
+            )}
+          </div>
+
+          <!-- Event Details Card -->
+          <div class="box box--bordered" style="background-color: var(--color-surface-muted);">
+            <div class="stack-4">
+              <h2 class="text-xl">Event Details</h2>
+              
+              <div class="grid" style="--grid-columns: 1; --grid-gap: var(--space-md);">
+                <!-- Date & Time -->
+                <div class="stack-xs">
+                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Date & Time</div>
+                  <div>
+                    <time datetime={event.data.eventDate.toISOString()}>
+                      {formatDate(event.data.eventDate)}
+                    </time>
+                    {event.data.startTime && (
+                      <div class="text-sm">{event.data.startTime}{event.data.endTime && ` - ${event.data.endTime}`}</div>
+                    )}
+                  </div>
+                </div>
+
+                <!-- Location -->
+                <div class="stack-xs">
+                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Location</div>
+                  <div>{event.data.location}</div>
+                </div>
+
+                <!-- Virtual Link -->
+                {event.data.virtualLink && (
+                  <div class="stack-xs">
+                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Virtual Attendance</div>
+                    <a href={event.data.virtualLink} class="button button--sm" data-variant="primary" target="_blank" rel="noopener noreferrer">
+                      Join Virtual Meeting →
+                    </a>
+                  </div>
+                )}
+
+                <!-- Registration -->
+                {event.data.registrationRequired && event.data.registrationLink && (
+                  <div class="stack-xs">
+                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Registration</div>
+                    <a href={event.data.registrationLink} class="button button--sm" data-variant="primary" target="_blank" rel="noopener noreferrer">
+                      Register Now →
+                    </a>
+                  </div>
+                )}
+
+                <!-- Contact -->
+                {event.data.contactPerson && (
+                  <div class="stack-xs">
+                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Contact</div>
+                    <div>
+                      {event.data.contactPerson}
+                      {event.data.contactEmail && (
+                        <>
+                          <br />
+                          <a href={`mailto:${event.data.contactEmail}`}>{event.data.contactEmail}</a>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <!-- Tags -->
+              {event.data.tags && event.data.tags.length > 0 && (
+                <div class="stack-xs">
+                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Tags</div>
+                  <ul class="tag-list">
+                    {event.data.tags.map((tag) => (
+                      <li class="tag">{tag}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Content -->
+    <section class="region">
+      <div class="wrapper">
+        <div class="center">
+          <div class="flow">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Map -->
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-4">
+          <h2>Location</h2>
+          <EventMap 
+            location={event.data.location}
+            latitude={47.6749}
+            longitude={-122.1202}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="region">
+      <div class="wrapper">
+        <div class="cluster cluster--center">
+          <a href="/events" class="button" data-variant="secondary">
+            ← Back to Events
+          </a>
+          <a href="/" class="button" data-variant="ghost">
+            Home
+          </a>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

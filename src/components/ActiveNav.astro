@@ -1,0 +1,44 @@
+---
+/**
+ * Active Nav - Highlights Current Page
+ * Vignelli: "Clarity is the essence"
+ * Systematic route detection
+ */
+---
+
+<nav class="nav" id="active-nav">
+  <ul class="nav__list">
+    <li><a href="/events/member-meeting" class="nav__link" style="color: var(--color-accent);" data-path="/events/member-meeting">Meeting</a></li>
+    <li><a href="/events" class="nav__link" data-path="/events">Events</a></li>
+    <li><a href="/articles" class="nav__link" data-path="/articles">Articles</a></li>
+    <li><a href="/docs" class="nav__link" data-path="/docs">Docs</a></li>
+    <li><a href="/projects" class="nav__link" data-path="/projects">Projects</a></li>
+    <li><a href="/about" class="nav__link" data-path="/about">About</a></li>
+  </ul>
+</nav>
+
+<script>
+  // Vignelli: "Appropriateness is the key"
+  // Detect current page and highlight active nav
+  function setActiveNav() {
+    const currentPath = window.location.pathname;
+    const links = document.querySelectorAll('#active-nav .nav__link');
+    
+    links.forEach(link => {
+      const linkPath = link.getAttribute('data-path');
+      
+      // Exact match or path starts with link path (for nested routes)
+      if (linkPath && (currentPath === linkPath || currentPath.startsWith(linkPath + '/'))) {
+        link.setAttribute('data-active', 'true');
+      } else {
+        link.removeAttribute('data-active');
+      }
+    });
+  }
+
+  // Run on load
+  setActiveNav();
+
+  // Re-run on navigation (for SPA-like behavior if needed)
+  document.addEventListener('astro:page-load', setActiveNav);
+</script>

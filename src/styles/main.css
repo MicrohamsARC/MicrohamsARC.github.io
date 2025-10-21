@@ -1,0 +1,27 @@
+/**
+ * Main CSS Orchestration
+ * 
+ * ITCSS Layer Imports
+ * Order matters: from generic to specific, low to high specificity
+ */
+
+/* Settings - Design tokens and variables */
+@import './00-settings/_tokens.css';
+
+/* Typography - Award-worthy type system */
+@import './01-typography/index.css';
+
+/* Generic - Reset and normalize */
+@import './02-generic/_reset.css';
+
+/* Elements - Base HTML element styles */
+@import './03-elements/_typography.css';
+
+/* Layouts - Composable layout primitives */
+@import './04-layouts/_primitives.css';
+
+/* Components - Specific UI components */
+@import './05-components/_components.css';
+
+/* Utilities - Single-purpose helper classes */
+@import './06-utilities/_utilities.css';

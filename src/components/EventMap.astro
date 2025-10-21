@@ -1,0 +1,170 @@
+---
+/**
+ * Event Map - Interactive Location Map
+ * Vignelli: "Function follows need"
+ * Minimal, purposeful map display
+ */
+
+interface Props {
+  location: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
+---
+
+<div class="event-map">
+  <div class="event-map__loading">
+    <p>Loading map...</p>
+  </div>
+  <div 
+    id="map-container" 
+    class="event-map__container"
+    data-lat={latitude}
+    data-lng={longitude}
+    data-location={location}
+  >
+  </div>
+  <div class="event-map__fallback">
+    <p>
+      <strong>Location:</strong> {location}<br/>
+      <a 
+        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in Google Maps →
+      </a>
+    </p>
+  </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<style>
+  .event-map {
+    position: relative;
+    width: 100%;
+    height: 24rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .event-map__loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+  }
+
+  .event-map__container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .event-map__fallback {
+    padding: var(--space-6);
+    background: var(--color-surface-muted);
+    text-align: center;
+  }
+
+  .event-map__fallback a {
+    display: inline-block;
+    margin-top: var(--space-2);
+    color: var(--color-link);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .event-map__fallback a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  /**
+   * Vignelli: "Appropriate technology"
+   * Uses OpenStreetMap via Leaflet (lightweight, no API key required)
+   */
+  
+  async function initMap() {
+    const container = document.getElementById('map-container');
+    const loading = document.querySelector('.event-map__loading') as HTMLElement;
+    const fallback = document.querySelector('.event-map__fallback') as HTMLElement;
+    
+    if (!container) return;
+
+    const lat = parseFloat(container.getAttribute('data-lat') || '47.6749');
+    const lng = parseFloat(container.getAttribute('data-lng') || '-122.1202');
+    const location = container.getAttribute('data-location') || '';
+
+    try {
+      // Load Leaflet dynamically (only when map is visible)
+      // Using CDN version to match CSS
+      if (!window.L) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        script.crossOrigin = '';
+        await new Promise((resolve, reject) => {
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+
+      const L = window.L;
+      
+      // Hide loading
+      if (loading) loading.style.display = 'none';
+      if (fallback) fallback.style.display = 'none';
+
+      // Initialize map
+      const map = L.map('map-container').setView([lat, lng], 13);
+
+      // Add OpenStreetMap tiles (free, no API key)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Add marker
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup(`<strong>${location}</strong>`)
+        .openPopup();
+
+    } catch (error) {
+      console.warn('Map failed to load:', error);
+      
+      // Show fallback
+      if (loading) loading.style.display = 'none';
+      if (fallback) fallback.style.display = 'block';
+      container.style.display = 'none';
+    }
+  }
+
+  // Initialize when component is visible
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        initMap();
+        observer.disconnect();
+      }
+    });
+  });
+
+  const mapElement = document.querySelector('.event-map');
+  if (mapElement) {
+    observer.observe(mapElement);
+  }
+</script>
