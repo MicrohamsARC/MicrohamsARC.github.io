@@ -1,16 +1,221 @@
 ---
+/**
+ * Homepage - MicroHAMS
+ * 
+ * Demonstrates design system and layout primitives
+ */
 
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get featured content
+const articles = await getCollection('articles', ({ data }) => !data.draft && data.featured);
+const projects = await getCollection('projects', ({ data }) => data.status === 'active');
+
+// Get upcoming featured events
+const allEvents = await getCollection('events', ({ data }) => !data.draft && data.featured);
+const now = new Date();
+const upcomingEvents = allEvents
+  .filter(event => event.data.eventDate >= now)
+  .sort((a, b) => a.data.eventDate.getTime() - b.data.eventDate.getTime())
+  .slice(0, 1); // Get the next upcoming featured event
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
+  <!-- Hero Section -->
+  <section class="region--large">
+    <div class="wrapper">
+      <div class="center">
+        <div class="stack-6 text-center">
+          <h1 class="text-4xl">MicroHAMS</h1>
+          <p class="lead mx-auto" style="max-inline-size: var(--measure-wide);">
+            A community-driven resource for amateur radio enthusiasts, 
+            featuring technical articles, projects, and documentation.
+          </p>
+          <div class="cluster cluster--center">
+            <a href="/articles" class="button" data-variant="primary">
+              Browse Articles
+            </a>
+            <a href="/docs" class="button" data-variant="secondary">
+              Documentation
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Upcoming Event -->
+  {upcomingEvents.length > 0 && (
+    <section class="region" style="background-color: var(--color-primary); color: var(--color-on-primary);">
+      <div class="wrapper">
+        <div class="stack-6">
+          <div class="text-center">
+            <span class="badge" data-variant="accent" style="margin-bottom: var(--space-sm);">Upcoming Event</span>
+            <h2 class="text-3xl">{upcomingEvents[0].data.title}</h2>
+          </div>
+          
+          <div class="center">
+            <div class="box box--lg box--bordered" style="background-color: var(--color-surface); color: var(--color-text);">
+              <div class="stack-4">
+                {upcomingEvents[0].data.description && (
+                  <p class="lead text-center">{upcomingEvents[0].data.description}</p>
+                )}
+                
+                <div class="cluster cluster--center text-center" style="--cluster-gap: var(--space-lg);">
+                  <div class="stack-xs">
+                    <div class="text-xs font-bold" style="color: var(--color-text-muted);">Date</div>
+                    <time datetime={upcomingEvents[0].data.eventDate.toISOString()} class="text-sm font-bold">
+                      {upcomingEvents[0].data.eventDate.toLocaleDateString('en-US', { 
+                        weekday: 'long',
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </time>
+                  </div>
+                  
+                  {upcomingEvents[0].data.startTime && (
+                    <div class="stack-xs">
+                      <div class="text-xs font-bold" style="color: var(--color-text-muted);">Time</div>
+                      <div class="text-sm font-bold">{upcomingEvents[0].data.startTime}</div>
+                    </div>
+                  )}
+                  
+                  <div class="stack-xs">
+                    <div class="text-xs font-bold" style="color: var(--color-text-muted);">Format</div>
+                    <div class="text-sm font-bold">
+                      In-Person {upcomingEvents[0].data.virtualLink && '+ Virtual'}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cluster cluster--center">
+                  <a href={`/events/${upcomingEvents[0].slug}`} class="button" data-variant="primary">
+                    View Event Details →
+                  </a>
+                  {upcomingEvents[0].data.virtualLink && (
+                    <a href={upcomingEvents[0].data.virtualLink} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
+                      Join Virtual Meeting
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <a href="/events" class="button" data-variant="ghost" style="color: var(--color-on-primary); border-color: var(--color-on-primary);">
+              View All Events →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Featured Articles -->
+  {articles.length > 0 && (
+    <section class="region" style="background-color: var(--color-surface-muted);">
+      <div class="wrapper">
+        <div class="stack-8">
+          <h2 class="text-center">Featured Articles</h2>
+          <div class="grid grid--auto-fit">
+            {articles.slice(0, 3).map((article) => (
+              <article class="card" data-variant="interactive">
+                <div class="card__header">
+                  <h3 class="card__title">
+                    <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
+                      {article.data.title}
+                    </a>
+                  </h3>
+                  {article.data.description && (
+                    <p class="card__description">{article.data.description}</p>
+                  )}
+                </div>
+                {article.data.date && (
+                  <div class="card__footer">
+                    <time class="text-xs" datetime={article.data.date.toISOString()}>
+                      {article.data.date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </time>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Active Projects -->
+  {projects.length > 0 && (
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-8">
+          <h2 class="text-center">Active Projects</h2>
+          <div class="grid grid--auto-fit">
+            {projects.slice(0, 3).map((project) => (
+              <article class="card">
+                <div class="card__header">
+                  <div class="cluster cluster--between">
+                    <h3 class="card__title">
+                      <a href={`/projects/${project.slug}`} style="text-decoration: none; color: inherit;">
+                        {project.data.title}
+                      </a>
+                    </h3>
+                    <span class="badge" data-variant="accent">{project.data.status}</span>
+                  </div>
+                  {project.data.description && (
+                    <p class="card__description">{project.data.description}</p>
+                  )}
+                </div>
+                {project.data.technologies?.length > 0 && (
+                  <div class="card__footer">
+                    <ul class="tag-list">
+                      {project.data.technologies.slice(0, 3).map((tech: string) => (
+                        <li class="tag">{tech}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Call to Action -->
+  <section class="region--large">
+    <div class="wrapper">
+      <div class="center text-center">
+        <div class="box box--lg box--bordered">
+          <div class="stack-4">
+            <h2>Join the Community</h2>
+            <p class="mx-auto" style="max-inline-size: var(--measure-wide);">
+              MicroHAMS is a dynamic organization of amateur radio enthusiasts in the Puget Sound area. 
+              Learn more about our mission to inspire, inform, and educate.
+            </p>
+            <div class="cluster cluster--center">
+              <a href="/about" class="button" data-variant="primary">
+                About MicroHAMS
+              </a>
+              <a href="https://www.microhams.com" class="button" data-variant="secondary">
+                Visit MicroHAMS.com
+              </a>
+              <a href="https://github.com/microhams" class="button" data-variant="ghost">
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

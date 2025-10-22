@@ -1,0 +1,352 @@
+/**
+ * Components - Semantic UI Elements
+ * 
+ * Extract patterns at second occurrence (OHIO principle)
+ * Data attributes for state (HMR-friendly)
+ */
+
+/* ========================================
+   BUTTON - Interactive Elements
+   ======================================== */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+  padding-block: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Button variants using data attributes */
+.button[data-variant="primary"] {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-color: var(--color-accent);
+}
+
+.button[data-variant="primary"]:hover {
+  background-color: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+}
+
+.button[data-variant="secondary"] {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.button[data-variant="secondary"]:hover {
+  background-color: var(--color-border);
+}
+
+.button[data-variant="ghost"] {
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+.button[data-variant="ghost"]:hover {
+  background-color: var(--color-surface-muted);
+}
+
+/* Button sizes */
+.button[data-size="sm"] {
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.button[data-size="lg"] {
+  padding-inline: var(--space-6);
+  padding-block: var(--space-3);
+  font-size: var(--text-lg);
+}
+
+/* Disabled state */
+.button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
+   CARD - Content Container
+   ======================================== */
+
+.card {
+  position: relative;
+  padding: var(--space-6);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: box-shadow var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card__header {
+  margin-block-end: var(--space-4);
+}
+
+.card__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-block-end: var(--space-2);
+}
+
+/* Stretch the first link in card title to cover entire card */
+.card__title a:first-child::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Ensure other interactive elements in the card are above the stretched link */
+.card a:not(.card__title a),
+.card button {
+  position: relative;
+  z-index: 2;
+}
+
+.card__description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.card__content {
+  margin-block-end: var(--space-4);
+}
+
+.card__footer {
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--color-border-muted);
+}
+
+/* Card variants */
+.card[data-variant="subtle"] {
+  background-color: var(--color-surface-muted);
+  border-color: var(--color-border-muted);
+}
+
+.card[data-variant="interactive"] {
+  cursor: pointer;
+}
+
+.card[data-variant="interactive"]:hover {
+  border-color: var(--color-accent);
+}
+
+/* ========================================
+   BADGE - Status Indicator
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-2);
+  padding-block: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.badge[data-variant="accent"] {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-color: var(--color-accent);
+}
+
+/* ========================================
+   NAVIGATION - Site Navigation
+   ======================================== */
+
+.nav {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.nav__list {
+  display: flex;
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav__link {
+  padding-inline: var(--space-3);
+  padding-block: var(--space-2);
+  text-decoration: none;
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.nav__link:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-muted);
+}
+
+.nav__link[data-active="true"] {
+  color: var(--color-accent);
+  background-color: var(--color-surface-muted);
+}
+
+/* ========================================
+   HEADER - Site Header
+   ======================================== */
+
+.site-header {
+  padding-block: var(--space-4);
+  border-block-end: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.site-header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-header__logo {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+/* ========================================
+   FOOTER - Site Footer
+   ======================================== */
+
+.site-footer {
+  padding-block: var(--space-12);
+  margin-block-start: var(--space-24);
+  border-block-start: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+/* ========================================
+   TABLE OF CONTENTS
+   ======================================== */
+
+.toc {
+  padding: var(--space-4);
+  background-color: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.toc__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-block-end: var(--space-3);
+}
+
+.toc__list {
+  list-style: none;
+  padding: 0;
+}
+
+.toc__item {
+  margin-block-end: var(--space-2);
+}
+
+.toc__link {
+  text-decoration: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.toc__link:hover {
+  color: var(--color-accent);
+}
+
+.toc__link[data-active="true"] {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ========================================
+   ARTICLE META - Post Metadata
+   ======================================== */
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-block: var(--space-4);
+}
+
+.article-meta__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ========================================
+   TAG LIST - Content Tags
+   ======================================== */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tag {
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  font-size: var(--text-xs);
+  background-color: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.tag:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-white);
+}

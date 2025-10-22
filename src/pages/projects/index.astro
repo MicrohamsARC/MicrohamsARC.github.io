@@ -1,0 +1,75 @@
+---
+/**
+ * Projects Index Page
+ */
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => {
+    // Sort by status (active first) then by date
+    const statusOrder = { active: 0, completed: 1, archived: 2 };
+    return statusOrder[a.data.status] - statusOrder[b.data.status];
+  });
+---
+
+<BaseLayout title="Projects" description="Amateur radio projects with complete documentation">
+  <div class="region">
+    <div class="wrapper">
+      <div class="stack-8">
+        <header class="center text-center">
+          <div class="stack-4">
+            <h1>Projects</h1>
+            <p class="lead mx-auto">
+              Complete project documentation with schematics, code, and build instructions.
+            </p>
+          </div>
+        </header>
+
+        <div class="center">
+          <div class="stack-8">
+            {projects.map((project) => (
+              <article class="card" data-variant="interactive">
+                <div class="card__header">
+                  <div class="cluster cluster--between">
+                    <h2 class="card__title">
+                      <a href={`/projects/${project.slug}`} style="text-decoration: none; color: inherit;">
+                        {project.data.title}
+                      </a>
+                    </h2>
+                    <span class="badge" data-variant={project.data.status === 'active' ? 'accent' : undefined}>
+                      {project.data.status}
+                    </span>
+                  </div>
+                  {project.data.description && (
+                    <p class="card__description">{project.data.description}</p>
+                  )}
+                </div>
+
+                {(project.data.technologies?.length > 0 || project.data.repository) && (
+                  <div class="card__footer">
+                    <div class="cluster cluster--between">
+                      {project.data.technologies?.length > 0 && (
+                        <ul class="tag-list">
+                          {project.data.technologies.slice(0, 4).map(tech => (
+                            <li class="tag">{tech}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {project.data.repository && (
+                        <a href={project.data.repository} class="text-sm">
+                          View Repository →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

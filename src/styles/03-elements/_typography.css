@@ -1,0 +1,224 @@
+/**
+ * Typography - Vignelli's First Principle
+ * 
+ * "Typography IS the interface"
+ * Define text hierarchy before ANY layout
+ */
+
+/* Base Typography */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Heading Scale - Perfect Fourth Ratio */
+h1, .h1 {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--font-weight-bold);
+  margin-block-end: var(--space-6);
+}
+
+h2, .h2 {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  margin-block-start: var(--space-12);
+  margin-block-end: var(--space-4);
+}
+
+h3, .h3 {
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  margin-block-start: var(--space-8);
+  margin-block-end: var(--space-3);
+}
+
+h4, .h4 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-medium);
+  margin-block-start: var(--space-6);
+  margin-block-end: var(--space-2);
+}
+
+h5, .h5 {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-medium);
+  margin-block-start: var(--space-4);
+  margin-block-end: var(--space-2);
+}
+
+h6, .h6 {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-block-start: var(--space-4);
+  margin-block-end: var(--space-2);
+}
+
+/* First heading has no top margin */
+:is(h1, h2, h3, h4, h5, h6):first-child {
+  margin-block-start: 0;
+}
+
+/* Body Text */
+p {
+  margin-block-end: var(--space-4);
+  max-inline-size: var(--measure-optimal);
+}
+
+/* Lead paragraph - larger intro text */
+.lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  max-inline-size: var(--measure-wide);
+}
+
+/* Small text - captions, metadata */
+small, .text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+}
+
+/* Text utilities */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-subtle {
+  color: var(--color-text-subtle);
+}
+
+.text-accent {
+  color: var(--color-text-subtle);
+}
+
+/* Links */
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.15em;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Lists */
+ul, ol {
+  margin-block-end: var(--space-4);
+  padding-inline-start: var(--space-6);
+}
+
+li {
+  margin-block-end: var(--space-2);
+}
+
+li:last-child {
+  margin-block-end: 0;
+}
+
+/* Nested lists */
+li > ul,
+li > ol {
+  margin-block-start: var(--space-2);
+  margin-block-end: var(--space-2);
+}
+
+/* Blockquotes - Swiss minimalism */
+blockquote {
+  margin-block: var(--space-6);
+  margin-inline-start: 0;
+  padding-inline-start: var(--space-6);
+  border-inline-start: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+blockquote p:last-child {
+  margin-block-end: 0;
+}
+
+/* Code - Monospace precision */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.125em 0.375em;
+  background-color: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-muted);
+}
+
+pre {
+  margin-block: var(--space-6);
+  padding: var(--space-4);
+  background-color: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  line-height: var(--leading-normal);
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* Horizontal rule - Swiss grid line */
+hr {
+  margin-block: var(--space-12);
+  border: 0;
+  border-block-start: 1px solid var(--color-border);
+}
+
+/* Figure and caption */
+figure {
+  margin-block: var(--space-8);
+}
+
+figcaption {
+  margin-block-start: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Abbreviations */
+abbr[title] {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+/* Mark/Highlight */
+mark {
+  background-color: var(--color-accent-light);
+  padding: 0.125em 0.25em;
+  border-radius: var(--radius-sm);
+}

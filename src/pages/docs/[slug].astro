@@ -1,0 +1,24 @@
+---
+/**
+ * Dynamic Documentation Pages
+ */
+
+import { getCollection } from 'astro:content';
+import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  
+  return docs.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await doc.render();
+---
+
+<MarkdownLayout frontmatter={doc.data}>
+  <Content />
+</MarkdownLayout>

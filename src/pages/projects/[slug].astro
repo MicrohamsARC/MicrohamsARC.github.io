@@ -1,0 +1,24 @@
+---
+/**
+ * Dynamic Project Pages
+ */
+
+import { getCollection } from 'astro:content';
+import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<MarkdownLayout frontmatter={project.data}>
+  <Content />
+</MarkdownLayout>

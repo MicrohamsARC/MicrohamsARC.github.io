@@ -1,0 +1,118 @@
+---
+/**
+ * Base Layout - Main Site Structure
+ * 
+ * Separation of concerns: structure, not style
+ * All styling comes from design system
+ */
+
+interface Props {
+  title: string;
+  description?: string;
+  author?: string;
+}
+
+const { title, description = 'MicroHAMS - Amateur Radio Community', author } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    {author && <meta name="author" content={author} />}
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Google Fonts - Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="MicroHAMS" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    
+    <title>{title} | MicroHAMS</title>
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <!-- Site Header -->
+    <header class="site-header">
+      <div class="wrapper">
+        <div class="site-header__inner">
+          <a href="/" class="site-header__logo">
+            MicroHAMS
+          </a>
+          
+          <nav class="nav">
+            <ul class="nav__list">
+              <li><a href="/events/member-meeting" class="nav__link" style="color: var(--color-accent);">Meeting</a></li>
+              <li><a href="/events" class="nav__link">Events</a></li>
+              <li><a href="/articles" class="nav__link">Articles</a></li>
+              <li><a href="/docs" class="nav__link">Docs</a></li>
+              <li><a href="/projects" class="nav__link">Projects</a></li>
+              <li><a href="/about" class="nav__link">About</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <div class="wrapper">
+        <div class="site-footer__inner">
+          <div class="stack-2">
+            <p class="font-semibold">MicroHAMS</p>
+            <p class="text-sm">Amateur Radio Community</p>
+          </div>
+          
+          <div class="stack-2">
+            <p class="text-sm font-semibold">Navigation</p>
+            <nav>
+              <ul class="stack-2" role="list">
+                <li><a href="/" class="text-sm">Home</a></li>
+                <li><a href="/events" class="text-sm">Events</a></li>
+                <li><a href="/articles" class="text-sm">Articles</a></li>
+                <li><a href="/docs" class="text-sm">Docs</a></li>
+                <li><a href="/projects" class="text-sm">Projects</a></li>
+              </ul>
+            </nav>
+          </div>
+          
+          <div class="stack-2">
+            <p class="text-sm font-semibold">Connect</p>
+            <ul class="stack-2" role="list">
+              <li><a href="https://github.com/microhams" class="text-sm">GitHub</a></li>
+              <li><a href="/contact" class="text-sm">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="text-center" style="margin-block-start: var(--space-8);">
+          <p class="text-xs">
+            © {new Date().getFullYear()} MicroHAMS. Built with <a href="https://astro.build">Astro</a>.
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

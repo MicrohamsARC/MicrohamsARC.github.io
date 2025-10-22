@@ -1,0 +1,129 @@
+/**
+ * Utilities - Single Purpose Classes
+ * 
+ * Use sparingly. Extract to components at second occurrence.
+ */
+
+/* ========================================
+   DISPLAY
+   ======================================== */
+
+.hidden { display: none; }
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+
+/* ========================================
+   VISIBILITY
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ========================================
+   TEXT ALIGNMENT
+   ======================================== */
+
+.text-start { text-align: start; }
+.text-center { text-align: center; }
+.text-end { text-align: end; }
+
+/* ========================================
+   FONT WEIGHT
+   ======================================== */
+
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* ========================================
+   TEXT TRANSFORM
+   ======================================== */
+
+.uppercase { text-transform: uppercase; }
+.lowercase { text-transform: lowercase; }
+.capitalize { text-transform: capitalize; }
+
+/* ========================================
+   WIDTH CONSTRAINTS
+   ======================================== */
+
+.w-full { inline-size: 100%; }
+.w-auto { inline-size: auto; }
+
+.max-w-narrow { max-inline-size: var(--width-narrow); }
+.max-w-normal { max-inline-size: var(--width-normal); }
+.max-w-wide { max-inline-size: var(--width-wide); }
+.max-w-full { max-inline-size: var(--width-full); }
+
+/* ========================================
+   MARGIN UTILITIES
+   ======================================== */
+
+.mx-auto { margin-inline: auto; }
+.my-auto { margin-block: auto; }
+
+/* ========================================
+   DEBUG MODE
+   Outline all elements for layout debugging
+   ======================================== */
+
+[data-debug] * {
+  outline: 1px solid color-mix(in oklch, transparent, red 30%);
+  outline-offset: -1px;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   Highlight accessibility issues in development
+   ======================================== */
+
+/* Missing alt text warning */
+img:not([alt]),
+img[alt=""] {
+  outline: 3px solid red;
+  outline-offset: 2px;
+}
+
+/* Invalid elements */
+[aria-invalid="true"] {
+  outline: 2px dashed red;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hide-mobile { display: none; }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop { display: none; }
+}
+
+/* ========================================
+   PRINT UTILITIES
+   ======================================== */
+
+@media print {
+  .no-print { display: none; }
+  
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+}

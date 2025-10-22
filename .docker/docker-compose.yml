@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # CI testing service
+  ci:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    volumes:
+      # Mount workspace for hot-reload
+      - ..:/workspace
+      # Cache node_modules
+      - node_modules:/workspace/node_modules
+      # Cache Playwright browsers
+      - playwright_cache:/root/.cache/ms-playwright
+      # Share test results
+      - ../test-results:/workspace/test-results
+    environment:
+      - CI=true
+      - NODE_ENV=test
+    command: npm run ci
+    networks:
+      - microhams-net
+
+  # Development server for E2E tests
+  dev:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ..:/workspace
+      - node_modules:/workspace/node_modules
+    ports:
+      - "4321:4321"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    networks:
+      - microhams-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4321"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Playwright test runner (depends on dev server)
+  e2e:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ..:/workspace
+      - node_modules:/workspace/node_modules
+      - playwright_cache:/root/.cache/ms-playwright
+      - ../test-results:/workspace/test-results
+    environment:
+      - CI=true
+      - PLAYWRIGHT_BASE_URL=http://dev:4321
+    command: npm run test:e2e
+    depends_on:
+      dev:
+        condition: service_healthy
+    networks:
+      - microhams-net
+
+  # Unit test runner with watch mode
+  unit-watch:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ..:/workspace
+      - node_modules:/workspace/node_modules
+      - ../test-results:/workspace/test-results
+    environment:
+      - NODE_ENV=test
+    command: npm run test
+    networks:
+      - microhams-net
+
+volumes:
+  node_modules:
+  playwright_cache:
+
+networks:
+  microhams-net:
+    driver: bridge
