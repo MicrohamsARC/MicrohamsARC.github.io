@@ -8,6 +8,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventMap from '../../components/EventMap.astro';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events', ({ data }) => !data.draft);
@@ -110,7 +111,7 @@ const isUpcoming = event.data.eventDate >= new Date();
                 {event.data.virtualLink && (
                   <div class="stack-xs">
                     <div class="text-sm font-bold" style="color: var(--color-text-muted);">Virtual Attendance</div>
-                    <a href={event.data.virtualLink} class="button button--sm" data-variant="secondary" target="_blank" rel="noopener noreferrer">
+                    <a href={event.data.virtualLink} class="button button--sm" data-variant="primary" target="_blank" rel="noopener noreferrer">
                       Join Virtual Meeting →
                     </a>
                   </div>
@@ -167,6 +168,20 @@ const isUpcoming = event.data.eventDate >= new Date();
           <div class="flow">
             <Content />
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Map -->
+    <section class="region">
+      <div class="wrapper">
+        <div class="stack-4">
+          <h2>Location</h2>
+          <EventMap 
+            location={event.data.location}
+            latitude={47.6749}
+            longitude={-122.1202}
+          />
         </div>
       </div>
     </section>

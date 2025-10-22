@@ -9,6 +9,8 @@ export default defineConfig({
   output: 'static',
   build: {
     assets: '_assets',
+    // Cache busting via content hashing
+    inlineStylesheets: 'auto',
   },
   // Markdown configuration
   markdown: {
@@ -39,9 +41,13 @@ export default defineConfig({
       reportCompressedSize: true,
       // CSS code splitting
       cssCodeSplit: true,
-      // Rollup options for better tree-shaking
+      // Rollup options for better tree-shaking and cache busting
       rollupOptions: {
         output: {
+          // Cache busting with content hashes
+          entryFileNames: 'entry.[hash].js',
+          chunkFileNames: 'chunks/chunk.[hash].js',
+          assetFileNames: 'assets/asset.[hash][extname]',
           // Manual chunks for better caching
           manualChunks: {
             'design-system': ['./src/styles/main.css'],

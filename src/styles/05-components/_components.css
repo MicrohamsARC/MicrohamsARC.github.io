@@ -33,14 +33,14 @@
 
 /* Button variants using data attributes */
 .button[data-variant="primary"] {
-  background-color: var(--color-accent);
+  background-color: var(--color-blue);
   color: var(--color-white);
-  border-color: var(--color-accent);
+  border-color: var(--color-blue);
 }
 
 .button[data-variant="primary"]:hover {
-  background-color: var(--color-accent-dark);
-  border-color: var(--color-accent-dark);
+  background-color: var(--color-blue-hover);
+  border-color: var(--color-blue-hover);
 }
 
 .button[data-variant="secondary"] {
@@ -254,6 +254,57 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-8);
+}
+
+/* ========================================
+   THEME TOGGLE - Dark/Light Mode Switcher
+   Vignelli: "Discipline is the key"
+   ======================================== */
+
+.theme-toggle {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.theme-toggle__icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--transition-fast);
+}
+
+.theme-toggle__icon--sun {
+  opacity: 1;
+}
+
+.theme-toggle__icon--moon {
+  opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle__icon--sun {
+  opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle__icon--moon {
+  opacity: 1;
 }
 
 /* ========================================

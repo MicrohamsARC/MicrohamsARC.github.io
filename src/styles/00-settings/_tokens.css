@@ -108,6 +108,10 @@
   --color-accent-dark: oklch(38% 0.22 25);    /* Hover state: 11.2:1 on white */
   --color-accent-light: oklch(55% 0.22 25);   /* Subtle accents: 4.9:1 on white */
   
+  /* Button/Interactive Blue */
+  --color-blue: #2D77B1;                      /* Button backgrounds, interactive elements */
+  --color-blue-hover: oklch(40% 0.12 240);    /* Darker blue for hover states */
+  
   /* Semantic Colors (Derived from base) */
   /* Light Mode: All combinations tested for WCAG AA */
   --color-text: var(--color-gray-900);        /* 15.3:1 on white ✓ */
@@ -115,9 +119,9 @@
   --color-text-subtle: var(--color-gray-500); /* 4.6:1 on white ✓ (AA Large) */
   --color-border: var(--color-gray-200);      /* 3.1:1 on white ✓ (UI) */
   --color-border-muted: var(--color-gray-100);
-  --color-surface: var(--color-white);
-  --color-surface-muted: var(--color-gray-50);
-  --color-surface-raised: var(--color-white);
+  --color-surface: oklch(95% 0 0);                /* Base: 95% */
+  --color-surface-muted: oklch(92% 0 0);          /* Recessed: 92% - clear 3% difference */
+  --color-surface-raised: var(--color-white);     /* Raised: 100% - strong 5% difference */
   
   /* Interactive States */
   --color-link: var(--color-accent);          /* 7.8:1 on white ✓ */
@@ -167,19 +171,36 @@
    ======================================== */
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     /* Dark Mode: All combinations tested for WCAG AA */
     --color-text: var(--color-gray-50);         /* 18.2:1 on oklch(12%) ✓ */
     --color-text-muted: var(--color-gray-400);  /* 8.1:1 on oklch(12%) ✓ */
     --color-text-subtle: var(--color-gray-500); /* 5.8:1 on oklch(12%) ✓ */
     --color-border: var(--color-gray-800);      /* 3.2:1 on oklch(12%) ✓ (UI) */
     --color-border-muted: var(--color-gray-900);
-    --color-surface: oklch(12% 0 0);            /* Deep dark background */
-    --color-surface-muted: oklch(15% 0 0);
-    --color-surface-raised: oklch(18% 0 0);
+    --color-surface: oklch(12% 0 0);            /* Base: 12% - deep dark */
+    --color-surface-muted: oklch(8% 0 0);       /* Recessed: 8% - darker, clear difference */
+    --color-surface-raised: oklch(20% 0 0);     /* Raised: 20% - strong 8% difference */
     
     /* Adjusted accent for dark mode - lighter for contrast */
     --color-accent: oklch(70% 0.22 25);         /* 8.5:1 on oklch(12%) ✓ */
     --color-accent-dark: oklch(80% 0.22 25);    /* Hover: 12.1:1 on oklch(12%) ✓ */
   }
+}
+
+/* Manual dark mode override */
+:root[data-theme="dark"] {
+  /* Dark Mode: All combinations tested for WCAG AA */
+  --color-text: var(--color-gray-50);         /* 18.2:1 on oklch(12%) ✓ */
+  --color-text-muted: var(--color-gray-400);  /* 8.1:1 on oklch(12%) ✓ */
+  --color-text-subtle: var(--color-gray-500); /* 5.8:1 on oklch(12%) ✓ */
+  --color-border: var(--color-gray-800);      /* 3.2:1 on oklch(12%) ✓ (UI) */
+  --color-border-muted: var(--color-gray-900);
+  --color-surface: oklch(12% 0 0);            /* Base: 12% - deep dark */
+  --color-surface-muted: oklch(8% 0 0);       /* Recessed: 8% - darker, clear difference */
+  --color-surface-raised: oklch(20% 0 0);     /* Raised: 20% - strong 8% difference */
+  
+  /* Adjusted accent for dark mode - lighter for contrast */
+  --color-accent: oklch(70% 0.22 25);         /* 8.5:1 on oklch(12%) ✓ */
+  --color-accent-dark: oklch(80% 0.22 25);    /* Hover: 12.1:1 on oklch(12%) ✓ */
 }
