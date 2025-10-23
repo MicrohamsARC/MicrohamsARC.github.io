@@ -5,7 +5,7 @@
  * Generates individual pages for each article
  */
 
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
 import { publishedFilter } from '../../utils/content';
 
@@ -18,7 +18,11 @@ export async function getStaticPaths() {
   }));
 }
 
-const { article } = Astro.props;
+type Props = {
+  article: CollectionEntry<'articles'>;
+};
+
+const { article }: Props = Astro.props;
 const { Content } = await article.render();
 ---
 

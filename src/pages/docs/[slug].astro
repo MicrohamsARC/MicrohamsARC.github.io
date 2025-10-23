@@ -3,7 +3,7 @@
  * Dynamic Documentation Pages
  */
 
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
 import { publishedFilter } from '../../utils/content';
 
@@ -16,7 +16,11 @@ export async function getStaticPaths() {
   }));
 }
 
-const { doc } = Astro.props;
+type Props = {
+  doc: CollectionEntry<'docs'>;
+};
+
+const { doc }: Props = Astro.props;
 const { Content } = await doc.render();
 ---
 

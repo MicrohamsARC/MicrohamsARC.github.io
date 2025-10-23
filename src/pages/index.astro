@@ -85,7 +85,6 @@ const upcomingEvents = allEvents
       </div>
     </section>
   ) : (
-    <!-- Fallback hero when no events -->
     <section class="region">
       <div class="wrapper">
         <div class="stack-6">
@@ -116,7 +115,7 @@ const upcomingEvents = allEvents
           
           <!-- Two-column magazine layout -->
           <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);">
-            {articles.slice(0, 3).map((article) => (
+            {articles.slice(0, 3).map((article: typeof articles[number]) => (
               <article class="stack-3">
                 <div class="stack-2">
                   {article.data.tags && article.data.tags.length > 0 && (
@@ -171,7 +170,7 @@ const upcomingEvents = allEvents
           
           <!-- List layout for projects -->
           <div class="stack-6">
-            {projects.slice(0, 3).map((project) => (
+            {projects.slice(0, 3).map((project: typeof projects[number]) => (
               <article class="stack-3" style="padding-block-end: var(--space-6); border-block-end: 1px solid var(--color-border);">
                 <div class="cluster cluster--between">
                   <h4 class="text-xl">

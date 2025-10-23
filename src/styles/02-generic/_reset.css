@@ -20,9 +20,9 @@
 
 /* Prevent font size inflation */
 html {
-  -moz-text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Remove list styles on ul, ol elements with a list role */
@@ -47,13 +47,21 @@ body {
 h1, h2, h3, h4, h5, h6 {
   line-height: var(--leading-tight);
   font-weight: var(--font-weight-semibold);
-  text-wrap: balance;
+}
+@supports (text-wrap: balance) {
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
 }
 
 /* Improve readability on body text */
 p, li, figcaption {
   max-inline-size: var(--measure-optimal);
-  text-wrap: pretty;
+}
+@supports (text-wrap: pretty) {
+  p, li, figcaption {
+    text-wrap: pretty;
+  }
 }
 
 /* A elements that don't have a class get default styles */

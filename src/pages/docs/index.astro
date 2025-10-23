@@ -4,19 +4,19 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
 const docs = (await getCollection('docs', publishedFilter))
   .sort((a, b) => a.data.order - b.data.order);
 
 // Group by section
-const docsBySection = docs.reduce((acc, doc) => {
+const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]>, doc) => {
   const section = doc.data.section || 'General';
   if (!acc[section]) acc[section] = [];
   acc[section].push(doc);
   return acc;
-}, {} as Record<string, typeof docs>);
+}, {});
 ---
 
 <BaseLayout title="Documentation" description="Technical documentation and reference materials">

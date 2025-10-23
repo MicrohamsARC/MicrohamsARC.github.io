@@ -13,7 +13,9 @@ export async function getStaticPaths() {
   const articles = await getCollection('articles', publishedFilter);
   
   // Get all unique tags
-  const allTags = [...new Set(articles.flatMap(article => article.data.tags))];
+  const allTags = [...new Set(articles.flatMap(article => {
+return article.data.tags;
+}))];
   
   // Create a path for each tag
   return allTags.map(tag => {
@@ -53,7 +55,7 @@ const { articles, tag } = Astro.props;
         <!-- Articles List -->
         <div class="center">
           <div class="stack-8">
-            {articles.map((article) => (
+            {articles.map((article: typeof articles[number]) => (
               <article class="card" data-variant="interactive">
                 <div class="card__header">
                   <h2 class="card__title">
@@ -89,7 +91,7 @@ const { articles, tag } = Astro.props;
                 {article.data.tags?.length > 0 && (
                   <div class="card__footer">
                     <ul class="tag-list">
-                      {article.data.tags.map(articleTag => (
+                      {article.data.tags.map((articleTag: string) => (
                         <li>
                           <a 
                             href={`/tags/${encodeURIComponent(articleTag)}`} 

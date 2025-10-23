@@ -3,7 +3,7 @@
  * Dynamic Project Pages
  */
 
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
 import { publishedFilter } from '../../utils/content';
 
@@ -16,7 +16,11 @@ export async function getStaticPaths() {
   }));
 }
 
-const { project } = Astro.props;
+type Props = {
+  project: CollectionEntry<'projects'>;
+};
+
+const { project }: Props = Astro.props;
 const { Content } = await project.render();
 ---
 

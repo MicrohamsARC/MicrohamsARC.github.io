@@ -10,7 +10,7 @@ import { publishedFilter } from '../../utils/content';
 const projects = (await getCollection('projects', publishedFilter))
   .sort((a, b) => {
     // Sort by status (active first) then by date
-    const statusOrder = { active: 0, completed: 1, archived: 2 };
+    const statusOrder: Record<string, number> = { active: 0, completed: 1, archived: 2 };
     return statusOrder[a.data.status] - statusOrder[b.data.status];
   });
 ---

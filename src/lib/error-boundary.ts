@@ -5,6 +5,8 @@
  * Provides detailed error information with source maps
  */
 
+/// <reference types="astro/client" />
+
 interface ErrorBoundaryProps {
   fallback?: (error: Error, errorInfo: ErrorInfo) => any;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
