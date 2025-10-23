@@ -384,14 +384,14 @@
    ======================================== */
 
 .region {
-  padding-block: var(--region-space, var(--section-gap));
+  padding-block: var(--region-space, var(--space-12));
 }
 
 /* Region size variations */
 .region--xs { --region-space: var(--space-4); }   /* 16px */
 .region--sm { --region-space: var(--space-8); }   /* 32px */
-.region--md { --region-space: var(--section-gap); } /* 64px - Base */
-.region--lg { --region-space: var(--section-gap-large); } /* 96px */
+.region--md { --region-space: var(--space-12); }  /* 48px - Base */
+.region--lg { --region-space: var(--section-gap); } /* 64px */
 .region--xl { --region-space: var(--space-32); }  /* 128px */
 
 /* Legacy class names */
@@ -580,21 +580,24 @@
   padding-inline: 0;
 }
 
-/* Responsive gutter adjustments */
+/* Responsive gutter adjustments - Flush left alignment */
 @media (max-width: 768px) {
   .wrapper {
-    padding-inline: var(--space-4);
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-4);
   }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .wrapper {
-    padding-inline: var(--space-6);
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-6);
   }
 }
 
 @media (min-width: 1025px) {
   .wrapper {
-    padding-inline: var(--space-8);
+    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
+    padding-inline-end: var(--space-8);
   }
 }

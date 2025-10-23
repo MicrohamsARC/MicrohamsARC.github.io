@@ -1,0 +1,262 @@
+/**
+ * SWISS BOOK LAYOUT - Massimo Vignelli & Edward Tufte Principles
+ * 
+ * "The grid is the most basic tool, the common denominator for all designers." — Vignelli
+ * "Above all else show the data." — Tufte
+ * 
+ * Key Principles:
+ * 1. Wide left margin (33%) for marginalia, notes, and visual breathing room
+ * 2. Optimal text measure (60ch) for sustained reading
+ * 3. Baseline grid alignment for vertical rhythm
+ * 4. Asymmetric layout (golden ratio) for visual interest
+ * 5. Generous whitespace as active design element
+ * 
+ * This layout will be submitted for typographic awards.
+ */
+
+:root {
+  /* ========================================
+     SWISS GRID SYSTEM
+     Golden Ratio proportions for page division
+     ======================================== */
+  
+  /* Page divisions (φ-based) */
+  --grid-margin-left: 25%;          /* Wide left gutter (1/4) */
+  --grid-margin-right: 8.33%;       /* Narrow right (1/12) */
+  --grid-content-width: 66.67%;     /* Content area (2/3) */
+  
+  /* Responsive breakpoints */
+  --breakpoint-sm: 36rem;           /* 576px - Phone landscape */
+  --breakpoint-md: 48rem;           /* 768px - Tablet portrait */
+  --breakpoint-lg: 64rem;           /* 1024px - Tablet landscape */
+  --breakpoint-xl: 80rem;           /* 1280px - Desktop */
+  --breakpoint-2xl: 96rem;          /* 1536px - Large desktop */
+  
+  /* Swiss book maximum width */
+  --page-width-max: 90rem;          /* 1440px - Maximum for readability */
+  
+  /* Gutter spacing (Tufte-inspired) */
+  --gutter-width: 4rem;             /* 64px - Sidenote space */
+  --gutter-width-narrow: 2rem;      /* 32px - Compact devices */
+}
+
+/**
+ * MAIN LAYOUT WRAPPER
+ * Swiss book proportions with responsive behavior
+ */
+
+.wrapper {
+  /* Default: Centered with max-width */
+  margin-inline: auto;
+  max-inline-size: var(--page-width-max);
+  padding-inline: var(--space-4);
+}
+
+/**
+ * SWISS BOOK LAYOUT
+ * Primary layout for article content
+ * 
+ * Structure:
+ * ┌──────────┬────────────────────────────┬───────┐
+ * │          │                            │       │
+ * │  MARGIN  │         CONTENT            │  RHS  │
+ * │   25%    │          60ch              │  8%   │
+ * │          │                            │       │
+ * └──────────┴────────────────────────────┴───────┘
+ */
+
+.swiss-layout {
+  display: grid;
+  grid-template-columns: 
+    [margin-start] minmax(var(--space-4), var(--grid-margin-left))
+    [content-start] minmax(auto, var(--measure-optimal))
+    [content-end sidenote-start] minmax(var(--space-4), var(--gutter-width))
+    [sidenote-end margin-end];
+  gap: 0;
+  margin-inline: auto;
+  max-inline-size: var(--page-width-max);
+}
+
+.swiss-layout > * {
+  /* Default: content flows into main column */
+  grid-column: content;
+}
+
+/**
+ * MARGINALIA & SIDENOTES (Tufte-style)
+ * Content that lives in the wide left or right margin
+ */
+
+.sidenote,
+.marginnote {
+  grid-column: sidenote;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  padding-inline-start: var(--space-4);
+}
+
+.marginnote-left {
+  grid-column: margin;
+  justify-self: end;
+  max-inline-size: var(--measure-compact);
+  padding-inline-end: var(--space-6);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  text-align: end;
+}
+
+/**
+ * FULL-BLEED CONTENT
+ * Break out of content column to fill entire width
+ */
+
+.full-bleed {
+  grid-column: margin-start / margin-end;
+  margin-inline: calc(var(--space-4) * -1);
+}
+
+.content-bleed {
+  grid-column: content-start / margin-end;
+}
+
+/**
+ * RESPONSIVE BEHAVIOR
+ * Graceful degradation for smaller screens
+ */
+
+@media (max-width: 64rem) {
+  .swiss-layout {
+    /* Tablet: Reduce left margin, remove right sidenote */
+    grid-template-columns:
+      [margin-start] minmax(var(--space-4), 15%)
+      [content-start] minmax(auto, var(--measure-optimal))
+      [content-end margin-end] minmax(var(--space-4), 10%);
+  }
+  
+  .sidenote,
+  .marginnote {
+    /* Sidenotes become inline on tablet */
+    grid-column: content;
+    border-inline-start: 2px solid var(--color-border);
+    padding-inline-start: var(--space-4);
+    margin-block: var(--baseline);
+  }
+  
+  .marginnote-left {
+    grid-column: content;
+    justify-self: start;
+    max-inline-size: 100%;
+    text-align: start;
+    padding-inline-end: 0;
+    border-inline-start: 2px solid var(--color-border);
+    padding-inline-start: var(--space-4);
+    margin-block: var(--baseline);
+  }
+}
+
+@media (max-width: 48rem) {
+  .swiss-layout {
+    /* Mobile: Single column with symmetric margins */
+    grid-template-columns:
+      [margin-start content-start] 
+      minmax(var(--space-4), 1fr)
+      [content-end margin-end];
+  }
+  
+  :root {
+    --grid-margin-left: var(--space-4);
+    --grid-margin-right: var(--space-4);
+  }
+}
+
+/**
+ * ARTICLE WRAPPER
+ * Specialized wrapper for long-form content
+ */
+
+.article-wrapper {
+  /* Extend swiss-layout with article-specific styles */
+  /* Uses same grid as swiss-layout */
+  display: grid;
+  grid-template-columns: 
+    [margin-start] minmax(var(--space-4), var(--grid-margin-left))
+    [content-start] minmax(auto, var(--measure-optimal))
+    [content-end sidenote-start] minmax(var(--space-4), var(--gutter-width))
+    [sidenote-end margin-end];
+  gap: 0;
+  margin-inline: auto;
+  max-inline-size: var(--page-width-max);
+}
+
+.article-wrapper article {
+  /* Typography optimizations for sustained reading */
+  font-family: var(--font-sans);
+  font-size: var(--text-base-fluid, var(--text-base));
+  line-height: var(--leading-relaxed);
+  
+  /* Hyphenation for justified text */
+  hyphens: auto;
+}
+
+/**
+ * GRID OVERLAY (Development Only)
+ * Visual guide for baseline grid alignment
+ */
+
+.show-baseline-grid {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--baseline) - 1px),
+    var(--color-accent) calc(var(--baseline) - 1px),
+    var(--color-accent) var(--baseline)
+  );
+  background-size: 100% var(--baseline);
+  background-position: 0 0;
+}
+
+.show-column-grid {
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(var(--grid-margin-left) - 1px),
+    var(--color-accent) calc(var(--grid-margin-left) - 1px),
+    var(--color-accent) var(--grid-margin-left),
+    transparent var(--grid-margin-left),
+    transparent calc(100% - var(--grid-margin-right) - 1px),
+    var(--color-accent) calc(100% - var(--grid-margin-right) - 1px),
+    var(--color-accent) calc(100% - var(--grid-margin-right))
+  );
+}
+
+/**
+ * PRINT LAYOUT
+ * Optimized for physical typography awards submission
+ */
+
+@media print {
+  .swiss-layout {
+    /* Print uses classical book margins */
+    grid-template-columns:
+      [margin-start] 1.5in
+      [content-start] minmax(auto, 4.5in)
+      [content-end sidenote-start] 1in
+      [sidenote-end margin-end];
+  }
+  
+  .article-wrapper article {
+    /* Print typography adjustments */
+    font-size: 11pt;
+    line-height: 1.4;
+    page-break-inside: avoid;
+  }
+  
+  /* Prevent sidenotes from splitting across pages */
+  .sidenote,
+  .marginnote {
+    break-inside: avoid;
+  }
+}

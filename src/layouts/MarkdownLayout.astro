@@ -13,13 +13,13 @@ const { frontmatter } = Astro.props;
 <BaseLayout title={frontmatter.title} description={frontmatter.description} author={frontmatter.author}>
   <article class="region">
     <div class="wrapper">
-      <div class="center">
-        <!-- Article Header -->
+      <!-- Article Header - Conditionally shown -->
+      {!frontmatter.hideHeader && (
         <header class="stack-4" style="margin-block-end: var(--space-8);">
           <h1>{frontmatter.title}</h1>
           
           {frontmatter.description && (
-            <p class="lead">{frontmatter.description}</p>
+            <p class="lead" style="max-inline-size: var(--measure-comfortable); background-color: var(--color-surface-raised); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border);">{frontmatter.description}</p>
           )}
           
           {(frontmatter.date || frontmatter.author || frontmatter.tags?.length > 0) && (
@@ -46,7 +46,7 @@ const { frontmatter } = Astro.props;
                 <ul class="tag-list">
                   {frontmatter.tags.map((tag: string) => (
                     <li>
-                      <a href={`/tags/${tag}`} class="tag">{tag}</a>
+                      <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
                     </li>
                   ))}
                 </ul>
@@ -54,23 +54,23 @@ const { frontmatter } = Astro.props;
             </div>
           )}
         </header>
+      )}
 
-        <!-- Article Content with Flow -->
-        <div class="flow">
-          <slot />
-        </div>
-        
-        <!-- Article Footer -->
-        {frontmatter.updated && (
-          <footer class="text-sm text-muted" style="margin-block-start: var(--space-12); padding-block-start: var(--space-4); border-block-start: 1px solid var(--color-border);">
-            Last updated: {frontmatter.updated.toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </footer>
-        )}
+      <!-- Article Content with Flow -->
+      <div class="flow" style="max-inline-size: var(--measure-wide);">
+        <slot />
       </div>
+      
+      <!-- Article Footer -->
+      {frontmatter.updated && (
+        <footer class="text-sm text-muted" style="margin-block-start: var(--space-12); padding-block-start: var(--space-4); border-block-start: 1px solid var(--color-border); max-inline-size: var(--measure-wide);">
+          Last updated: {frontmatter.updated.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </footer>
+      )}
     </div>
   </article>
 </BaseLayout>

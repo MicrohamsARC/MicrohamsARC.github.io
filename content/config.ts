@@ -15,6 +15,7 @@ const baseSchema = z.object({
   date: z.coerce.date().optional(),
   updated: z.coerce.date().optional(),
   draft: z.boolean().default(false),
+  publishDate: z.coerce.date().optional(), // Content hidden until this date
   featured: z.boolean().default(false),
   tags: z.array(z.string()).default([]),
 });
@@ -24,6 +25,7 @@ const pages = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
     layout: z.enum(['default', 'full-width', 'minimal']).default('default'),
+    hideHeader: z.boolean().default(false), // Hide title, description, and metadata
   }),
 });
 

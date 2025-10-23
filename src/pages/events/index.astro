@@ -7,9 +7,10 @@
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { publishedFilter } from '../../utils/content';
 
 // Get all events, sorted by date (newest first)
-const allEvents = await getCollection('events', ({ data }) => !data.draft);
+const allEvents = await getCollection('events', publishedFilter);
 const sortedEvents = allEvents.sort((a, b) => 
   b.data.eventDate.getTime() - a.data.eventDate.getTime()
 );
@@ -163,27 +164,4 @@ const getEventTypeBadge = (type: string) => {
     </section>
   )}
 
-  <!-- Call to Action -->
-  <section class="region">
-    <div class="wrapper">
-      <div class="center text-center">
-        <div class="box box--bordered">
-          <div class="stack-4">
-            <h2>Stay Updated</h2>
-            <p class="mx-auto" style="max-inline-size: var(--measure);">
-              Want to be notified about upcoming events? Visit our main website or join our mailing list.
-            </p>
-            <div class="cluster cluster--center">
-              <a href="https://www.microhams.com" class="button" data-variant="primary">
-                Visit MicroHAMS.com
-              </a>
-              <a href="/about" class="button" data-variant="secondary">
-                Learn More
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </BaseLayout>

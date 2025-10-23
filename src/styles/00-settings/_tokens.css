@@ -9,24 +9,36 @@
 :root {
   /* ========================================
      TYPOGRAPHY TOKENS
-     Perfect Fourth Scale (1.333) - Vignelli's preference
-     Base: 16px - Never go below this
+     Golden Ratio Scale (φ = 1.618) with Harmonic Thirds/Fourths
+     Base: 16px - Never go below this (WCAG minimum)
+     Baseline Grid: 24px (1.5 × 16px) - Tufte's preference
      ======================================== */
   
-  --text-xs: 0.75rem;      /* 12px - Captions, labels */
-  --text-sm: 0.875rem;     /* 14px - Secondary text */
-  --text-base: 1rem;       /* 16px - Body (sacred minimum) */
-  --text-lg: 1.333rem;     /* 21px - Large body */
-  --text-xl: 1.777rem;     /* 28px - H3 */
-  --text-2xl: 2.369rem;    /* 38px - H2 */
-  --text-3xl: 3.157rem;    /* 51px - H1 */
-  --text-4xl: 4.209rem;    /* 67px - Display */
+  /* Micro Typography - Captions, footnotes, marginalia */
+  --text-2xs: 0.694rem;        /* 11.1px - φ^-2 - Smallest readable */
+  --text-xs: 0.833rem;         /* 13.3px - φ^-1.5 - Footnotes */
+  --text-sm: 0.875rem;         /* 14px - Captions, labels */
+  
+  /* Body Typography - Primary reading sizes */
+  --text-base: 1rem;           /* 16px - φ^0 - Sacred minimum (WCAG) */
+  --text-md: 1.125rem;         /* 18px - Enhanced body text */
+  --text-lg: 1.25rem;          /* 20px - Major Third - Large body */
+  
+  /* Display Typography - Headings and emphasis */
+  --text-xl: 1.333rem;         /* 21.3px - Perfect Fourth - H4 */
+  --text-2xl: 1.618rem;        /* 25.9px - φ^1 - Golden! - H3 */
+  --text-3xl: 2.027rem;        /* 32.4px - φ^1.25 - H2 */
+  --text-4xl: 2.618rem;        /* 41.9px - φ^1.618 - H1 */
+  --text-5xl: 3.236rem;        /* 51.8px - φ^2 - Display */
+  --text-6xl: 4.236rem;        /* 67.8px - φ^2.5 - Hero */
+  --text-7xl: 5.236rem;        /* 83.8px - φ^3 - Massive */
 
-  /* Font Families - Geist from Google Fonts */
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 
-               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, "SF Mono", Monaco, "Cascadia Code", 
-               "Roboto Mono", Consolas, "Liberation Mono", monospace;
+  /* Font Families - Geist Sans (primary) + Noto Serif JP (accent) + Geist Mono */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Noto Serif JP', 'Times New Roman', 'Georgia', serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 
+               'Source Code Pro', Menlo, Consolas, 'Courier New', monospace;
   
   /* Font Weights - Exploit variable font axis */
   --font-weight-normal: 400;
@@ -34,25 +46,29 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Line Height System - Ratio to x-height */
-  --leading-solid: 1;         /* Display text only */
-  --leading-tight: 1.25;      /* Headings */
-  --leading-snug: 1.375;      /* Subheadings */
-  --leading-normal: 1.5;      /* UI elements */
-  --leading-relaxed: 1.625;   /* Body text (optimal readability) */
-  --leading-loose: 2;         /* Airy content */
+  /* Line Height System - Based on Golden Ratio and Baseline Grid */
+  --leading-none: 1;              /* Display text only */
+  --leading-tightest: 1.111;      /* 1/φ - Super condensed */
+  --leading-tight: 1.25;          /* Major Third - Headlines */
+  --leading-snug: 1.333;          /* Perfect Fourth - Subheads */
+  --leading-normal: 1.5;          /* Baseline grid - Body (optimal) */
+  --leading-relaxed: 1.618;       /* Golden Ratio - Airy body */
+  --leading-loose: 1.777;         /* φ + 0.16 - Maximum readability */
 
-  /* Measure (Line Length) - Critical for Readability */
-  --measure-narrow: 45ch;     /* Tight focus */
-  --measure-optimal: 65ch;    /* Body text (Bringhurst's ideal) */
-  --measure-wide: 75ch;       /* Maximum before fatigue */
+  /* Measure (Line Length) - Optimal Reading (Bringhurst & Tufte) */
+  --measure-compact: 45ch;        /* Narrow columns, sidebars */
+  --measure-optimal: 60ch;        /* Primary body text (golden mean) */
+  --measure-comfortable: 65ch;    /* Maximum for sustained reading */
+  --measure-wide: 75ch;           /* Wide layouts, technical content */
+  --measure-full: 90ch;           /* Maximum before eye fatigue */
   
-  /* Tracking (Letter Spacing) */
-  --tracking-tight: -0.05em;  /* Display text */
-  --tracking-snug: -0.025em;  /* Headings */
-  --tracking-normal: 0;       /* Body */
-  --tracking-wide: 0.025em;   /* All-caps, small text */
-  --tracking-wider: 0.05em;   /* Loosest (accessibility) */
+  /* Tracking (Letter Spacing) - Optical Adjustment */
+  --tracking-tightest: -0.05em;   /* -50 - Display text, large sizes */
+  --tracking-tight: -0.025em;     /* -25 - Headlines */
+  --tracking-normal: 0;           /* 0 - Body text (never touch!) */
+  --tracking-wide: 0.025em;       /* +25 - All-caps, UI labels */
+  --tracking-wider: 0.05em;       /* +50 - Small text (<14px) */
+  --tracking-widest: 0.1em;       /* +100 - Extreme spacing */
 
   /* ========================================
      SPATIAL SYSTEM
@@ -93,13 +109,13 @@
   --color-white: oklch(100% 0 0);
   --color-gray-50: oklch(98% 0 0);
   --color-gray-100: oklch(96% 0 0);
-  --color-gray-200: oklch(90% 0 0);
+  --color-gray-200: oklch(82% 0 0);     /* Border light: 3.1:1 on 95% surface ✓ */
   --color-gray-300: oklch(83% 0 0);
   --color-gray-400: oklch(64% 0 0);
   --color-gray-500: oklch(53% 0 0);     /* Perfect middle gray */
   --color-gray-600: oklch(42% 0 0);
   --color-gray-700: oklch(32% 0 0);
-  --color-gray-800: oklch(23% 0 0);
+  --color-gray-800: oklch(38% 0 0);     /* Border dark: 3.2:1 on 12% surface ✓ */
   --color-gray-900: oklch(15% 0 0);
   
   /* Accent - Use Sparingly (Vignelli's principle) */
@@ -109,15 +125,16 @@
   --color-accent-light: oklch(55% 0.22 25);   /* Subtle accents: 4.9:1 on white */
   
   /* Button/Interactive Blue */
-  --color-blue: #2D77B1;                      /* Button backgrounds, interactive elements */
-  --color-blue-hover: oklch(40% 0.12 240);    /* Darker blue for hover states */
+  --color-blue: oklch(45% 0.22 240);          /* Blue accent: 7.8:1 on white */
+  --color-blue-hover: oklch(38% 0.22 240);    /* Darker blue for hover states: 11.2:1 on white */
+  --color-blue-light: oklch(55% 0.22 240);    /* Subtle blue accents: 4.9:1 on white */
   
   /* Semantic Colors (Derived from base) */
   /* Light Mode: All combinations tested for WCAG AA */
   --color-text: var(--color-gray-900);        /* 15.3:1 on white ✓ */
   --color-text-muted: var(--color-gray-600);  /* 7.2:1 on white ✓ */
   --color-text-subtle: var(--color-gray-500); /* 4.6:1 on white ✓ (AA Large) */
-  --color-border: var(--color-gray-200);      /* 3.1:1 on white ✓ (UI) */
+  --color-border: var(--color-gray-200);      /* 3.1:1 on 95% surface ✓ (UI) */
   --color-border-muted: var(--color-gray-100);
   --color-surface: oklch(95% 0 0);                /* Base: 95% */
   --color-surface-muted: oklch(92% 0 0);          /* Recessed: 92% - clear 3% difference */

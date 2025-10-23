@@ -1,51 +1,54 @@
 ---
 /**
- * Articles Index Page
+ * Dynamic Tag Pages
  * 
- * Lists all published articles with filtering by tags
+ * Filters and displays articles by tag
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
-// Get all published articles, sorted by date
-const articles = (await getCollection('articles', publishedFilter))
-  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', publishedFilter);
+  
+  // Get all unique tags
+  const allTags = [...new Set(articles.flatMap(article => article.data.tags))];
+  
+  // Create a path for each tag
+  return allTags.map(tag => {
+    const filteredArticles = articles.filter(article => 
+      article.data.tags.includes(tag)
+    ).sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+    
+    return {
+      params: { tag },
+      props: { articles: filteredArticles, tag }
+    };
+  });
+}
 
-// Extract all unique tags
-const allTags = [...new Set(articles.flatMap(article => article.data.tags))];
+const { articles, tag } = Astro.props;
 ---
 
-<BaseLayout title="Articles" description="Technical articles and guides for amateur radio operators">
+<BaseLayout 
+  title={`Articles tagged "${tag}"`} 
+  description={`Browse articles about ${tag}`}
+>
   <div class="region">
     <div class="wrapper">
       <div class="stack-8">
         <!-- Page Header -->
         <header class="center text-center">
           <div class="stack-4">
-            <h1>Articles</h1>
+            <p class="text-sm text-muted" style="text-transform: uppercase; letter-spacing: var(--tracking-wide);">Tag</p>
+            <h1>{tag}</h1>
             <p class="lead mx-auto">
-              Technical guides, tutorials, and in-depth articles covering all aspects of amateur radio.
+              {articles.length} {articles.length === 1 ? 'article' : 'articles'} tagged with "{tag}"
             </p>
+            <a href="/articles" class="text-sm">← Back to all articles</a>
           </div>
         </header>
-
-        <!-- Tag Filter -->
-        {allTags.length > 0 && (
-          <div class="center">
-            <div class="stack-2">
-              <h2 class="h6">Filter by Tag</h2>
-              <ul class="tag-list">
-                {allTags.map(tag => (
-                  <li>
-                    <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
 
         <!-- Articles List -->
         <div class="center">
@@ -86,9 +89,15 @@ const allTags = [...new Set(articles.flatMap(article => article.data.tags))];
                 {article.data.tags?.length > 0 && (
                   <div class="card__footer">
                     <ul class="tag-list">
-                      {article.data.tags.map(tag => (
+                      {article.data.tags.map(articleTag => (
                         <li>
-                          <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
+                          <a 
+                            href={`/tags/${encodeURIComponent(articleTag)}`} 
+                            class="tag"
+                            data-active={articleTag === tag}
+                          >
+                            {articleTag}
+                          </a>
                         </li>
                       ))}
                     </ul>
@@ -98,13 +107,15 @@ const allTags = [...new Set(articles.flatMap(article => article.data.tags))];
             ))}
           </div>
         </div>
-
-        {articles.length === 0 && (
-          <div class="center text-center">
-            <p class="text-muted">No articles found. Check back soon!</p>
-          </div>
-        )}
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .tag[data-active="true"] {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
+  }
+</style>

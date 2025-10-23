@@ -5,8 +5,9 @@
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { publishedFilter } from '../../utils/content';
 
-const docs = (await getCollection('docs'))
+const docs = (await getCollection('docs', publishedFilter))
   .sort((a, b) => a.data.order - b.data.order);
 
 // Group by section

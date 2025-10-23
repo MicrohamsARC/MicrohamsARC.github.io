@@ -1,0 +1,18 @@
+/**
+ * TYPOGRAPHY SYSTEM - Award-Worthy Type
+ * 
+ * "Typography is the foundation of all design. A system of typography is a 
+ * system of relationships. Once you understand the principles, you can apply 
+ * them to any medium." — Massimo Vignelli
+ * 
+ * System Components:
+ * 1. Fonts - Noto Serif JP (primary), Geist (UI), Geist Mono (code)
+ * 2. Scale - Golden Ratio with harmonic thirds/fourths
+ * 3. Layout - Swiss book proportions with wide left gutter
+ * 
+ * This typography system is designed for awards submission.
+ */
+
+@import './_fonts.css';
+@import './_scale.css';
+@import './_layout.css';

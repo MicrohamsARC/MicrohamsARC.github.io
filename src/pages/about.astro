@@ -5,7 +5,6 @@
  * Direct route for the about page from pages collection
  */
 
-import BaseLayout from '../layouts/BaseLayout.astro';
 import MarkdownLayout from '../layouts/MarkdownLayout.astro';
 import { getEntry } from 'astro:content';
 
@@ -21,14 +20,9 @@ if (!entry) {
 const { Content, headings } = await entry.render();
 ---
 
-<BaseLayout 
-  title={entry.data.title} 
-  description={entry.data.description}
+<MarkdownLayout 
+  frontmatter={entry.data}
+  headings={headings}
 >
-  <MarkdownLayout 
-    frontmatter={entry.data}
-    headings={headings}
-  >
-    <Content />
-  </MarkdownLayout>
-</BaseLayout>
+  <Content />
+</MarkdownLayout>

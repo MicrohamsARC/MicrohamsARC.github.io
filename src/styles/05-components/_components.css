@@ -182,25 +182,34 @@
 
 .nav {
   display: flex;
+  align-items: center;
   gap: var(--space-2);
+  padding: 0;  /* Remove padding when in header */
+  border: none;  /* Remove border when in header */
+}
+
+/* When nav is standalone (not in header) */
+.nav:not(.site-header .nav) {
   padding: var(--space-4);
   border-block-end: 1px solid var(--color-border);
 }
 
 .nav__list {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-2);
   list-style: none;
   padding: 0;
   margin: 0;
+  align-items: baseline;  /* Use baseline alignment for consistent text alignment */
 }
 
 .nav__link {
   padding-inline: var(--space-3);
-  padding-block: var(--space-2);
+  padding-block: 0;  /* Remove vertical padding for baseline alignment */
   text-decoration: none;
   color: var(--color-text-muted);
   font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);  /* Consistent line-height */
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
 }
@@ -217,6 +226,8 @@
 
 /* ========================================
    HEADER - Site Header
+   Vignelli: "Flush Left, Centered, Justified"
+   We choose flush left for clarity and modernity
    ======================================== */
 
 .site-header {
@@ -225,17 +236,58 @@
   background-color: var(--color-surface);
 }
 
+/* Override wrapper padding for left alignment */
+.site-header .wrapper {
+  padding-inline-start: 0.25rem;  /* Minimal left margin for flush-left */
+  padding-inline-end: var(--gutter);
+}
+
 .site-header__inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-4);
+}
+
+/* Logo and tagline container */
+.site-header__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+/* Right-aligned nav and controls group */
+.site-header__inner nav {
+  margin-inline-start: auto;
 }
 
 .site-header__logo {
   font-size: var(--text-xl);
   font-weight: var(--font-weight-bold);
   text-decoration: none;
-  color: var(--color-text);
+  color: var(--color-accent);  /* Red accent per Vignelli's color discipline */
+  transition: color var(--transition-fast);
+  line-height: var(--leading-tight);
+}
+
+.site-header__logo:hover {
+  color: var(--color-accent-dark);
+}
+
+.site-header__tagline {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: var(--leading-snug);
+  white-space: nowrap;  /* Prevent wrapping */
+}
+
+/* Hide tagline on smaller screens where it would wrap */
+@media (max-width: 768px) {
+  .site-header__tagline {
+    display: none;
+  }
 }
 
 /* ========================================
@@ -263,19 +315,22 @@
 
 .theme-toggle {
   position: relative;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;  /* Match nav text line-height for optical alignment */
+  height: 1.5rem;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: none;  /* Remove border for cleaner look */
+  border-radius: 0;
   cursor: pointer;
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {
-  background: var(--color-surface-muted);
-  border-color: var(--color-border);
+  opacity: 0.7;  /* Subtle hover feedback */
 }
 
 .theme-toggle:focus-visible {
@@ -284,10 +339,9 @@
 }
 
 .theme-toggle__icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: block;
+  width: 20px;
+  height: 20px;
   transition: opacity var(--transition-fast);
 }
 

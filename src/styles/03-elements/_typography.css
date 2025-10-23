@@ -2,10 +2,12 @@
  * Typography - Vignelli's First Principle
  * 
  * "Typography IS the interface"
- * Define text hierarchy before ANY layout
+ * Primary font: Noto Serif JP for sustained reading
+ * Sans serif: Geist for UI and navigation
+ * Golden Ratio scale for harmonious hierarchy
  */
 
-/* Base Typography */
+/* Base Typography - Sans-serif primary (Typewolf guidelines) */
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
@@ -14,57 +16,63 @@ body {
   letter-spacing: var(--tracking-normal);
 }
 
-/* Heading Scale - Perfect Fourth Ratio */
+/* Heading Scale - Golden Ratio (φ = 1.618) */
 h1, .h1 {
-  font-size: var(--text-3xl);
+  font-family: var(--font-sans);
+  font-size: var(--text-4xl);
   line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--tracking-tightest);
   font-weight: var(--font-weight-bold);
-  margin-block-end: var(--space-6);
+  margin-block-end: var(--baseline);
 }
 
 h2, .h2 {
-  font-size: var(--text-2xl);
+  font-family: var(--font-sans);
+  font-size: var(--text-3xl);
   line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-snug);
+  letter-spacing: var(--tracking-tight);
   font-weight: var(--font-weight-semibold);
-  margin-block-start: var(--space-12);
-  margin-block-end: var(--space-4);
+  margin-block-start: calc(var(--baseline) * 2);
+  margin-block-end: var(--baseline-half);
 }
 
 h3, .h3 {
-  font-size: var(--text-xl);
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-snug);
+  letter-spacing: var(--tracking-tight);
   font-weight: var(--font-weight-semibold);
-  margin-block-start: var(--space-8);
-  margin-block-end: var(--space-3);
+  margin-block-start: calc(var(--baseline) * 1.5);
+  margin-block-end: var(--baseline-half);
 }
 
 h4, .h4 {
-  font-size: var(--text-lg);
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
   line-height: var(--leading-snug);
   font-weight: var(--font-weight-medium);
-  margin-block-start: var(--space-6);
-  margin-block-end: var(--space-2);
+  margin-block-start: var(--baseline);
+  margin-block-end: var(--baseline-half);
 }
 
 h5, .h5 {
-  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
   line-height: var(--leading-normal);
   font-weight: var(--font-weight-medium);
-  margin-block-start: var(--space-4);
-  margin-block-end: var(--space-2);
+  margin-block-start: var(--baseline);
+  margin-block-end: var(--baseline-quarter);
 }
 
 h6, .h6 {
+  font-family: var(--font-sans);
   font-size: var(--text-sm);
   line-height: var(--leading-normal);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
-  margin-block-start: var(--space-4);
-  margin-block-end: var(--space-2);
+  margin-block-start: var(--baseline);
+  margin-block-end: var(--baseline-quarter);
 }
 
 /* First heading has no top margin */
@@ -72,18 +80,25 @@ h6, .h6 {
   margin-block-start: 0;
 }
 
-/* Body Text */
+/* Body Text - Optimal measure for readability */
 p {
-  margin-block-end: var(--space-4);
+  margin-block-end: var(--baseline);
   max-inline-size: var(--measure-optimal);
+  hyphens: auto;
+}
+
+/* First paragraph after heading - no indent */
+:is(h1, h2, h3, h4, h5, h6) + p {
+  margin-block-start: 0;
 }
 
 /* Lead paragraph - larger intro text */
 .lead {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   line-height: var(--leading-relaxed);
   color: var(--color-text-muted);
-  max-inline-size: var(--measure-wide);
+  max-inline-size: var(--measure-comfortable);
+  margin-block-end: calc(var(--baseline) * 1.5);
 }
 
 /* Small text - captions, metadata */
@@ -150,14 +165,18 @@ li > ol {
   margin-block-end: var(--space-2);
 }
 
-/* Blockquotes - Swiss minimalism */
+/* Blockquotes - Strategic serif mixing (Typewolf: serif for quotes/emphasis) */
 blockquote {
-  margin-block: var(--space-6);
+  margin-block: calc(var(--baseline) * 1.5);
   margin-inline-start: 0;
-  padding-inline-start: var(--space-6);
-  border-inline-start: 3px solid var(--color-border);
+  padding-inline-start: calc(var(--baseline) * 1.5);
+  border-inline-start: 3px solid var(--color-accent);
   color: var(--color-text-muted);
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
   font-style: italic;
+  line-height: var(--leading-loose);
+  font-weight: 400;
 }
 
 blockquote p:last-child {
@@ -193,7 +212,7 @@ pre code {
 
 /* Horizontal rule - Swiss grid line */
 hr {
-  margin-block: var(--space-12);
+  margin-block: var(--space-4);
   border: 0;
   border-block-start: 1px solid var(--color-border);
 }

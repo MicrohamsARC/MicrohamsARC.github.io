@@ -8,6 +8,9 @@
 /* Settings - Design tokens and variables */
 @import './00-settings/_tokens.css';
 
+/* Typography - Award-worthy type system */
+@import './01-typography/index.css';
+
 /* Generic - Reset and normalize */
 @import './02-generic/_reset.css';
 

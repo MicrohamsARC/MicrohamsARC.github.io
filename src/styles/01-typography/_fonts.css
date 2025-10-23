@@ -1,0 +1,104 @@
+/**
+ * FONT LOADING - Vignelli & Tufte Principles
+ * 
+ * "Typography is the foundation of all design." — Massimo Vignelli
+ * 
+ * System:
+ * - Noto Serif JP: Primary serif (Japanese OpenType features)
+ * - Geist: Sans-serif for UI and secondary text
+ * - Geist Mono: Code and tabular data
+ * 
+ * Loading Strategy: FOUT over FOIT for perceived performance
+ */
+
+/* Noto Serif JP - Primary Serif Font (Beautiful Japanese Support) */
+/* Weights: 200 (ExtraLight), 300 (Light), 400 (Regular), 500 (Medium), 600 (SemiBold), 700 (Bold), 900 (Black) */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&display=swap');
+
+/* Geist - Swiss-inspired Sans Serif */
+/* Variable font with full weight axis 100-900 */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
+/* Geist Mono - Technical Typography */
+/* Variable font with full weight axis 100-900 */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
+/**
+ * Font Face Declarations
+ * Using system font-display: swap for optimal loading
+ */
+
+:root {
+  /* Primary Serif - Noto Serif JP */
+  /* Exceptional readability, classical proportions, OpenType features */
+  --font-serif: 'Noto Serif JP', 'Times New Roman', 'Georgia', serif;
+  
+  /* Sans Serif - Geist (Variable) */
+  /* Swiss precision, modern clarity, variable weight axis */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 
+               'Segoe UI Emoji', 'Segoe UI Symbol';
+  
+  /* Monospace - Geist Mono (Variable) */
+  /* Code, data tables, technical content */
+  --font-mono: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 
+               'Source Code Pro', Menlo, Consolas, 'Courier New', monospace;
+}
+
+/**
+ * Font Feature Settings
+ * Enable OpenType features for professional typography
+ */
+
+:root {
+  /* Common OpenType features for body text */
+  --font-feature-settings-body: 
+    "kern" 1,      /* Kerning */
+    "liga" 1,      /* Standard ligatures */
+    "clig" 1,      /* Contextual ligatures */
+    "calt" 1;      /* Contextual alternates */
+  
+  /* Additional features for headings */
+  --font-feature-settings-heading:
+    "kern" 1,
+    "liga" 1,
+    "dlig" 1,      /* Discretionary ligatures */
+    "swsh" 1;      /* Swash characters */
+  
+  /* Numeric features for tables and data */
+  --font-feature-settings-numeric:
+    "kern" 1,
+    "tnum" 1,      /* Tabular numerals */
+    "lnum" 1;      /* Lining numerals */
+  
+  /* Small caps for special emphasis */
+  --font-feature-settings-smallcaps:
+    "kern" 1,
+    "smcp" 1;      /* Small capitals */
+}
+
+/**
+ * Font Optical Sizing
+ * Automatically adjust letterforms based on size
+ */
+@supports (font-optical-sizing: auto) {
+  :root {
+    font-optical-sizing: auto;
+  }
+}
+
+/**
+ * Font Smoothing
+ * Consistent rendering across browsers
+ */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/**
+ * Font Loading Performance
+ * Google Fonts already uses font-display: swap
+ * No additional @font-face rules needed
+ */

@@ -9,9 +9,10 @@ import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EventMap from '../../components/EventMap.astro';
+import { publishedFilter } from '../../utils/content';
 
 export const getStaticPaths = (async () => {
-  const events = await getCollection('events', ({ data }) => !data.draft);
+  const events = await getCollection('events', publishedFilter);
   return events.map((event) => ({
     params: { slug: event.slug },
     props: { event },

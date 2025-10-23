@@ -30,21 +30,10 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
-    <!-- Google Fonts - Geist -->
+    <!-- Google Fonts - Noto Serif JP (Primary) + Geist Sans/Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="MicroHAMS" />
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
     
     <title>{title} | MicroHAMS</title>
     
@@ -65,9 +54,14 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
     <header class="site-header">
       <div class="wrapper">
         <div class="site-header__inner">
-          <a href="/" class="site-header__logo">
-            MicroHAMS
-          </a>
+          <div class="site-header__brand">
+            <a href="/" class="site-header__logo">
+              MicroHAMS
+            </a>
+            <p class="site-header__tagline">
+              A community-driven resource for amateur radio enthusiasts
+            </p>
+          </div>
           
           <nav class="nav" id="active-nav">
             <ul class="nav__list">
@@ -76,30 +70,31 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
               <li><a href="/docs" class="nav__link" data-path="/docs">Docs</a></li>
               <li><a href="/projects" class="nav__link" data-path="/projects">Projects</a></li>
               <li><a href="/about" class="nav__link" data-path="/about">About</a></li>
+              <li>
+                <button 
+                  id="theme-toggle" 
+                  class="theme-toggle"
+                  aria-label="Toggle dark mode"
+                  type="button"
+                >
+                  <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+                    <line x1="10" y1="2" x2="10" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="10" y1="16" x2="10" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="18" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="4" y1="10" x2="2" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="15.5" y1="4.5" x2="14.1" y2="5.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="5.9" y1="14.1" x2="4.5" y2="15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="15.5" y1="15.5" x2="14.1" y2="14.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="5.9" y1="5.9" x2="4.5" y2="4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 10.5C16.1 13.5 13.4 15.5 10.5 15.5C7 15.5 4 12.5 4 9C4 6.1 6 3.4 9 2.5C5.5 3 3 6 3 9.5C3 13.4 6.1 16.5 10 16.5C13.5 16.5 16.5 14 17 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </li>
             </ul>
           </nav>
-          
-          <button 
-            id="theme-toggle" 
-            class="theme-toggle"
-            aria-label="Toggle dark mode"
-            type="button"
-          >
-            <svg class="theme-toggle__icon theme-toggle__icon--sun" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
-              <line x1="10" y1="2" x2="10" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="10" y1="16" x2="10" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="18" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="4" y1="10" x2="2" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="15.5" y1="4.5" x2="14.1" y2="5.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="5.9" y1="14.1" x2="4.5" y2="15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="15.5" y1="15.5" x2="14.1" y2="14.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="5.9" y1="5.9" x2="4.5" y2="4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <svg class="theme-toggle__icon theme-toggle__icon--moon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 10.5C16.1 13.5 13.4 15.5 10.5 15.5C7 15.5 4 12.5 4 9C4 6.1 6 3.4 9 2.5C5.5 3 3 6 3 9.5C3 13.4 6.1 16.5 10 16.5C13.5 16.5 16.5 14 17 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            </svg>
-          </button>
         </div>
       </div>
     </header>
