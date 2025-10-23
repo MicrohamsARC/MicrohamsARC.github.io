@@ -226,8 +226,7 @@
 
 /* ========================================
    HEADER - Site Header
-   Vignelli: "Flush Left, Centered, Justified"
-   We choose flush left for clarity and modernity
+   Flush left alignment for clarity and modern readability
    ======================================== */
 
 .site-header {
@@ -266,7 +265,7 @@
   font-size: var(--text-xl);
   font-weight: var(--font-weight-bold);
   text-decoration: none;
-  color: var(--color-accent);  /* Red accent per Vignelli's color discipline */
+  color: var(--color-accent);  /* Red accent for brand emphasis */
   transition: color var(--transition-fast);
   line-height: var(--leading-tight);
 }
@@ -310,10 +309,8 @@
 
 /* ========================================
    THEME TOGGLE - Dark/Light Mode Switcher
-   Vignelli: "Discipline is the key"
-   ======================================== */
-
-.theme-toggle {
+   Minimal, functional design
+    ======================================== */.theme-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;

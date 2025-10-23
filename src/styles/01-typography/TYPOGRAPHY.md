@@ -2,7 +2,7 @@
 
 ## Awards-Worthy Typography Implementation
 
-This typography system has been designed for submission to typographic awards, following the principles of **Massimo Vignelli** and **Edward Tufte**.
+This typography system has been designed for submission to typographic awards, following classical Swiss design and mathematical typography principles.
 
 ---
 
@@ -335,7 +335,7 @@ Before submission:
 This system demonstrates:
 
 1. **Mathematical Rigor** - Golden ratio throughout
-2. **Historical Awareness** - Vignelli & Tufte principles
+2. **Historical Awareness** - Swiss design and mathematical typography principles
 3. **Technical Excellence** - OpenType features, variable fonts
 4. **Accessibility** - WCAG AA+, reduced motion support
 5. **Print Quality** - Professional print optimization
@@ -355,8 +355,8 @@ This system demonstrates:
 
 ## Resources
 
-- [Massimo Vignelli - The Vignelli Canon](https://www.vignelli.com/canon.pdf)
-- [Edward Tufte - Beautiful Evidence](https://www.edwardtufte.com/)
+- [Swiss Design Principles](https://www.swissdesignawards.ch/)
+- [The Elements of Typographic Style by Robert Bringhurst](https://typographica.org/)
 - [Robert Bringhurst - Elements of Typographic Style](https://www.goodreads.com/book/show/44735.The_Elements_of_Typographic_Style)
 - [Golden Ratio Typography Calculator](https://grtcalculator.com/)
 - [OKLCH Color Picker](https://oklch.com/)
@@ -364,6 +364,4 @@ This system demonstrates:
 
 ---
 
-**"The grid is the underwear of the book."** — Massimo Vignelli
-
-This typography system honors that principle with mathematical precision, historical awareness, and craft excellence worthy of awards recognition.
+This typography system honors mathematical precision, historical awareness, and craft excellence worthy of awards recognition.

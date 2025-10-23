@@ -8,17 +8,13 @@
  * - Systematic approach: predictable, repeatable, rational
  * - No arbitrary values - everything relates to the base unit
  * 
- * "The grid is the underwear of the book. It's not visible,
- *  but it's there to keep everything in place." - Massimo Vignelli
+ * The grid is invisible structure that keeps everything in place.
  */
 
 /* ========================================
    STACK - Vertical Rhythm
-   Creates consistent vertical spacing
-   Vignelli: "Typography is the foundation of good design"
-   ======================================== */
-
-.stack {
+   Creates consistent vertical spacing using the space scale
+    ======================================== */.stack {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -75,11 +71,8 @@
 
 /* ========================================
    CLUSTER - Horizontal Grouping
-   Groups items with consistent spacing
-   Vignelli: "White space is to be regarded as an active element"
-   ======================================== */
-
-.cluster {
+   Groups items with consistent spacing and flexible wrapping
+    ======================================== */.cluster {
   display: flex;
   flex-wrap: wrap;
   gap: var(--cluster-gap, var(--space-4));
@@ -116,11 +109,8 @@
 
 /* ========================================
    CENTER - Contained Content
-   Centers content with max-width constraint
-   Vignelli: "The measure (line length) determines readability"
-   ======================================== */
-
-.center {
+   Centers content with max-width for optimal readability
+    ======================================== */.center {
   box-sizing: content-box;
   max-inline-size: var(--center-width, var(--width-normal));
   margin-inline: auto;
@@ -151,11 +141,8 @@
 
 /* ========================================
    BOX - Consistent Internal Spacing
-   Adds padding in a consistent way
-   Vignelli: "Discipline and appropriateness are the key"
-   ======================================== */
-
-.box {
+   Adds consistent internal spacing with discipline
+    ======================================== */.box {
   padding: var(--box-padding, var(--space-4));
   outline: var(--box-border-width, 0) solid transparent;
 }
@@ -179,7 +166,7 @@
   padding-inline: var(--space-4);
 }
 
-/* Box with border - Vignelli's emphasis on structure */
+/* Box with border - emphasis on structure */
 .box--bordered {
   outline: 1px solid var(--color-border);
   outline-offset: -1px;
@@ -252,8 +239,7 @@
 /* ========================================
    GRID - Responsive Grid Layout
    Auto-fit grid with minimum column width
-   Vignelli: "The grid is the most used, the most misused, 
-             and the most abused element in graphic design"
+   Flexible, responsive grid system
    ======================================== */
 
 .grid {
@@ -283,14 +269,14 @@
 .grid--min-wide { --grid-min-width: 300px; }
 .grid--min-full { --grid-min-width: 400px; }
 
-/* Fixed column grids - Vignelli's preference for structure */
+/* Fixed column grids for predictable structure */
 .grid--2 { grid-template-columns: repeat(2, 1fr); }
 .grid--3 { grid-template-columns: repeat(3, 1fr); }
 .grid--4 { grid-template-columns: repeat(4, 1fr); }
 .grid--6 { grid-template-columns: repeat(6, 1fr); }
 .grid--12 { grid-template-columns: repeat(12, 1fr); } /* Classic 12-column grid */
 
-/* Golden ratio grid (1.618:1) - Vignelli's aesthetic preference */
+/* Golden ratio grid (1.618:1) for harmonious proportions */
 .grid--golden {
   grid-template-columns: 1fr 1.618fr;
 }
@@ -378,8 +364,7 @@
 /* ========================================
    REGION - Section with Vertical Space
    Adds consistent vertical spacing between page sections
-   Vignelli: "Good design is a matter of discipline.
-             It starts by looking at the problem and collecting 
+   Good design is a matter of discipline and systematic thinking
              all the available information about it."
    ======================================== */
 
@@ -417,11 +402,8 @@
 /* ========================================
    FLOW - Prose Spacing
    Adds consistent vertical rhythm to prose content
-   Uses the "lobotomized owl" selector
-   Vignelli: "Intellectual elegance is the essence of good design"
-   ======================================== */
-
-.flow > * + * {
+   Uses the "lobotomized owl" selector for elegant spacing
+    ======================================== */.flow > * + * {
   margin-block-start: var(--flow-space, var(--space-4));
 }
 
@@ -454,8 +436,8 @@
 }
 
 /* ========================================
-   MODULAR GRID - Vignelli's Sacred Geometry
-   A flexible grid system based on module relationships
+   MODULAR GRID - Mathematical Precision
+    A flexible grid system based on module relationships
    "The grid is the most powerful tool in graphic design"
    ======================================== */
 
@@ -503,8 +485,8 @@
 
 /* ========================================
    PROPORTION - Golden Ratio Layouts
-   Vignelli: "The rule of proportion is the key to beauty"
-   Using phi (φ = 1.618) for harmonious layouts
+   The rule of proportion creates visual harmony
+    Using phi (φ = 1.618) for mathematically balanced layouts
    ======================================== */
 
 .proportion--golden {
@@ -559,9 +541,7 @@
 
 /* ========================================
    WRAPPER - Page Container
-   Main page wrapper with max width
-   Vignelli: "The life of a designer is a life of fight:
-             fight against the ugliness."
+   Main page wrapper with max width for content containment
    ======================================== */
 
 .wrapper {

@@ -1,10 +1,8 @@
 # CSS Design System Guide
 
-This guide explains the MicroHAMS CSS design system, based on Vignelli's principles and ITCSS architecture.
+This guide explains the MicroHAMS CSS design system, based on Swiss design principles and ITCSS architecture.
 
 ## Philosophy
-
-> "If you can design one thing, you can design everything." — Massimo Vignelli
 
 Our CSS follows these core principles:
 
