@@ -10,23 +10,27 @@ See below for some ideas.
 
 ## Future speakers for Microhams
 
-Balun / Matching Circuit – a better way 
-W2VJN George Cutsogeorge 
-https://www.vibroplex.com/techdocs/INRAD/MII_W2VJN.pdf 
-
-- All about Yasme – Ward Silver
-https://www.yasme.org/yasme-excellence-awards/ 
-  
-- A Microhams member on entry level circuit design tools and fabrication 
-https://oshpark.com/ 
-  
 - RF design - Wes Hayward  
 https://w7zoi.net/ 
 
 - How to organize a rack mount for your radio equipment, and what to do if the cat climbs in. (Brian)
 
--  SeaPac radio switching system IoT – How we can help with SW such as NodeRed
+- PackTenna radio switching system IoT – How we can help with SW such as NodeRed
+https://www.packtenna.com/store/c10/Station_Control_Modules.html#/
 
+- Entry Level SDR from Paul Clark
+https://www.factorialabs.com/ 
+
+- Balun / Matching Circuit – a better way 
+W2VJN George Cutsogeorge 
+https://www.vibroplex.com/techdocs/INRAD/MII_W2VJN.pdf 
+
+- A Microhams member on entry level circuit design tools and fabrication 
+https://oshpark.com/ 
+
+  - All about Yasme – Ward Silver
+https://www.yasme.org/yasme-excellence-awards/ 
+  
 - SignalHound and holiday gift ideas for friends such as the PCR4200 Four-Channel Phase Coherent Receiver:
 https://signalhound.com/products/pcr4200-four-channel-phase-coherent-receiver/
 
@@ -36,11 +40,11 @@ https://signalhound.com/products/pcr4200-four-channel-phase-coherent-receiver/
 
 - This non-profit on their use of HF radio in developing countries >> https://www.rhizomatica.org/
 
-- Building a Custom MagLoop Antenna for MIT (K7TLC)
+- Building a Custom MagLoop Antenna for MIT (K7TLC) as presented at SeaPac
 
 - Don't be narrow minded about narrow band and how to validate your HT for narrow banding (NOTE: new crystals may be required) – Scott Honaker N7SS
 
-- Starlink Intersatellite Communications - 
+- Starlink Intersatellite Communications - Need to locate speaker
 
 - Amazon Project Kuiper - Need to locate speaker
 
