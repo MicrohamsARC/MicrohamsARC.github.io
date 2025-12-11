@@ -26,19 +26,22 @@ W2VJN George Cutsogeorge
 https://www.vibroplex.com/techdocs/INRAD/MII_W2VJN.pdf 
 
 - A Microhams member on entry level circuit design tools and fabrication 
-https://oshpark.com/ 
+https://oshpark.com/
 
-  - All about Yasme – Ward Silver
-https://www.yasme.org/yasme-excellence-awards/ 
-  
-- SignalHound and holiday gift ideas for friends such as the PCR4200 Four-Channel Phase Coherent Receiver:
-https://signalhound.com/products/pcr4200-four-channel-phase-coherent-receiver/
+- Vibe Coding an IQ tool for SDRs - Eric 
+https://github.com/pclov3r/iq_tool
 
 - ARDC – Select a few interesting radio engineering projects
 
 - GNU Radio presentation - MIT Hat Creek National Space Observatory
 
 - This non-profit on their use of HF radio in developing countries >> https://www.rhizomatica.org/
+
+- All about Yasme – Ward Silver
+https://www.yasme.org/yasme-excellence-awards/ 
+  
+- SignalHound and holiday gift ideas for friends such as the PCR4200 Four-Channel Phase Coherent Receiver:
+https://signalhound.com/products/pcr4200-four-channel-phase-coherent-receiver/
 
 - Building a Custom MagLoop Antenna for MIT (K7TLC) as presented at SeaPac
 
