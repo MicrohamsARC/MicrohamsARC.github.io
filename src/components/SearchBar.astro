@@ -179,18 +179,15 @@ const { placeholder = 'Search articles and docs...' } = Astro.props;
 
   let searchIndex: SearchItem[] = [];
 
-  // Fetch search data
+  // Fetch search data from generated index
   async function loadSearchIndex() {
     try {
-      // TODO: Replace with actual API endpoint or static JSON
-      // For now, we'll use a placeholder
       const response = await fetch('/search-index.json');
       if (response.ok) {
         searchIndex = await response.json();
       }
     } catch (error) {
       console.warn('Search index not available:', error);
-      // Fallback: empty index
       searchIndex = [];
     }
   }

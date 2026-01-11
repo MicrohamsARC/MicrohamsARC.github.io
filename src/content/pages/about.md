@@ -77,15 +77,15 @@ Don Marshall, KE7ARH
 Paolo Asandri, KK7JCN  
 Miguel Mayorga, KC7IGT
 
-The Board meets regularly and works as a team to plan activities, manage club resources, and coordinate with other amateur radio organizations. 
+The Board meets regularly and works as a team to plan activities, manage club resources, and coordinate with other amateur radio organizations.
 
 ---
 
 ## Location & Contact
 
 **Mailing Address**  
-MicroHAMS 
-PO Box 6925 
+MicroHAMS
+PO Box 6925
 Bellevue, WA 98008-0925  
 
 **Meetings**  
@@ -98,7 +98,7 @@ Redmond, WA
 Virtual attendance is available online via Microsoft Teams, with announcements and the link to join sent to our membership list. If you would like to join via Teams and are not already a member, please contact the board at microhams @ microhams.com to ask for an invitation link.
 
 **Email**: microhams @ microhams.com  
-**Website**: [www.microhams.com](https://www.microhams.com)
+**Website**: [microhams.com](https://microhams.com)
 
 ---
 

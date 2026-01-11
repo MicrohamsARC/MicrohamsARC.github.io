@@ -253,7 +253,7 @@ Push to `main` branch triggers GitHub Actions:
 Build → Deploy to gh-pages
 ```
 
-Site available at: `https://microhams.net`
+Site available at: `https://microhams.com`
 
 ### Manual Deploy
 

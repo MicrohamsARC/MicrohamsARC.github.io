@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://microhams.net',
+  site: 'https://microhams.com',
   // GitHub Pages config - uncomment if deploying to a subdirectory
   // base: '/repository-name',
   output: 'static',
