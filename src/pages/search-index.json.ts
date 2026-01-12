@@ -10,7 +10,6 @@ import { getCollection } from 'astro:content';
 export const GET: APIRoute = async () => {
   const articles = await getCollection('articles');
   const docs = await getCollection('docs');
-  const projects = await getCollection('projects');
 
   const searchIndex = [
     ...articles.map(article => ({
@@ -24,12 +23,6 @@ export const GET: APIRoute = async () => {
       slug: doc.slug,
       description: doc.data.description || '',
       type: 'doc' as const,
-    })),
-    ...projects.map(project => ({
-      title: project.data.title,
-      slug: project.slug,
-      description: project.data.description || '',
-      type: 'project' as const,
     })),
   ];
 

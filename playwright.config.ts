@@ -91,11 +91,28 @@ export default defineConfig({
       testMatch: '**/*.visual.spec.ts',
     },
     
-    // Mobile viewport testing
+    // Mobile viewport testing - use Chromium with mobile viewport for CI compatibility
     {
       name: 'mobile',
-      use: { ...devices['iPhone 13'] },
-      testMatch: '**/mobile.spec.ts',
+      use: { 
+        ...devices['Desktop Chrome'],
+        viewport: { width: 375, height: 812 },
+        isMobile: true,
+        hasTouch: true,
+      },
+      testMatch: '**/responsive.spec.ts',
+    },
+    
+    // Responsive breakpoint testing - all viewports
+    {
+      name: 'responsive',
+      use: { 
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: ['--font-render-hinting=none'],
+        },
+      },
+      testMatch: '**/responsive.spec.ts',
     },
     
     // Dark mode testing

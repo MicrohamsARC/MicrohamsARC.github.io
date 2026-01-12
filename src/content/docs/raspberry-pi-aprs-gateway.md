@@ -1,13 +1,12 @@
 ---
 title: "Raspberry Pi APRS Gateway"
 description: "Build an affordable APRS gateway using a Raspberry Pi and RTL-SDR"
-status: "active"
-startDate: 2024-09-01
-technologies: ["Raspberry Pi", "RTL-SDR", "Python", "APRS"]
-repository: "https://github.com/microhams/aprs-gateway"
+section: "projects"
+order: 10
+toc: true
 ---
 
-The Automatic Packet Reporting System (APRS) is a digital communications protocol for real-time tactical information exchange. This project guides you through building your own APRS iGate using affordable components.
+The Automatic Packet Reporting System (APRS) is a digital communications protocol for real-time tactical information exchange. This guide walks you through building your own APRS iGate using affordable components.
 
 ## Project Overview
 
@@ -37,40 +36,40 @@ The gateway uses several open-source components:
 
 ### 1. Prepare Raspberry Pi
 
-```bash
+\`\`\`bash
 # Update system
 sudo apt update && sudo apt upgrade -y
 
 # Install dependencies
 sudo apt install -y git build-essential cmake
-```
+\`\`\`
 
 ### 2. Install RTL-SDR Drivers
 
-```bash
+\`\`\`bash
 sudo apt install -y rtl-sdr librtlsdr-dev
-```
+\`\`\`
 
 ### 3. Build Direwolf
 
-```bash
+\`\`\`bash
 git clone https://github.com/wb2osz/direwolf
 cd direwolf
 mkdir build && cd build
 cmake ..
 make -j4
 sudo make install
-```
+\`\`\`
 
 ### 4. Configure APRS
 
 Edit the configuration file to include your callsign and location:
 
-```ini
+\`\`\`ini
 MYCALL YOUR-CALL
 IGSERVER noam.aprs2.net
 IGLOGIN YOUR-CALL PASSWORD
-```
+\`\`\`
 
 ## Performance Optimization
 
@@ -93,7 +92,4 @@ Planned improvements:
 - [APRS.fi](https://aprs.fi) - Track your packets
 - [Direwolf Documentation](https://github.com/wb2osz/direwolf)
 - [APRS-IS Status](http://status.aprs2.net)
-
-## Contributing
-
-Contributions welcome! See the [GitHub repository](https://github.com/microhams/aprs-gateway) for issues and pull requests.
+- [GitHub Repository](https://github.com/microhams/aprs-gateway)

@@ -11,26 +11,26 @@
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
+  line-height: var(--leading-loose);  /* 1.777 - more readable */
   font-weight: var(--font-weight-normal);
   letter-spacing: var(--tracking-normal);
 }
 
-/* Heading Scale - Golden Ratio (φ = 1.618) */
+/* Heading Scale - Golden Ratio (φ = 1.618) with fluid sizing */
 h1, .h1 {
   font-family: var(--font-sans);
-  font-size: var(--text-4xl);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tightest);
+  font-size: clamp(1.75rem, 5vw + 1rem, var(--text-4xl));
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
   font-weight: var(--font-weight-bold);
   margin-block-end: var(--baseline);
 }
 
 h2, .h2 {
   font-family: var(--font-sans);
-  font-size: var(--text-3xl);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
+  font-size: clamp(1.5rem, 3vw + 0.75rem, var(--text-3xl));
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-normal);
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 2);
   margin-block-end: var(--baseline-half);
@@ -40,7 +40,7 @@ h3, .h3 {
   font-family: var(--font-sans);
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--tracking-normal);
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 1.5);
   margin-block-end: var(--baseline-half);
@@ -83,7 +83,7 @@ h6, .h6 {
 /* Body Text - Optimal measure for readability */
 p {
   margin-block-end: var(--baseline);
-  max-inline-size: var(--measure-optimal);
+  max-inline-size: var(--measure-wide);
   hyphens: auto;
 }
 
@@ -147,11 +147,17 @@ a:focus-visible {
 /* Lists */
 ul, ol {
   margin-block-end: var(--space-4);
-  padding-inline-start: var(--space-6);
+  padding-inline-start: 1.25em;  /* Align bullets with text edge */
+}
+
+/* Lists after headings - tighter coupling */
+:is(h1, h2, h3, h4, h5, h6) + ul,
+:is(h1, h2, h3, h4, h5, h6) + ol {
+  margin-block-start: var(--space-2);
 }
 
 li {
-  margin-block-end: var(--space-2);
+  margin-block-end: var(--space-3);
 }
 
 li:last-child {

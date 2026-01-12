@@ -1,6 +1,6 @@
 ---
-title: "January 2026 Monthly Member Meeting"
-description: "Modernizing Amateur Radio Sample Transport"
+title: "Monthly Member Meeting"
+description: "Monthly club meeting for members. Presentation: Modernizing RF Sample Transport"
 author: "Brian Stucker, KB2S"
 date: 2026-01-20
 eventDate: 2026-01-20
@@ -18,7 +18,7 @@ tags: ["VITA-49", "SDR", "digital modes", "WSJT-X", "I/Q transport", "timestampi
 ---
 
 
-## Presentation: Modernizing Amateur Radio Sample Transport
+### Modernizing RF Sample Transport
 
 This month we kick off our series of 2026 presentations with a discussion on modernizing the path that our transceivers must take to deliver sampled RF to digital mode applications. Current workflows often model this path as a convoluted chain of device drivers, virtual audio devices, and more to deliver PCM packets to software (and back). This talk deconstructs the actual sample path for two implementations: USB audio, and VITA-49. The goal is to investigate how we might modernize the way we handle RF sampling to eliminate stages, improve performance, and create a pracical transport chain that can differentiate between handling I/Q data and Youtube audio.
 

@@ -41,6 +41,22 @@
 .text-end { text-align: end; }
 
 /* ========================================
+   TEXT SIZE
+   ======================================== */
+
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-md { font-size: var(--text-md); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); line-height: var(--leading-tight); }
+.text-5xl { font-size: var(--text-5xl); line-height: var(--leading-tight); }
+.text-6xl { font-size: var(--text-6xl); line-height: var(--leading-none); }
+
+/* ========================================
    FONT WEIGHT
    ======================================== */
 
@@ -82,7 +98,7 @@
    ======================================== */
 
 [data-debug] * {
-  outline: 1px solid color-mix(in oklch, transparent, red 30%);
+  outline: 1px solid rgba(255, 0, 0, 0.3);
   outline-offset: -1px;
 }
 
@@ -106,14 +122,26 @@ img[alt=""] {
 
 /* ========================================
    RESPONSIVE UTILITIES
+   Mobile-first breakpoints:
+   - sm: 640px  - Landscape phones
+   - md: 768px  - Tablets
+   - lg: 1024px - Laptops
+   - xl: 1280px - Desktops
    ======================================== */
 
-@media (max-width: 768px) {
-  .hide-mobile { display: none; }
+/* Mobile-first: hide-mobile hides by default, shows on md+ */
+.hide-mobile {
+  display: none;
 }
 
-@media (min-width: 769px) {
-  .hide-desktop { display: none; }
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: revert;
+  }
+  
+  .hide-desktop {
+    display: none;
+  }
 }
 
 /* ========================================
