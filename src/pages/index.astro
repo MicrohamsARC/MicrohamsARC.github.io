@@ -7,11 +7,10 @@
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { isPublished, publishedAndFeaturedFilter } from '../utils/content';
+import { publishedAndFeaturedFilter } from '../utils/content';
 
 // Get featured content (published only)
 const articles = await getCollection('articles', publishedAndFeaturedFilter);
-const projects = await getCollection('projects', ({ data }) => isPublished(data) && data.status === 'active');
 
 // Get upcoming featured events (published only)
 const allEvents = await getCollection('events', publishedAndFeaturedFilter);
@@ -27,12 +26,10 @@ const upcomingEvents = allEvents
   {upcomingEvents.length > 0 ? (
     <section class="region">
       <div class="wrapper">
-        <div class="stack-6">
+        <a href={`/events/${upcomingEvents[0].slug}`} class="stack-4" style="text-decoration: none; color: inherit; display: block;">
           <!-- Kicker -->
-          <div class="stack-2">
-            <span class="badge" data-variant="accent">Upcoming Event</span>
-            <h1 class="text-5xl">{upcomingEvents[0].data.title}</h1>
-          </div>
+          <span class="badge" data-variant="accent">Upcoming Event</span>
+          <h1 class="text-5xl">{upcomingEvents[0].data.title}</h1>
           
           <!-- Lede -->
           {upcomingEvents[0].data.description && (
@@ -40,48 +37,7 @@ const upcomingEvents = allEvents
               {upcomingEvents[0].data.description}
             </p>
           )}
-          
-          <!-- Event Details Grid -->
-          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6);">
-            <div class="stack-2">
-              <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Date</div>
-              <time datetime={upcomingEvents[0].data.eventDate.toISOString()} class="text-base">
-                {upcomingEvents[0].data.eventDate.toLocaleDateString('en-US', { 
-                  weekday: 'long',
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </time>
-            </div>
-            
-            {upcomingEvents[0].data.startTime && (
-              <div class="stack-2">
-                <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Time</div>
-                <div class="text-base">{upcomingEvents[0].data.startTime}</div>
-              </div>
-            )}
-            
-            <div class="stack-2">
-              <div class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Format</div>
-              <div class="text-base">
-                In-Person {upcomingEvents[0].data.virtualLink && '+ Virtual'}
-              </div>
-            </div>
-          </div>
-
-          <!-- CTAs -->
-          <div class="cluster" style="gap: var(--space-3);">
-            <a href={`/events/${upcomingEvents[0].slug}`} class="button" data-variant="primary">
-              Event Details →
-            </a>
-            {upcomingEvents[0].data.virtualLink && (
-              <a href={upcomingEvents[0].data.virtualLink} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
-                Join Virtual Meeting
-              </a>
-            )}
-          </div>
-        </div>
+        </a>
       </div>
     </section>
   ) : (
@@ -157,52 +113,6 @@ const upcomingEvents = allEvents
   <div class="wrapper">
     <hr style="margin-block: var(--space-4); border-color: var(--color-border);" />
   </div>
-
-  <!-- Active Projects - List Layout -->
-  {projects.length > 0 && (
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-8">
-          <div class="stack-2">
-            <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Projects</h2>
-            <h3 class="text-3xl">Active Development</h3>
-          </div>
-          
-          <!-- List layout for projects -->
-          <div class="stack-6">
-            {projects.slice(0, 3).map((project: typeof projects[number]) => (
-              <article class="stack-3" style="padding-block-end: var(--space-6); border-block-end: 1px solid var(--color-border);">
-                <div class="cluster cluster--between">
-                  <h4 class="text-xl">
-                    <a href={`/projects/${project.slug}`} style="text-decoration: none; color: inherit;">
-                      {project.data.title}
-                    </a>
-                  </h4>
-                  <span class="badge" data-variant="accent">{project.data.status}</span>
-                </div>
-                {project.data.description && (
-                  <p style="color: var(--color-text-muted); max-inline-size: var(--measure-wide);">{project.data.description}</p>
-                )}
-                {project.data.technologies?.length > 0 && (
-                  <ul class="tag-list">
-                    {project.data.technologies.slice(0, 4).map((tech: string) => (
-                      <li class="tag">{tech}</li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </div>
-          
-          <div>
-            <a href="/projects" style="font-weight: var(--font-weight-medium);">
-              All Projects →
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
 
   <!-- Footer Editorial Section -->
   <section class="region" style="background-color: var(--color-surface-muted);">

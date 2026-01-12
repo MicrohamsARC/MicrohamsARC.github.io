@@ -229,6 +229,42 @@
   background-color: var(--color-surface-muted);
 }
 
+/* Nav - mobile-first (compact default with adequate touch targets) */
+.nav__list {
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;  /* WCAG 2.5.5 touch target */
+  padding-inline: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.site-header__inner {
+  flex-wrap: wrap;
+}
+
+/* md: 768px - expand nav spacing */
+@media (min-width: 768px) {
+  .nav__list {
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+  }
+  
+  .nav__link {
+    min-height: unset;
+    padding-inline: var(--space-3);
+    font-size: var(--text-base);
+  }
+  
+  .site-header__inner {
+    flex-wrap: nowrap;
+  }
+}
+
 /* ========================================
    HEADER - Site Header
    Flush left alignment for clarity and modern readability
@@ -270,12 +306,6 @@
   z-index: 1;
 }
 
-/* Override wrapper padding for left alignment */
-.site-header .wrapper {
-  padding-inline-start: 0.25rem;  /* Minimal left margin for flush-left */
-  padding-inline-end: var(--gutter);
-}
-
 .site-header__inner {
   display: flex;
   justify-content: space-between;
@@ -309,18 +339,20 @@
   color: var(--color-blue-hover);
 }
 
+/* Tagline - hidden by default (mobile-first) */
 .site-header__tagline {
+  display: none;
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   margin: 0;
   line-height: var(--leading-snug);
-  white-space: nowrap;  /* Prevent wrapping */
+  white-space: nowrap;
 }
 
-/* Hide tagline on smaller screens where it would wrap */
-@media (max-width: 768px) {
+/* md: 768px - show tagline */
+@media (min-width: 768px) {
   .site-header__tagline {
-    display: none;
+    display: block;
   }
 }
 

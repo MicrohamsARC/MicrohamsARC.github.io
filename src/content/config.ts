@@ -49,19 +49,6 @@ const docs = defineCollection({
   }),
 });
 
-// Projects collection
-const projects = defineCollection({
-  type: 'content',
-  schema: baseSchema.extend({
-    status: z.enum(['active', 'completed', 'archived']).default('active'),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
-    technologies: z.array(z.string()).default([]),
-    repository: z.string().url().optional(),
-    website: z.string().url().optional(),
-  }),
-});
-
 // Events collection
 const events = defineCollection({
   type: 'content',
@@ -85,6 +72,5 @@ export const collections = {
   pages,
   articles,
   docs,
-  projects,
   events,
 };

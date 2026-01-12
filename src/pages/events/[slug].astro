@@ -31,15 +31,12 @@ const { Content } = await event.render();
 // Format date helper
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
+    weekday: 'short',
+    month: 'short',
     day: 'numeric',
+    year: 'numeric',
   });
 };
-
-// Check if event is upcoming
-const isUpcoming = event.data.eventDate >= new Date();
 ---
 
 <BaseLayout 
@@ -48,127 +45,40 @@ const isUpcoming = event.data.eventDate >= new Date();
 >
   <article>
     <!-- Event Header -->
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-6">
-          <!-- Breadcrumb -->
-          <nav aria-label="Breadcrumb">
-            <ol class="cluster text-xs" style="--cluster-gap: var(--space-xs); list-style: none; padding: 0;">
-              <li><a href="/">Home</a></li>
-              <li aria-hidden="true">/</li>
-              <li><a href="/events">Events</a></li>
-              <li aria-hidden="true">/</li>
-              <li aria-current="page">{event.data.title}</li>
-            </ol>
-          </nav>
+    <section class="region--sm">
+      <div class="wrapper wrapper--wide">
+        <div class="stack-4">
+          <!-- Back link -->
+          <a href="/events" class="text-sm" style="color: var(--color-text-muted);">← Events</a>
 
-          <!-- Event Meta -->
-          <div class="stack-4">
-            <div class="cluster" style="--cluster-gap: var(--space-xs);">
-              <span class="badge" data-variant={isUpcoming ? 'success' : 'default'}>
-                {isUpcoming ? 'Upcoming' : 'Past Event'}
-              </span>
-              <span class="badge" data-variant="primary">
-                {event.data.eventType}
-              </span>
-              {event.data.featured && (
-                <span class="badge" data-variant="accent">Featured</span>
-              )}
-            </div>
+          <!-- Title -->
+          <h1>{event.data.title}</h1>
 
-            <h1 class="text-4xl">{event.data.title}</h1>
-
-            {event.data.description && (
-              <p class="lead">{event.data.description}</p>
+          <!-- Date & Time -->
+          <div class="text-sm" style="color: var(--color-text-muted);">
+            <time datetime={event.data.eventDate.toISOString()}>
+              {formatDate(event.data.eventDate)}
+            </time>
+            {event.data.startTime && (
+              <> · {event.data.startTime}{event.data.endTime && `–${event.data.endTime}`}</>
             )}
           </div>
 
-          <!-- Event Details Card -->
-          <div class="box box--bordered" style="background-color: var(--color-surface-muted);">
-            <div class="stack-4">
-              <h2 class="text-xl">Event Details</h2>
-              
-              <div class="grid" style="--grid-columns: 1; --grid-gap: var(--space-md);">
-                <!-- Date & Time -->
-                <div class="stack-xs">
-                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Date & Time</div>
-                  <div>
-                    <time datetime={event.data.eventDate.toISOString()}>
-                      {formatDate(event.data.eventDate)}
-                    </time>
-                    {event.data.startTime && (
-                      <div class="text-sm">{event.data.startTime}{event.data.endTime && ` - ${event.data.endTime}`}</div>
-                    )}
-                  </div>
-                </div>
-
-                <!-- Location -->
-                <div class="stack-xs">
-                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Location</div>
-                  <div>{event.data.location}</div>
-                </div>
-
-                <!-- Virtual Link -->
-                {event.data.virtualLink && (
-                  <div class="stack-xs">
-                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Virtual Attendance</div>
-                    <a href={event.data.virtualLink} class="button button--sm" data-variant="primary" target="_blank" rel="noopener noreferrer">
-                      Join Virtual Meeting →
-                    </a>
-                  </div>
-                )}
-
-                <!-- Registration -->
-                {event.data.registrationRequired && event.data.registrationLink && (
-                  <div class="stack-xs">
-                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Registration</div>
-                    <a href={event.data.registrationLink} class="button button--sm" data-variant="primary" target="_blank" rel="noopener noreferrer">
-                      Register Now →
-                    </a>
-                  </div>
-                )}
-
-                <!-- Contact -->
-                {event.data.contactPerson && (
-                  <div class="stack-xs">
-                    <div class="text-sm font-bold" style="color: var(--color-text-muted);">Contact</div>
-                    <div>
-                      {event.data.contactPerson}
-                      {event.data.contactEmail && (
-                        <>
-                          <br />
-                          <a href={`mailto:${event.data.contactEmail}`}>{event.data.contactEmail}</a>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <!-- Tags -->
-              {event.data.tags && event.data.tags.length > 0 && (
-                <div class="stack-xs">
-                  <div class="text-sm font-bold" style="color: var(--color-text-muted);">Tags</div>
-                  <ul class="tag-list">
-                    {event.data.tags.map((tag) => (
-                      <li class="tag">{tag}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
+          <!-- Virtual link - prominent -->
+          {event.data.virtualLink && (
+            <a href={event.data.virtualLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer" style="align-self: flex-start;">
+              Join Virtual Meeting →
+            </a>
+          )}
         </div>
       </div>
     </section>
 
     <!-- Event Content -->
     <section class="region">
-      <div class="wrapper">
-        <div class="center">
-          <div class="flow">
-            <Content />
-          </div>
+      <div class="wrapper wrapper--wide">
+        <div class="flow flow--lg">
+          <Content />
         </div>
       </div>
     </section>
@@ -176,9 +86,9 @@ const isUpcoming = event.data.eventDate >= new Date();
     <!-- Event Map (only if coordinates provided) -->
     {event.data.latitude && event.data.longitude && (
       <section class="region">
-        <div class="wrapper">
+        <div class="wrapper wrapper--wide">
           <div class="stack-4">
-            <h2>Location</h2>
+            <h2 class="text-lg">Location</h2>
             <EventMap 
               location={event.data.location}
               latitude={event.data.latitude}
@@ -189,16 +99,28 @@ const isUpcoming = event.data.eventDate >= new Date();
       </section>
     )}
 
-    <!-- Navigation -->
-    <section class="region">
-      <div class="wrapper">
-        <div class="cluster cluster--center">
-          <a href="/events" class="button" data-variant="secondary">
-            ← Back to Events
-          </a>
-          <a href="/" class="button" data-variant="ghost">
-            Home
-          </a>
+    <!-- Footer meta -->
+    <section class="region--sm">
+      <div class="wrapper wrapper--wide">
+        <div class="stack-3 text-sm" style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);">
+          <div>{event.data.location}</div>
+          
+          {event.data.contactPerson && (
+            <div>
+              Contact: {event.data.contactPerson}
+              {event.data.contactEmail && (
+                <> — <a href={`mailto:${event.data.contactEmail}`}>{event.data.contactEmail}</a></>
+              )}
+            </div>
+          )}
+          
+          {event.data.tags && event.data.tags.length > 0 && (
+            <ul class="tag-list">
+              {event.data.tags.map((tag) => (
+                <li><a href={`/tags/${tag}`} class="tag">{tag}</a></li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

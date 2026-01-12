@@ -18,9 +18,9 @@
   padding: 0;
 }
 
-/* Prevent font size inflation */
+/* Prevent font size inflation on mobile */
+/* stylelint-disable-next-line property-no-vendor-prefix */
 html {
-  -moz-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }

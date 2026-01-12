@@ -269,43 +269,34 @@
 .grid--min-wide { --grid-min-width: 300px; }
 .grid--min-full { --grid-min-width: 400px; }
 
-/* Fixed column grids for predictable structure */
-.grid--2 { grid-template-columns: repeat(2, 1fr); }
-.grid--3 { grid-template-columns: repeat(3, 1fr); }
-.grid--4 { grid-template-columns: repeat(4, 1fr); }
-.grid--6 { grid-template-columns: repeat(6, 1fr); }
-.grid--12 { grid-template-columns: repeat(12, 1fr); } /* Classic 12-column grid */
-
-/* Golden ratio grid (1.618:1) for harmonious proportions */
-.grid--golden {
-  grid-template-columns: 1fr 1.618fr;
-}
-
-.grid--golden-reverse {
-  grid-template-columns: 1.618fr 1fr;
-}
-
-/* Asymmetric grids for hierarchy */
-.grid--sidebar {
-  grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr);
-}
-
+/* Fixed column grids - mobile-first (single column default) */
+.grid--2,
+.grid--3,
+.grid--4,
+.grid--6,
+.grid--12,
+.grid--golden,
+.grid--golden-reverse,
+.grid--sidebar,
 .grid--sidebar-reverse {
-  grid-template-columns: minmax(0, 3fr) minmax(200px, 1fr);
+  grid-template-columns: 1fr;
 }
 
-@media (max-width: 768px) {
-  .grid--2,
-  .grid--3,
-  .grid--4,
-  .grid--6,
-  .grid--12,
-  .grid--golden,
-  .grid--golden-reverse,
-  .grid--sidebar,
-  .grid--sidebar-reverse {
-    grid-template-columns: 1fr;
-  }
+/* md: 768px - expand to multi-column */
+@media (min-width: 768px) {
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+  .grid--6 { grid-template-columns: repeat(6, 1fr); }
+  .grid--12 { grid-template-columns: repeat(12, 1fr); }
+  
+  /* Golden ratio grid (1.618:1) */
+  .grid--golden { grid-template-columns: 1fr 1.618fr; }
+  .grid--golden-reverse { grid-template-columns: 1.618fr 1fr; }
+  
+  /* Asymmetric grids */
+  .grid--sidebar { grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr); }
+  .grid--sidebar-reverse { grid-template-columns: minmax(0, 3fr) minmax(200px, 1fr); }
 }
 
 /* ========================================
@@ -441,46 +432,47 @@
    "The grid is the most powerful tool in graphic design"
    ======================================== */
 
+/* Modular grid - mobile-first (single column default) */
 .modular-grid {
   display: grid;
-  grid-template-columns: repeat(var(--grid-modules, 12), 1fr);
+  grid-template-columns: 1fr;
   gap: var(--grid-gap, var(--gutter));
 }
 
-/* Module span utilities */
-.span-1 { grid-column: span 1; }
-.span-2 { grid-column: span 2; }
-.span-3 { grid-column: span 3; }
-.span-4 { grid-column: span 4; }
-.span-5 { grid-column: span 5; }
-.span-6 { grid-column: span 6; }
-.span-7 { grid-column: span 7; }
-.span-8 { grid-column: span 8; }
-.span-9 { grid-column: span 9; }
-.span-10 { grid-column: span 10; }
-.span-11 { grid-column: span 11; }
-.span-12 { grid-column: span 12; }
+/* Module span utilities - full width on mobile */
+.span-1, .span-2, .span-3, .span-4,
+.span-5, .span-6, .span-7, .span-8,
+.span-9, .span-10, .span-11, .span-12 {
+  grid-column: span 1;
+}
 
-/* Module positioning */
-.start-1 { grid-column-start: 1; }
-.start-2 { grid-column-start: 2; }
-.start-3 { grid-column-start: 3; }
-.start-4 { grid-column-start: 4; }
-.start-5 { grid-column-start: 5; }
-.start-6 { grid-column-start: 6; }
-.start-7 { grid-column-start: 7; }
-
-/* Responsive grid - collapses to single column on mobile */
-@media (max-width: 768px) {
+/* md: 768px - expand to 12-column grid */
+@media (min-width: 768px) {
   .modular-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(var(--grid-modules, 12), 1fr);
   }
   
-  .span-1, .span-2, .span-3, .span-4,
-  .span-5, .span-6, .span-7, .span-8,
-  .span-9, .span-10, .span-11, .span-12 {
-    grid-column: span 1;
-  }
+  .span-1 { grid-column: span 1; }
+  .span-2 { grid-column: span 2; }
+  .span-3 { grid-column: span 3; }
+  .span-4 { grid-column: span 4; }
+  .span-5 { grid-column: span 5; }
+  .span-6 { grid-column: span 6; }
+  .span-7 { grid-column: span 7; }
+  .span-8 { grid-column: span 8; }
+  .span-9 { grid-column: span 9; }
+  .span-10 { grid-column: span 10; }
+  .span-11 { grid-column: span 11; }
+  .span-12 { grid-column: span 12; }
+  
+  /* Module positioning */
+  .start-1 { grid-column-start: 1; }
+  .start-2 { grid-column-start: 2; }
+  .start-3 { grid-column-start: 3; }
+  .start-4 { grid-column-start: 4; }
+  .start-5 { grid-column-start: 5; }
+  .start-6 { grid-column-start: 6; }
+  .start-7 { grid-column-start: 7; }
 }
 
 /* ========================================
@@ -489,54 +481,26 @@
     Using phi (φ = 1.618) for mathematically balanced layouts
    ======================================== */
 
-.proportion--golden {
-  display: grid;
-  grid-template-columns: 1fr 1.618fr;
-  gap: var(--gutter);
-}
-
-.proportion--golden-thirds {
-  display: grid;
-  grid-template-columns: 1fr 1.618fr 2.618fr;
-  gap: var(--gutter);
-}
-
-/* Perfect Fourth (1.333) - matches typography scale */
-.proportion--fourth {
-  display: grid;
-  grid-template-columns: 1fr 1.333fr;
-  gap: var(--gutter);
-}
-
-/* Classic thirds */
-.proportion--thirds {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--gutter);
-}
-
-/* Asymmetric emphasis */
-.proportion--emphasis-left {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--gutter);
-}
-
+/* Proportion layouts - mobile-first (single column default) */
+.proportion--golden,
+.proportion--golden-thirds,
+.proportion--fourth,
+.proportion--thirds,
+.proportion--emphasis-left,
 .proportion--emphasis-right {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr;
   gap: var(--gutter);
 }
 
-@media (max-width: 768px) {
-  .proportion--golden,
-  .proportion--golden-thirds,
-  .proportion--fourth,
-  .proportion--thirds,
-  .proportion--emphasis-left,
-  .proportion--emphasis-right {
-    grid-template-columns: 1fr;
-  }
+/* md: 768px - expand to proportional columns */
+@media (min-width: 768px) {
+  .proportion--golden { grid-template-columns: 1fr 1.618fr; }
+  .proportion--golden-thirds { grid-template-columns: 1fr 1.618fr 2.618fr; }
+  .proportion--fourth { grid-template-columns: 1fr 1.333fr; }
+  .proportion--thirds { grid-template-columns: repeat(3, 1fr); }
+  .proportion--emphasis-left { grid-template-columns: 2fr 1fr; }
+  .proportion--emphasis-right { grid-template-columns: 1fr 2fr; }
 }
 
 /* ========================================
@@ -547,7 +511,8 @@
 .wrapper {
   max-inline-size: var(--wrapper-width, var(--width-full));
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  /* Fluid padding: 1rem → 2rem as viewport grows (320px → 1280px) */
+  padding-inline: clamp(var(--space-4), 4vw, var(--space-8));
 }
 
 /* Width variations */
@@ -558,26 +523,4 @@
 .wrapper--bleed { 
   max-inline-size: none;
   padding-inline: 0;
-}
-
-/* Responsive gutter adjustments - Flush left alignment */
-@media (max-width: 768px) {
-  .wrapper {
-    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
-    padding-inline-end: var(--space-4);
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .wrapper {
-    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
-    padding-inline-end: var(--space-6);
-  }
-}
-
-@media (min-width: 1025px) {
-  .wrapper {
-    padding-inline-start: 0.25rem;  /* Minimal left for flush-left */
-    padding-inline-end: var(--space-8);
-  }
 }

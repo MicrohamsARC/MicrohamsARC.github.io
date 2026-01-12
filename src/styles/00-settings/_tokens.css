@@ -57,10 +57,10 @@
 
   /* Measure (Line Length) - Optimal Reading (Bringhurst & Tufte) */
   --measure-compact: 45ch;        /* Narrow columns, sidebars */
-  --measure-optimal: 60ch;        /* Primary body text (golden mean) */
-  --measure-comfortable: 65ch;    /* Maximum for sustained reading */
-  --measure-wide: 75ch;           /* Wide layouts, technical content */
-  --measure-full: 90ch;           /* Maximum before eye fatigue */
+  --measure-optimal: 66ch;        /* Primary body text */
+  --measure-comfortable: 72ch;    /* Comfortable sustained reading */
+  --measure-wide: 80ch;           /* Wide layouts, max recommended */
+  --measure-full: 90ch;           /* Technical content, tables */
   
   /* Tracking (Letter Spacing) - Optical Adjustment */
   --tracking-tightest: -0.05em;   /* -50 - Display text, large sizes */
@@ -149,11 +149,23 @@
      LAYOUT TOKENS
      ======================================== */
   
+  /* Breakpoints - Mobile First
+     Base styles (no query) = portrait phones (320-639px)
+     Then progressively enhance for larger screens:
+     
+     @media (min-width: 640px)  { sm: large phones, landscape }  
+     @media (min-width: 768px)  { md: tablets }  
+     @media (min-width: 1024px) { lg: laptops }  
+     @media (min-width: 1280px) { xl: desktops }  
+     
+     CSS cannot use custom properties in media queries,
+     so these values are documented here for consistency. */
+
   /* Container Widths */
-  --width-narrow: 40rem;      /* 640px */
-  --width-normal: 48rem;      /* 768px */
-  --width-wide: 64rem;        /* 1024px */
-  --width-full: 80rem;        /* 1280px */
+  --width-narrow: 36rem;      /* 576px - ~60ch */
+  --width-normal: 42rem;      /* 672px - ~72ch */
+  --width-wide: 48rem;        /* 768px - ~80ch */
+  --width-full: 80rem;        /* 1280px - full width layouts */
   
   /* Border Radius */
   --radius-sm: 0.25rem;       /* 4px */
