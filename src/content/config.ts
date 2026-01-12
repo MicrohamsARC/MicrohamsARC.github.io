@@ -70,6 +70,8 @@ const events = defineCollection({
     startTime: z.string().optional(),
     endTime: z.string().optional(),
     location: z.string(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
     virtualLink: z.string().url().optional(),
     eventType: z.enum(['meeting', 'conference', 'field-day', 'contest', 'social', 'workshop']).default('meeting'),
     registrationRequired: z.boolean().default(false),

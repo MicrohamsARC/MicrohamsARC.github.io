@@ -92,7 +92,7 @@ Bellevue, WA 98008-0925
 General membership meetings are held online and in person on the third Tuesday of each month. August and December meetings are typically held at the Black Raven brewery in Redmond, WA. Meetings start at 6pm Pacific with introductions, general announcements, show and tell, and help a ham Q&A. Our technical presentation typically starts at 6:30pm or shortly thereafter.
 
 If you wish to attend in person, we are currently meeting at:
-Microsoft Building 31 
+Microsoft Building 31
 Redmond, WA  
 
 Virtual attendance is available online via Microsoft Teams, with announcements and the link to join sent to our membership list. If you would like to join via Teams and are not already a member, please contact the board at microhams @ microhams.com to ask for an invitation link.
@@ -181,4 +181,4 @@ The MicroHAMS Digital Conference has become a respected annual event in the amat
 **MicroHAMS Amateur Radio Club**  
 *Inspire, Inform, and Educate*
 
-*Last updated: December 2, 2025*
+*Last updated: January 11, 2026*

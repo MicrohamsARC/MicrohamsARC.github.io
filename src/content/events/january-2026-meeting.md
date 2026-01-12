@@ -1,11 +1,11 @@
 ---
-title: "October 2025 Monthly Member Meeting"
-description: "Join us for Amateur Radio Pro Tips from club members."
+title: "January 2026 Monthly Member Meeting"
+description: "Modernizing Amateur Radio Sample Transport"
 author: "Brian Stucker, KB2S"
-date: 2025-10-21
-eventDate: 2025-10-21
-startTime: "6:00 PM PDT"
-endTime: "8:30 PM PDT"
+date: 2026-01-20
+eventDate: 2026-01-20
+startTime: "6:00 PM PST"
+endTime: "8:30 PM PST"
 location: "Microsoft Building 31, 3730 163rd Ave NE, Redmond, WA 98052"
 latitude: 47.643592
 longitude: -122.122402
@@ -14,21 +14,13 @@ eventType: "meeting"
 registrationRequired: false
 contactPerson: "Brian Stucker, KB2S"
 featured: true
-tags: ["monthly-meeting", "pro-tips", "microsoft-campus", "hybrid-event"]
+tags: ["VITA-49", "SDR", "digital modes", "WSJT-X", "I/Q transport", "timestamping", "sample synchronization"]
 ---
 
 
-## Presentation: Amateur Radio Pro Tips
+## Presentation: Modernizing Amateur Radio Sample Transport
 
-This month, we look forward to hearing from club members about their amateur radio "pro tips." These are nuggets of wisdom or experience that you've gained over the years that you'd like to share with the club.
-
-Example Pro Tips:
-- How to make a "good enough" filter to block out a nearby station with random pieces of coax
-- How to know when a station you're looking for might be active (hint: PJ6Y will be our working example)
-- Tips on connecting your Mac to an IC-705 without any Windows OS emulation
-- Insights from the Microwave Update conference in Tuscon, where keynote speakers are rebuilding the nav and comms equipment from the Apollo missions
-
-Bring your own piece of wisdom and share with us! We have a member (Robin W7YED) who is active in Saba as PJ6Y right now—maybe he will join us! Lots of fun things going on!
+This month we kick off our series of 2026 presentations with a discussion on modernizing the path that our transceivers must take to deliver sampled RF to digital mode applications. Current workflows often model this path as a convoluted chain of device drivers, virtual audio devices, and more to deliver PCM packets to software (and back). This talk deconstructs the actual sample path for two implementations: USB audio, and VITA-49. The goal is to investigate how we might modernize the way we handle RF sampling to eliminate stages, improve performance, and create a pracical transport chain that can differentiate between handling I/Q data and Youtube audio.
 
 #### Meeting Schedule
 
@@ -38,7 +30,8 @@ Bring your own piece of wisdom and share with us! We have a member (Robin W7YED)
 - News and upcoming ham events and activities
 
 **6:30 PM - Presentation:**
-- Amateur Radio Pro Tips from club members  
+- Modernizing Amateur Radio Sample Transport by Brian Stucker, KB2S
+  
 ---
 ### Location & Attendance
 
@@ -86,4 +79,4 @@ Please note that this meeting will be recorded. By attending or otherwise partic
 
 **Privacy, consent and Opt-out**
 
-You may opt-out from identification in the recording by muting your audio, not enabling video, not contributing to the chat window, as well as not otherwise participating in the event. By attending any meeting or other MicroHAMS activity, you consent to the recording and subsequent use of any content you provide or participate in, any image, audio or other evidence of your presence, and waive any and all claims to that material as well as any other claims of privacy, privilege, or copyright. Those who do not consent to being recorded will not be able to remain in the meeting. Remaining in the meeting or other activity is consent regardless of the individual’s stated intent (to not consent) i.e. you may not object or refuse consent and then remain in the meeting or event.
+You may opt-out from identification in the recording by muting your audio, not enabling video, not contributing to the chat window, as well as not otherwise participating in the event. By attending any meeting or other MicroHAMS activity, you consent to the recording and subsequent use of any content you provide or participate in, any image, audio or other evidence of your presence, and waive any and all claims to that material as well as any other claims of privacy, privilege, or copyright. Those who do not consent to being recorded will not be able to remain in the meeting. Remaining in the meeting or other activity is consent regardless of the individual's stated intent (to not consent) i.e. you may not object or refuse consent and then remain in the meeting or event.

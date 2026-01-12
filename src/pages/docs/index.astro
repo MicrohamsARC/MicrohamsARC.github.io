@@ -34,7 +34,7 @@ const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]
 
         <div class="center">
           <div class="stack-12">
-            {Object.entries(docsBySection).map(([section, sectionDocs]) => (
+            {(Object.entries(docsBySection) as [string, CollectionEntry<'docs'>[]][]).map(([section, sectionDocs]) => (
               <section class="stack-4">
                 <h2 class="h3">{section}</h2>
                 <div class="stack-3">

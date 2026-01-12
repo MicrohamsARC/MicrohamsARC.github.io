@@ -14,7 +14,7 @@ const articles = (await getCollection('articles', publishedFilter))
   .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
 
 // Extract all unique tags
-const allTags: string[] = [...new Set(articles.flatMap(article => (article.data.tags ?? []) as string[]))];
+const allTags = [...new Set(articles.flatMap(article => article.data.tags ?? []))] as string[];
 ---
 
 <BaseLayout title="Articles" description="Technical articles and guides for amateur radio operators">

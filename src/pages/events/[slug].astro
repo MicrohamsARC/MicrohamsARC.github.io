@@ -173,19 +173,21 @@ const isUpcoming = event.data.eventDate >= new Date();
       </div>
     </section>
 
-    <!-- Event Map -->
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-4">
-          <h2>Location</h2>
-          <EventMap 
-            location={event.data.location}
-            latitude={47.6749}
-            longitude={-122.1202}
-          />
+    <!-- Event Map (only if coordinates provided) -->
+    {event.data.latitude && event.data.longitude && (
+      <section class="region">
+        <div class="wrapper">
+          <div class="stack-4">
+            <h2>Location</h2>
+            <EventMap 
+              location={event.data.location}
+              latitude={event.data.latitude}
+              longitude={event.data.longitude}
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     <!-- Navigation -->
     <section class="region">
