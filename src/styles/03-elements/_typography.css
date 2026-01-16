@@ -250,6 +250,19 @@ img[src$=".svg"] {
   max-width: 100%;
 }
 
+/* SVG images with currentColor need inversion in dark mode since <img> doesn't inherit CSS color */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) img[src*="f=svg"],
+  :root:not([data-theme="light"]) img[src$=".svg"] {
+    filter: invert(1);
+  }
+}
+
+:root[data-theme="dark"] img[src*="f=svg"],
+:root[data-theme="dark"] img[src$=".svg"] {
+  filter: invert(1);
+}
+
 /* Images generated from markdown - wrapped in <p> by default */
 p > img {
   margin-block: var(--space-6);
