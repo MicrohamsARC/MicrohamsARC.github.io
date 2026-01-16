@@ -506,6 +506,7 @@
 /* ========================================
    WRAPPER - Page Container
    Main page wrapper with max width for content containment
+   Default is full width for flexibility; use modifiers for content width
    ======================================== */
 
 .wrapper {
@@ -515,11 +516,11 @@
   padding-inline: clamp(var(--space-4), 4vw, var(--space-8));
 }
 
-/* Width variations */
-.wrapper--narrow { --wrapper-width: var(--width-narrow); }
-.wrapper--normal { --wrapper-width: var(--width-normal); }
-.wrapper--wide { --wrapper-width: var(--width-wide); }
-.wrapper--full { --wrapper-width: var(--width-full); }
+/* Width variations - use these for content areas */
+.wrapper--narrow { --wrapper-width: var(--width-narrow); }  /* 576px - articles, docs */
+.wrapper--normal { --wrapper-width: var(--width-normal); }  /* 672px - default prose */
+.wrapper--wide { --wrapper-width: var(--width-wide); }      /* 768px - events, cards */
+.wrapper--full { --wrapper-width: var(--width-full); }      /* 1280px - grids, galleries */
 .wrapper--bleed { 
   max-inline-size: none;
   padding-inline: 0;

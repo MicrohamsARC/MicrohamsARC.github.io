@@ -1,0 +1,231 @@
+---
+/**
+ * EventLogistics - Templated venue and virtual meeting information
+ * 
+ * Reduces boilerplate in event markdown by generating standard
+ * location instructions and virtual meeting details from site config.
+ * 
+ * Events only need to specify venue key (e.g., 'building-31') and
+ * onlineMeeting key (e.g., 'microhams-teams') - all details come from config.
+ */
+
+import EventMap from './EventMap.astro';
+import { getVenue, getOnlineMeeting } from '../../site.config';
+
+interface Props {
+  /** Physical venue key from site.config.ts */
+  venue?: string;
+  /** Custom location string when venue is not in config */
+  location?: string;
+  /** Override map coordinates (uses venue config if not provided) */
+  latitude?: number;
+  longitude?: number;
+  /** Radio frequency for coordination (uses site default if not provided) */
+  coordFrequency?: string;
+  /** Online meeting key from site.config.ts OR custom Teams details */
+  onlineMeeting?: string;
+  /** Legacy: direct Teams meeting details (prefer onlineMeeting key) */
+  teams?: {
+    link: string;
+    meetingId: string;
+    passcode: string;
+    phoneNumber?: string;
+    tollFreeNumber?: string;
+    conferenceId?: string;
+  };
+  /** Whether to show recording disclaimer */
+  showDisclaimer?: boolean;
+}
+
+const { 
+  venue: venueKey, 
+  location, 
+  latitude: propLatitude,
+  longitude: propLongitude,
+  coordFrequency: propFreq,
+  onlineMeeting: meetingKey,
+  teams: legacyTeams, 
+  showDisclaimer = true 
+} = Astro.props;
+
+// Get venue config if key provided
+const venue = venueKey ? getVenue(venueKey) : undefined;
+
+// Get online meeting config - prefer key lookup, fall back to legacy teams prop
+const meeting = meetingKey ? getOnlineMeeting(meetingKey) : undefined;
+const teams = meeting || legacyTeams;
+
+// Resolve coordinates: props override venue config
+const latitude = propLatitude ?? venue?.latitude;
+const longitude = propLongitude ?? venue?.longitude;
+
+// Resolve coord frequency: props override venue config
+const coordFrequency = propFreq || venue?.coordFrequency;
+
+// Location display: props override venue config
+const displayLocation = location || venue?.name;
+---
+
+{venue && (
+  <div id="location">
+    <h2>In Person</h2>
+
+    <p set:html={venue.arrival.intro.replace(/\n/g, ' ')} />
+    
+    <p>
+      <span set:html={venue.arrival.escort.replace(/\*\*2m alternate call channel\*\*/, `**2m alternate call channel (${coordFrequency})**`).replace(/\n/g, ' ')} />
+    </p>
+    
+    <p class="text-muted" set:html={venue.arrival.noRadio} />
+      
+    <details id="directions-details" style="margin-block-start: var(--space-3);">
+      <summary class="h6" style="cursor: pointer;">Directions & Map</summary>
+      <div class="stack-4" style="padding-block-start: var(--space-3);">
+        <div class="stack-3">
+          <p>
+            <strong>{venue.name}</strong><br>
+            <span class="text-muted">{venue.address}</span>
+          </p>
+          {Object.values(venue.directions).map((direction) => (
+            <p set:html={direction.replace(/\n/g, ' ')} />
+          ))}
+          {latitude && longitude && (
+            <EventMap 
+              location={displayLocation || venue.name}
+              latitude={latitude}
+              longitude={longitude}
+            />
+          )}
+        </div>
+      </div>
+    </details>
+  </div>
+)}
+
+{teams && (
+  <div>
+    <h2>Online</h2>
+    <p>
+      Although we encourage in-person attendance, you can also join via Microsoft Teams.
+    </p>
+
+    <p>
+      <a href={teams.link} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
+        Join Online →
+      </a>
+    </p>
+
+    <details style="margin-block-start: var(--space-4);">
+      <summary class="h6" style="cursor: pointer;">Meeting Details & Phone Dial-in</summary>
+      <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
+        <dl class="meeting-details">
+          <div>
+            <dt>Meeting ID</dt>
+            <dd>{teams.meetingId}</dd>
+          </div>
+          <div>
+            <dt>Passcode</dt>
+            <dd>{teams.passcode}</dd>
+          </div>
+          {teams.phoneNumber && (
+            <div>
+              <dt>Phone</dt>
+              <dd>{teams.phoneNumber}</dd>
+            </div>
+          )}
+          {teams.tollFreeNumber && (
+            <div>
+              <dt>Toll-free</dt>
+              <dd>{teams.tollFreeNumber}</dd>
+            </div>
+          )}
+          {teams.conferenceId && (
+            <div>
+              <dt>Conference ID</dt>
+              <dd>{teams.conferenceId}</dd>
+            </div>
+          )}
+        </dl>
+        <p style="margin-block-start: var(--space-3);">
+          <a href={'helpUrl' in teams ? teams.helpUrl : 'https://aka.ms/JoinTeamsMeeting?omkt=en-US'} target="_blank" rel="noopener noreferrer">
+            Microsoft Teams Help →
+          </a>
+        </p>
+      </div>
+    </details>
+
+    {showDisclaimer && 'disclaimer' in teams && (
+      <details style="margin-block-start: var(--space-3);">
+        <summary class="h6" style="cursor: pointer;">Recording & Privacy Policy</summary>
+        <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
+          <p>{teams.disclaimer.recording}</p>
+          <p style="margin-block-start: var(--space-2);">{teams.disclaimer.optOut}</p>
+        </div>
+      </details>
+    )}
+    
+    {showDisclaimer && !('disclaimer' in teams) && (
+      <details style="margin-block-start: var(--space-3);">
+        <summary class="h6" style="cursor: pointer;">Recording & Privacy Policy</summary>
+        <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
+          <p>
+            This meeting will be recorded. By attending or participating, you agree to this policy, 
+            including waivers and consent to the use of your contributions and image, voice, 
+            and other mechanisms of participation.
+          </p>
+          <p style="margin-block-start: var(--space-2);">
+            You may opt-out from identification by muting audio, disabling video, and not 
+            contributing to chat. Remaining in the meeting constitutes consent regardless of 
+            stated intent.
+          </p>
+        </div>
+      </details>
+    )}
+  </div>
+)}
+
+
+<style>
+  .meeting-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+  }
+  
+  .meeting-details > div {
+    display: contents;
+  }
+  
+  .meeting-details dt {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+  }
+  
+  .meeting-details dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+</style>
+
+<script>
+  /**
+   * Open directions details when navigating to #location
+   * and handle scroll offset for sticky header
+   */
+  function handleLocationHash() {
+    if (window.location.hash === '#location') {
+      const details = document.getElementById('directions-details') as HTMLDetailsElement | null;
+      if (details) {
+        details.open = true;
+      }
+    }
+  }
+  
+  // Handle initial page load with hash
+  handleLocationHash();
+  
+  // Handle hash changes (e.g., clicking the "Join In Person" button)
+  window.addEventListener('hashchange', handleLocationHash);
+</script>

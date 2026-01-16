@@ -6,6 +6,7 @@
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventCard from '../../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
@@ -19,29 +20,6 @@ const sortedEvents = allEvents.sort((a, b) =>
 const now = new Date();
 const upcomingEvents = sortedEvents.filter(event => event.data.eventDate >= now);
 const pastEvents = sortedEvents.filter(event => event.data.eventDate < now);
-
-// Helper function to format date
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
-
-// Helper function to get event type badge variant
-const getEventTypeBadge = (type: string) => {
-  const variants: Record<string, string> = {
-    meeting: 'primary',
-    conference: 'accent',
-    'field-day': 'success',
-    contest: 'warning',
-    social: 'info',
-    workshop: 'secondary',
-  };
-  return variants[type] || 'default';
-};
 ---
 
 <BaseLayout 
@@ -50,7 +28,7 @@ const getEventTypeBadge = (type: string) => {
 >
   <!-- Page Header -->
   <section class="region">
-    <div class="wrapper">
+    <div class="wrapper wrapper--full">
       <div class="stack-4">
         <h1 class="text-4xl">Events</h1>
         <p class="lead" style="max-inline-size: var(--measure-wide);">
@@ -64,62 +42,12 @@ const getEventTypeBadge = (type: string) => {
   <!-- Upcoming Events -->
   {upcomingEvents.length > 0 && (
     <section class="region" style="background-color: var(--color-surface-muted);">
-      <div class="wrapper">
+      <div class="wrapper wrapper--full">
         <div class="stack-8">
           <h2>Upcoming Events</h2>
           <div class="stack-6">
             {upcomingEvents.map((event) => (
-              <article class="card card--horizontal" data-variant="interactive">
-                <div class="card__header">
-                  <div class="cluster cluster--between" style="align-items: flex-start;">
-                    <div class="stack-2" style="flex: 1;">
-                      <div class="cluster" style="--cluster-gap: var(--space-xs);">
-                        <span class="badge" data-variant={getEventTypeBadge(event.data.eventType)}>
-                          {event.data.eventType}
-                        </span>
-                        {event.data.featured && (
-                          <span class="badge" data-variant="accent">Featured</span>
-                        )}
-                      </div>
-                      <h3 class="card__title">
-                        <a href={`/events/${event.slug}`} style="text-decoration: none; color: inherit;">
-                          {event.data.title}
-                        </a>
-                      </h3>
-                      {event.data.description && (
-                        <p class="card__description">{event.data.description}</p>
-                      )}
-                    </div>
-                    <div class="text-center" style="min-inline-size: 8rem;">
-                      <div class="stack-xs">
-                        <time 
-                          class="text-sm font-bold" 
-                          datetime={event.data.eventDate.toISOString()}
-                          style="color: var(--color-primary);"
-                        >
-                          {formatDate(event.data.eventDate)}
-                        </time>
-                        {event.data.startTime && (
-                          <div class="text-xs text-muted">{event.data.startTime}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card__footer">
-                  <div class="cluster cluster--between">
-                    <div class="cluster" style="--cluster-gap: var(--space-sm);">
-                      <span class="text-xs">📍 {event.data.location}</span>
-                      {event.data.virtualLink && (
-                        <span class="text-xs">💻 Virtual Available</span>
-                      )}
-                    </div>
-                    <a href={`/events/${event.slug}`} class="button button--sm" data-variant="ghost">
-                      View Details →
-                    </a>
-                  </div>
-                </div>
-              </article>
+              <EventCard event={event} variant="horizontal" showJoinButtons />
             ))}
           </div>
         </div>
@@ -130,33 +58,12 @@ const getEventTypeBadge = (type: string) => {
   <!-- Past Events -->
   {pastEvents.length > 0 && (
     <section class="region">
-      <div class="wrapper">
+      <div class="wrapper wrapper--full">
         <div class="stack-8">
           <h2>Past Events</h2>
           <div class="grid grid--auto-fit">
             {pastEvents.map((event) => (
-              <article class="card">
-                <div class="card__header">
-                  <div class="cluster" style="--cluster-gap: var(--space-xs);">
-                    <span class="badge" data-variant={getEventTypeBadge(event.data.eventType)}>
-                      {event.data.eventType}
-                    </span>
-                  </div>
-                  <h3 class="card__title">
-                    <a href={`/events/${event.slug}`} style="text-decoration: none; color: inherit;">
-                      {event.data.title}
-                    </a>
-                  </h3>
-                  {event.data.description && (
-                    <p class="card__description">{event.data.description}</p>
-                  )}
-                </div>
-                <div class="card__footer">
-                  <time class="text-xs" datetime={event.data.eventDate.toISOString()}>
-                    {formatDate(event.data.eventDate)}
-                  </time>
-                </div>
-              </article>
+              <EventCard event={event} variant="default" />
             ))}
           </div>
         </div>

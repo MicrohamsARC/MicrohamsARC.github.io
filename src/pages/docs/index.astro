@@ -1,6 +1,8 @@
 ---
 /**
  * Documentation Index Page
+ * 
+ * Lists all documentation in a gallery grid, grouped by section
  */
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -20,44 +22,44 @@ const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]
 ---
 
 <BaseLayout title="Documentation" description="Technical documentation and reference materials">
-  <div class="region">
-    <div class="wrapper">
-      <div class="stack-8">
-        <header class="center text-center">
-          <div class="stack-4">
-            <h1>Documentation</h1>
-            <p class="lead mx-auto">
-              Reference materials and technical documentation for amateur radio operators.
-            </p>
-          </div>
-        </header>
-
-        <div class="center">
-          <div class="stack-12">
-            {(Object.entries(docsBySection) as [string, CollectionEntry<'docs'>[]][]).map(([section, sectionDocs]) => (
-              <section class="stack-4">
-                <h2 class="h3">{section}</h2>
-                <div class="stack-3">
-                  {sectionDocs.map((doc) => (
-                    <article class="card" data-variant="interactive">
-                      <div class="card__header">
-                        <h3 class="card__title">
-                          <a href={`/docs/${doc.slug}`} style="text-decoration: none; color: inherit;">
-                            {doc.data.title}
-                          </a>
-                        </h3>
-                        {doc.data.description && (
-                          <p class="card__description">{doc.data.description}</p>
-                        )}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        </div>
+  <!-- Page Header -->
+  <section class="region">
+    <div class="wrapper wrapper--full">
+      <div class="stack-4">
+        <h1 class="text-4xl">Documentation</h1>
+        <p class="lead" style="max-inline-size: var(--measure-wide);">
+          Reference materials and technical documentation for amateur radio operators.
+        </p>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Documentation Grid -->
+  <section class="region" style="background-color: var(--color-surface-muted);">
+    <div class="wrapper wrapper--full">
+      <div class="stack-12">
+        {(Object.entries(docsBySection) as [string, CollectionEntry<'docs'>[]][]).map(([section, sectionDocs]) => (
+          <div class="stack-6">
+            <h2>{section}</h2>
+            <div class="grid grid--auto-fit">
+              {sectionDocs.map((doc) => (
+                <article class="card" data-variant="interactive">
+                  <div class="card__header">
+                    <h3 class="card__title">
+                      <a href={`/docs/${doc.slug}`} style="text-decoration: none; color: inherit;">
+                        {doc.data.title}
+                      </a>
+                    </h3>
+                    {doc.data.description && (
+                      <p class="card__description">{doc.data.description}</p>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>

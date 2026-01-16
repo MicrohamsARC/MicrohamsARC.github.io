@@ -1,0 +1,61 @@
+---
+/**
+ * ContentImage - Responsive image component for content collections
+ * 
+ * Wraps Astro's <Image /> component with consistent styling.
+ * Accepts ImageMetadata from content collection schema's image() helper.
+ */
+
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  /** Image source - ImageMetadata from content collection or imported image */
+  src: ImageMetadata;
+  /** Alt text for accessibility */
+  alt: string;
+  /** Responsive widths to generate */
+  widths?: number[];
+  /** Sizes attribute for responsive images */
+  sizes?: string;
+  /** Additional CSS classes */
+  class?: string;
+  /** Loading strategy */
+  loading?: 'lazy' | 'eager';
+}
+
+const { 
+  src, 
+  alt, 
+  widths = [400, 800, 1200],
+  sizes = '(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1200px',
+  class: className = '',
+  loading = 'lazy',
+} = Astro.props;
+---
+
+<figure class:list={['content-image', className]}>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    loading={loading}
+    class="content-image__img"
+  />
+</figure>
+
+<style>
+  .content-image {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-md, 0.5rem);
+  }
+
+  .content-image__img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    object-fit: cover;
+  }
+</style>
