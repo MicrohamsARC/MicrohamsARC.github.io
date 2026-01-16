@@ -6,6 +6,7 @@
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EventCard from '../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedAndFeaturedFilter } from '../utils/content';
 
@@ -26,18 +27,7 @@ const upcomingEvents = allEvents
   {upcomingEvents.length > 0 ? (
     <section class="region">
       <div class="wrapper">
-        <a href={`/events/${upcomingEvents[0].slug}`} class="stack-4" style="text-decoration: none; color: inherit; display: block;">
-          <!-- Kicker -->
-          <span class="badge" data-variant="accent">Upcoming Event</span>
-          <h1 class="text-5xl">{upcomingEvents[0].data.title}</h1>
-          
-          <!-- Lede -->
-          {upcomingEvents[0].data.description && (
-            <p class="lead" style="max-inline-size: var(--measure-comfortable);">
-              {upcomingEvents[0].data.description}
-            </p>
-          )}
-        </a>
+        <EventCard event={upcomingEvents[0]} variant="featured" />
       </div>
     </section>
   ) : (

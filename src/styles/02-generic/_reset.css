@@ -117,5 +117,5 @@ textarea:not([rows]) {
 
 /* Anything that has been anchored to should have extra scroll margin */
 :target {
-  scroll-margin-block: 5ex;
+  scroll-margin-block-start: 6rem;  /* Account for sticky header (~80px) + breathing room */
 }

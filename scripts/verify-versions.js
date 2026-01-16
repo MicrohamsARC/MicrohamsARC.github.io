@@ -10,7 +10,7 @@ import { readFileSync } from 'fs';
 import { execSync } from 'child_process';
 
 const EXPECTED_VERSIONS = {
-  'astro': '5.14.8',
+  'astro': '5.16.8',
   'vite': '7.1.11',
   'vitest': '3.2.4',
   '@vitest/ui': '3.2.4',
@@ -19,8 +19,8 @@ const EXPECTED_VERSIONS = {
   'eslint': '9.38.0',
   'typescript': '5.9.3',
   'prettier': '3.6.2',
-  '@typescript-eslint/parser': '8.13.0',
-  '@typescript-eslint/eslint-plugin': '8.13.0',
+  '@typescript-eslint/parser': '8.46.2',
+  '@typescript-eslint/eslint-plugin': '8.46.2',
 };
 
 const COLORS = {

@@ -13,7 +13,7 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-loose);  /* 1.777 - more readable */
   font-weight: var(--font-weight-normal);
-  letter-spacing: var(--tracking-normal);
+  letter-spacing: 0.01em;  /* Slight positive tracking for Geist - more open feel */
 }
 
 /* Heading Scale - Golden Ratio (φ = 1.618) with fluid sizing */
@@ -82,7 +82,7 @@ h6, .h6 {
 
 /* Body Text - Optimal measure for readability */
 p {
-  margin-block-end: var(--baseline);
+  margin-block-end: var(--space-4);  /* 16px - tighter rhythm */
   max-inline-size: var(--measure-wide);
   hyphens: auto;
 }
@@ -146,7 +146,7 @@ a:focus-visible {
 
 /* Lists */
 ul, ol {
-  margin-block-end: var(--space-4);
+  margin-block-end: var(--space-3);  /* 12px - tighter rhythm */
   padding-inline-start: 1.25em;  /* Align bullets with text edge */
 }
 
@@ -157,7 +157,7 @@ ul, ol {
 }
 
 li {
-  margin-block-end: var(--space-3);
+  margin-block-end: var(--space-2);  /* 8px - tighter rhythm */
 }
 
 li:last-child {
@@ -233,6 +233,34 @@ figcaption {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   text-align: center;
+}
+
+/* Images in prose content */
+img {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+/* SVG images - scale to container width, override Astro's width/height attributes */
+img[src*="f=svg"],
+img[src$=".svg"] {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+/* Images generated from markdown - wrapped in <p> by default */
+p > img {
+  margin-block: var(--space-6);
+  border-radius: var(--radius-md);
+}
+
+/* Standalone images (not in paragraph) */
+.flow > img,
+.prose > img {
+  margin-block: var(--space-8);
+  border-radius: var(--radius-md);
 }
 
 /* Abbreviations */

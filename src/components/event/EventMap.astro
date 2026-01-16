@@ -129,8 +129,20 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
       if (loading) loading.style.display = 'none';
       if (fallback) fallback.style.display = 'none';
 
-      // Initialize map
-      const map = L.map('map-container').setView([lat, lng], 13);
+      // Initialize map - disable scroll wheel zoom to prevent hijacking page scroll
+      const map = L.map('map-container', {
+        scrollWheelZoom: false  // User must click map first to enable scroll zoom
+      }).setView([lat, lng], 13);
+      
+      // Enable scroll zoom only after user clicks on the map
+      map.on('click', () => {
+        map.scrollWheelZoom.enable();
+      });
+      
+      // Disable scroll zoom when mouse leaves the map
+      map.on('mouseout', () => {
+        map.scrollWheelZoom.disable();
+      });
 
       // Add OpenStreetMap tiles (free, no API key)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

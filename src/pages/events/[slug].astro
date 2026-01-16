@@ -8,8 +8,11 @@
 import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import EventMap from '../../components/EventMap.astro';
+import EventLogistics from '../../components/event/EventLogistics.astro';
+import EventDateTime from '../../components/event/EventDateTime.astro';
 import { publishedFilter } from '../../utils/content';
+import { formatEventDate } from '../../utils/event-time';
+import { getOnlineMeeting, getVenue } from '../../site.config';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events', publishedFilter);
@@ -28,20 +31,26 @@ if (!event) {
 
 const { Content } = await event.render();
 
-// Format date helper
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-};
+// Get timezone options for formatting
+const timezoneOptions = { venue: event.data.venue, timezone: event.data.timezone };
+
+// Get venue and meeting configs
+const venueConfig = event.data.venue ? getVenue(event.data.venue) : undefined;
+const onlineMeetingConfig = event.data.onlineMeeting ? getOnlineMeeting(event.data.onlineMeeting) : undefined;
+
+// Resolve location: frontmatter overrides venue config
+const location = event.data.location || venueConfig?.address;
+
+// Determine event type
+const isExternal = !!event.data.eventLink;
+const hasInPerson = !!(event.data.venue || event.data.location);
+const hasVirtual = !!(onlineMeetingConfig || event.data.teams || event.data.virtualLink);
+const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.data.virtualLink;
 ---
 
 <BaseLayout 
   title={event.data.title}
-  description={event.data.description || `Event on ${formatDate(event.data.eventDate)}`}
+  description={event.data.description || `Event on ${formatEventDate(event.data.eventDate, timezoneOptions)}`}
 >
   <article>
     <!-- Event Header -->
@@ -54,56 +63,67 @@ const formatDate = (date: Date) => {
           <!-- Title -->
           <h1>{event.data.title}</h1>
 
-          <!-- Date & Time -->
-          <div class="text-sm" style="color: var(--color-text-muted);">
-            <time datetime={event.data.eventDate.toISOString()}>
-              {formatDate(event.data.eventDate)}
-            </time>
-            {event.data.startTime && (
-              <> · {event.data.startTime}{event.data.endTime && `–${event.data.endTime}`}</>
+          <!-- Date & Time (interactive toggle) -->
+          <EventDateTime 
+            eventDate={event.data.eventDate}
+            startTime={event.data.startTime}
+            endTime={event.data.endTime}
+            venue={event.data.venue}
+            timezone={event.data.timezone}
+            class="text-sm"
+            style="color: var(--color-text-muted);"
+          />
+
+          <!-- Attendance CTAs -->
+          <div class="cluster" style="--cluster-gap: var(--space-3);">
+            {isExternal && (
+              <a href={event.data.eventLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer">
+                Event Details →
+              </a>
+            )}
+            {!isExternal && hasInPerson && (
+              <a href="#location" class="button" data-variant="primary" data-size="sm">
+                Join In Person
+              </a>
+            )}
+            {!isExternal && hasVirtual && (
+              <a href={virtualUrl} class="button" data-variant={hasInPerson ? 'secondary' : 'primary'} data-size="sm" target="_blank" rel="noopener noreferrer">
+                Join Online →
+              </a>
             )}
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Virtual link - prominent -->
-          {event.data.virtualLink && (
-            <a href={event.data.virtualLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer" style="align-self: flex-start;">
-              Join Virtual Meeting →
-            </a>
+    <!-- Event Content + Logistics in unified flow for consistent spacing -->
+    <section class="region">
+      <div class="wrapper wrapper--wide">
+        <div class="flow flow--lg">
+          <Content />
+          
+          {/* Templated Logistics (venue directions, map, Teams details, disclaimers) */}
+          {(event.data.venue || event.data.teams || event.data.onlineMeeting) && (
+            <EventLogistics 
+              venue={event.data.venue}
+              location={event.data.location}
+              latitude={event.data.latitude}
+              longitude={event.data.longitude}
+              coordFrequency={event.data.coordFrequency}
+              onlineMeeting={event.data.onlineMeeting}
+              teams={event.data.teams}
+              showDisclaimer={event.data.showDisclaimer}
+            />
           )}
         </div>
       </div>
     </section>
 
-    <!-- Event Content -->
-    <section class="region">
-      <div class="wrapper wrapper--wide">
-        <div class="flow flow--lg">
-          <Content />
-        </div>
-      </div>
-    </section>
-
-    <!-- Event Map (only if coordinates provided) -->
-    {event.data.latitude && event.data.longitude && (
-      <section class="region">
-        <div class="wrapper wrapper--wide">
-          <div class="stack-4">
-            <h2 class="text-lg">Location</h2>
-            <EventMap 
-              location={event.data.location}
-              latitude={event.data.latitude}
-              longitude={event.data.longitude}
-            />
-          </div>
-        </div>
-      </section>
-    )}
-
     <!-- Footer meta -->
     <section class="region--sm">
       <div class="wrapper wrapper--wide">
         <div class="stack-3 text-sm" style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);">
-          <div>{event.data.location}</div>
+          {location && <div>{location}</div>}
           
           {event.data.contactPerson && (
             <div>

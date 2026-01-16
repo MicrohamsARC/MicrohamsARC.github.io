@@ -1,0 +1,96 @@
+---
+/**
+ * EventDateTime Component
+ * 
+ * Interactive datetime display that toggles between:
+ * - Event timezone (default)
+ * - Browser local timezone
+ * - UTC
+ * 
+ * Falls back to static display without JavaScript.
+ */
+
+import { getEventTimezone, getTimezoneAbbreviation } from '../../utils/event-time';
+
+interface Props {
+  eventDate: Date;
+  startTime?: string;
+  endTime?: string;
+  venue?: string;
+  timezone?: string;
+  class?: string;
+  style?: string;
+}
+
+const { eventDate, startTime, endTime, venue, timezone: explicitTz, class: className, style } = Astro.props;
+
+const timezone = getEventTimezone(venue, explicitTz);
+const tzAbbrev = getTimezoneAbbreviation(eventDate, timezone);
+
+// Format static fallback
+const dateStr = eventDate.toLocaleDateString('en-US', {
+  timeZone: 'UTC',
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const timeStr = startTime 
+  ? `${startTime}${endTime ? `–${endTime}` : ''} ${tzAbbrev}`
+  : '';
+
+const fullDisplay = timeStr ? `${dateStr} · ${timeStr}` : dateStr;
+---
+
+<button 
+  type="button"
+  class:list={["event-datetime", className]}
+  style={style}
+  data-event-datetime={eventDate.toISOString()}
+  data-start-time={startTime}
+  data-end-time={endTime}
+  data-timezone={timezone}
+  title="Click to toggle timezone"
+>
+  <span class="datetime-text">{fullDisplay}</span>
+  <span class="datetime-mode"></span>
+</button>
+
+<style>
+  .event-datetime {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-align: start;
+  }
+  
+  .event-datetime:hover {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+  }
+  
+  .event-datetime:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  
+  .datetime-mode {
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+    font-style: italic;
+  }
+</style>
+
+<script>
+  import { initDateTimeToggles } from '../../lib/event-datetime-toggle';
+  initDateTimeToggles();
+</script>

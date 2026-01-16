@@ -1,0 +1,276 @@
+---
+/**
+ * EventCard Component
+ * 
+ * Reusable event display with proper timezone handling.
+ * Variants:
+ * - default: Compact card for grids
+ * - horizontal: Card with calendar icon for lists
+ * - featured: Large hero-style card for homepage
+ */
+
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import EventDateTime from './EventDateTime.astro';
+import { formatEventDate } from '../../utils/event-time';
+import { getOnlineMeeting } from '../../site.config';
+
+interface Props {
+  event: CollectionEntry<'events'>;
+  variant?: 'default' | 'horizontal' | 'featured';
+  showDescription?: boolean;
+  showJoinButtons?: boolean;
+}
+
+const { event, variant = 'default', showDescription = true, showJoinButtons = false } = Astro.props;
+
+// Event type formatting
+const formatEventType = (type: string) => {
+  return type
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+const getEventTypeBadge = (type: string) => {
+  const variants: Record<string, string> = {
+    meeting: 'primary',
+    conference: 'accent',
+    'field-day': 'success',
+    contest: 'warning',
+    social: 'info',
+    workshop: 'secondary',
+    external: 'default',
+  };
+  return variants[type.toLowerCase()] || 'default';
+};
+
+// Calendar icon parts (day/month)
+const getCalendarParts = (date: Date) => ({
+  day: date.getUTCDate(),
+  month: date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase(),
+});
+
+// Common timezone options
+const tzOptions = { venue: event.data.venue, timezone: event.data.timezone };
+
+// Determine event attendance options
+const onlineMeetingConfig = event.data.onlineMeeting ? getOnlineMeeting(event.data.onlineMeeting) : undefined;
+const isExternal = !!event.data.eventLink;
+const hasInPerson = !!(event.data.venue || event.data.location);
+const hasVirtual = !!(onlineMeetingConfig || event.data.teams || event.data.virtualLink);
+const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.data.virtualLink;
+
+const cal = getCalendarParts(event.data.eventDate);
+const dateStr = formatEventDate(event.data.eventDate, tzOptions);
+---
+
+{variant === 'featured' && (
+  <a href={`/events/${event.slug}`} class="featured-event">
+    {event.data.cover && (
+      <div class="featured-event__image">
+        <Image 
+          src={event.data.cover}
+          alt={event.data.coverAlt || ''}
+          widths={[400, 800, 1200]}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          loading="eager"
+          class="featured-image"
+        />
+      </div>
+    )}
+    
+    <div class="featured-event__content">
+      <span class="h6">Events</span>
+      <h2 class="featured-event__title">{event.data.title}</h2>
+      
+      {showDescription && event.data.description && (
+        <p class="featured-event__description">
+          {event.data.description}
+        </p>
+      )}
+      
+      <div class="featured-event__meta">
+        <EventDateTime 
+          eventDate={event.data.eventDate}
+          startTime={event.data.startTime}
+          endTime={event.data.endTime}
+          venue={event.data.venue}
+          timezone={event.data.timezone}
+        />
+      </div>
+    </div>
+  </a>
+)}
+
+{variant === 'horizontal' && (
+  <article class="card card--horizontal" data-variant="interactive">
+    <div class="card__header">
+      <div class="cluster" style="--cluster-gap: var(--space-4); align-items: flex-start;">
+        <div class="stack-2" style="flex: 1;">
+          <div class="cluster" style="--cluster-gap: var(--space-xs);">
+            <span class="badge" data-variant={getEventTypeBadge(event.data.eventType)}>
+              {formatEventType(event.data.eventType)}
+            </span>
+            {event.data.featured && (
+              <span class="badge" data-variant="accent">Featured</span>
+            )}
+          </div>
+          <h3 class="card__title">
+            <a href={`/events/${event.slug}`} style="text-decoration: none; color: inherit;">
+              {event.data.title}
+            </a>
+          </h3>
+          {event.data.startTime && (
+            <EventDateTime 
+              eventDate={event.data.eventDate}
+              startTime={event.data.startTime}
+              endTime={event.data.endTime}
+              venue={event.data.venue}
+              timezone={event.data.timezone}
+              class="text-sm text-muted"
+            />
+          )}
+          {showDescription && event.data.description && (
+            <p class="card__description">{event.data.description}</p>
+          )}
+        </div>
+        <time 
+          class="event-cal-icon" 
+          datetime={event.data.eventDate.toISOString()}
+          aria-label={dateStr}
+        >
+          <span class="event-cal-icon__day">{cal.day}</span>
+          <span class="event-cal-icon__month">{cal.month}</span>
+        </time>
+      </div>
+    </div>
+    {showJoinButtons && (
+      <div class="card__footer">
+        <div class="cluster" style="--cluster-gap: var(--space-3);">
+          {isExternal && (
+            <a href={event.data.eventLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer">
+              Event Details →
+            </a>
+          )}
+          {!isExternal && hasInPerson && (
+            <a href={`/events/${event.slug}#location`} class="button" data-variant="primary" data-size="sm">
+              Join In Person
+            </a>
+          )}
+          {!isExternal && hasVirtual && (
+            <a 
+              href={virtualUrl} 
+              class="button"
+              data-variant={hasInPerson ? 'secondary' : 'primary'}
+              data-size="sm"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join Online →
+            </a>
+          )}
+        </div>
+      </div>
+    )}
+  </article>
+)}
+
+{variant === 'default' && (
+  <article class="card">
+    <div class="card__header">
+      <div class="cluster" style="--cluster-gap: var(--space-xs);">
+        <span class="badge" data-variant={getEventTypeBadge(event.data.eventType)}>
+          {formatEventType(event.data.eventType)}
+        </span>
+      </div>
+      <h3 class="card__title">
+        <a href={`/events/${event.slug}`} style="text-decoration: none; color: inherit;">
+          {event.data.title}
+        </a>
+      </h3>
+      {showDescription && event.data.description && (
+        <p class="card__description">{event.data.description}</p>
+      )}
+    </div>
+    <div class="card__footer">
+      <EventDateTime 
+        eventDate={event.data.eventDate}
+        venue={event.data.venue}
+        timezone={event.data.timezone}
+        class="text-xs"
+      />
+    </div>
+  </article>
+)}
+
+<style>
+  /* Featured event card - image left, content right */
+  .featured-event {
+    display: grid;
+    gap: var(--space-6);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .featured-event__image {
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+
+  .featured-image {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+  }
+
+  .featured-event__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .featured-event__title {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    margin: 0;
+  }
+
+  .featured-event__description {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+
+  .featured-event__meta {
+    margin-block-start: auto;
+    padding-block-start: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-subtle);
+  }
+
+  /* Desktop: side-by-side layout */
+  @media (min-width: 768px) {
+    .featured-event {
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+
+    .featured-event__image {
+      order: 1;
+    }
+
+    .featured-event__content {
+      order: 2;
+      padding-block: var(--space-4);
+    }
+
+    .featured-event__title {
+      font-size: var(--text-4xl);
+    }
+  }
+</style>

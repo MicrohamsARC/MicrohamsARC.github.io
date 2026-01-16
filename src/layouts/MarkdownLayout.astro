@@ -12,7 +12,7 @@ const { frontmatter } = Astro.props;
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description} author={frontmatter.author}>
   <article class="region">
-    <div class="wrapper">
+    <div class="wrapper wrapper--wide">
       <!-- Article Header - Conditionally shown -->
       {!frontmatter.hideHeader && (
         <header class="stack-4" style="margin-block-end: var(--space-8);">

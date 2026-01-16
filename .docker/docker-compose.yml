@@ -1,19 +1,18 @@
 version: '3.8'
 
 services:
-  # CI testing service
+  # CI testing service - runs lint, type-check, tests, and build
   ci:
     build:
       context: ..
       dockerfile: .docker/Dockerfile
+      target: runtime
     volumes:
-      # Mount workspace for hot-reload
-      - ..:/workspace
-      # Cache node_modules
-      - node_modules:/workspace/node_modules
-      # Cache Playwright browsers
-      - playwright_cache:/root/.cache/ms-playwright
-      # Share test results
+      # Mount workspace (source code only, not node_modules)
+      - ..:/workspace:cached
+      # Use container's node_modules (from build stage)
+      - /workspace/node_modules
+      # Share test results with host
       - ../test-results:/workspace/test-results
     environment:
       - CI=true
@@ -27,14 +26,15 @@ services:
     build:
       context: ..
       dockerfile: .docker/Dockerfile
+      target: dev
     volumes:
-      - ..:/workspace
-      - node_modules:/workspace/node_modules
+      - ..:/workspace:cached
+      - /workspace/node_modules
     ports:
       - "4321:4321"
     environment:
       - NODE_ENV=development
-    command: npm run dev
+    command: npm run dev -- --host 0.0.0.0
     networks:
       - microhams-net
     healthcheck:
@@ -42,16 +42,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
-  # Playwright test runner (depends on dev server)
+  # Playwright E2E test runner (depends on dev server)
   e2e:
     build:
       context: ..
       dockerfile: .docker/Dockerfile
+      target: runtime
     volumes:
-      - ..:/workspace
-      - node_modules:/workspace/node_modules
-      - playwright_cache:/root/.cache/ms-playwright
+      - ..:/workspace:cached
+      - /workspace/node_modules
       - ../test-results:/workspace/test-results
     environment:
       - CI=true
@@ -63,24 +64,38 @@ services:
     networks:
       - microhams-net
 
-  # Unit test runner with watch mode
+  # Unit test runner (one-shot)
+  unit:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+      target: runtime
+    volumes:
+      - ..:/workspace:cached
+      - /workspace/node_modules
+      - ../test-results:/workspace/test-results
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    command: npm run test:unit
+    networks:
+      - microhams-net
+
+  # Unit test runner with watch mode (for development)
   unit-watch:
     build:
       context: ..
       dockerfile: .docker/Dockerfile
+      target: runtime
     volumes:
-      - ..:/workspace
-      - node_modules:/workspace/node_modules
+      - ..:/workspace:cached
+      - /workspace/node_modules
       - ../test-results:/workspace/test-results
     environment:
       - NODE_ENV=test
     command: npm run test
     networks:
       - microhams-net
-
-volumes:
-  node_modules:
-  playwright_cache:
 
 networks:
   microhams-net:
