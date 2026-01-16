@@ -64,19 +64,33 @@ const coordFrequency = propFreq || venue?.coordFrequency;
 
 // Location display: props override venue config
 const displayLocation = location || venue?.name;
+
+// Simple markdown bold to HTML conversion
+function mdBold(text: string): string {
+  return text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\n/g, ' ');
+}
+
+// Process escort text with coord frequency substitution
+const escortHtml = venue?.arrival?.escort 
+  ? mdBold(venue.arrival.escort.replace('**2m alternate call channel**', '**2m alternate call channel (' + coordFrequency + ')**'))
+  : '';
 ---
 
 {venue && (
   <div id="location">
-    <h2>In Person</h2>
+    <h2>Join In Person</h2>
 
-    <p set:html={venue.arrival.intro.replace(/\n/g, ' ')} />
+    <p set:html={mdBold(venue.arrival.intro)} />
     
-    <p>
-      <span set:html={venue.arrival.escort.replace(/\*\*2m alternate call channel\*\*/, `**2m alternate call channel (${coordFrequency})**`).replace(/\n/g, ' ')} />
-    </p>
+    {escortHtml && (
+      <p>
+        <span set:html={escortHtml} />
+      </p>
+    )}
     
-    <p class="text-muted" set:html={venue.arrival.noRadio} />
+    {venue.arrival.noRadio && (
+      <p class="text-muted" set:html={mdBold(venue.arrival.noRadio)} />
+    )}
       
     <details id="directions-details" style="margin-block-start: var(--space-3);">
       <summary class="h6" style="cursor: pointer;">Directions & Map</summary>
@@ -87,11 +101,11 @@ const displayLocation = location || venue?.name;
             <span class="text-muted">{venue.address}</span>
           </p>
           {Object.values(venue.directions).map((direction) => (
-            <p set:html={direction.replace(/\n/g, ' ')} />
+            <p set:html={mdBold(direction)} />
           ))}
           {latitude && longitude && (
             <EventMap 
-              location={displayLocation || venue.name}
+              location={displayLocation || ''}
               latitude={latitude}
               longitude={longitude}
             />
@@ -104,14 +118,14 @@ const displayLocation = location || venue?.name;
 
 {teams && (
   <div>
-    <h2>Online</h2>
+    <h2>Join Online</h2>
     <p>
       Although we encourage in-person attendance, you can also join via Microsoft Teams.
     </p>
 
     <p>
       <a href={teams.link} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
-        Join Online →
+        Join Online Meeting →
       </a>
     </p>
 

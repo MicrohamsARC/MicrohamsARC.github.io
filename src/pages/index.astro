@@ -8,26 +8,82 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EventCard from '../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
-import { publishedAndFeaturedFilter } from '../utils/content';
+import { publishedFilter } from '../utils/content';
 
-// Get featured content (published only)
-const articles = await getCollection('articles', publishedAndFeaturedFilter);
+// Get all published articles, sorted by date (newest first)
+const allArticles = await getCollection('articles', publishedFilter);
+const articles = allArticles.sort((a, b) => 
+  (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
+);
 
-// Get upcoming featured events (published only)
-const allEvents = await getCollection('events', publishedAndFeaturedFilter);
+// Get all published events
+const allEvents = await getCollection('events', publishedFilter);
 const now = new Date();
+const nowMs = now.getTime();
+
+// Helper to get event end timestamp (end of endDate day, or end of eventDate day)
+function getEventEndMs(event: typeof allEvents[number]): number {
+  const endDateValue = event.data.endDate || event.data.eventDate;
+  const date = new Date(endDateValue);
+  date.setHours(23, 59, 59, 999);
+  return date.getTime();
+}
+
+// Current: started but not ended
+const currentEvents = allEvents
+  .filter(event => {
+    const start = event.data.eventDate.getTime();
+    const end = getEventEndMs(event);
+    return start <= nowMs && end >= nowMs;
+  })
+  .sort((a, b) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return a.data.eventDate.getTime() - b.data.eventDate.getTime();
+  });
+
+// Upcoming: not started yet
 const upcomingEvents = allEvents
-  .filter(event => event.data.eventDate >= now)
-  .sort((a, b) => a.data.eventDate.getTime() - b.data.eventDate.getTime())
-  .slice(0, 1); // Get the next upcoming featured event
+  .filter(event => event.data.eventDate.getTime() > nowMs)
+  .sort((a, b) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return a.data.eventDate.getTime() - b.data.eventDate.getTime();
+  });
+
+// Combined for hero selection and grid
+const currentAndUpcoming = [...currentEvents, ...upcomingEvents];
+
+// Hero event: prioritize featured upcoming (soonest), then featured current, then soonest overall
+// This ensures the "next thing to prepare for" gets hero treatment
+const featuredUpcoming = upcomingEvents.find(e => e.data.featured);
+const featuredCurrent = currentEvents.find(e => e.data.featured);
+const heroEvent = featuredUpcoming || featuredCurrent || currentAndUpcoming[0];
+
+// Next 3 events after the hero
+const moreEvents = currentAndUpcoming
+  .filter(e => e !== heroEvent)
+  .slice(0, 3);
 ---
 
 <BaseLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
-  <!-- Featured Story / Hero -->
-  {upcomingEvents.length > 0 ? (
+  <!-- Featured Event Hero -->
+  {heroEvent ? (
     <section class="region">
       <div class="wrapper">
-        <EventCard event={upcomingEvents[0]} variant="featured" />
+        <div class="stack-6">
+          <EventCard event={heroEvent} variant="featured" />
+          
+          {/* More upcoming events grid */}
+          {moreEvents.length > 0 && (
+            <div class="stack-4">
+              <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Current & Upcoming</h2>
+              <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-4);">
+                {moreEvents.map((event) => (
+                  <EventCard event={event} variant="default" showDescription={false} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   ) : (
@@ -61,7 +117,7 @@ const upcomingEvents = allEvents
           
           <!-- Two-column magazine layout -->
           <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);">
-            {articles.slice(0, 3).map((article: typeof articles[number]) => (
+            {articles.slice(0, 4).map((article: typeof articles[number]) => (
               <article class="stack-3">
                 <div class="stack-2">
                   {article.data.tags && article.data.tags.length > 0 && (

@@ -107,6 +107,24 @@ that can't get wet, let us know that in the online meeting chat so we can find y
 Your radio won't be heard from inside the garage.`,
     },
   },
+  'puyallup-fairgrounds-pavilion': {
+    name: 'Pavilion Exhibition Hall, Washington State Fair',
+    address: '110 9th Avenue SW, Puyallup, WA 98372',
+    latitude: 47.1841,
+    longitude: -122.2937,
+    timezone: 'America/Los_Angeles',
+    coordFrequency: '146.82',
+    arrival: {
+      intro: `The Mike & Key Electronics Show & Swap Meet is held in the Pavilion Exhibition Hall at the Washington State Fairgrounds.`,
+      escort: `Talk-in is available on **146.82/22 (PL 103.5)**.`,
+      noRadio: ``,
+    },
+    directions: {
+      attendees: `**Attendees:** Enter through the Gold Gate at S Meridian St and 9th SW (NW corner of Fairgrounds). Swap Meet is in the Pavilion. VE Testing is in the Expo Hall.`,
+      sellers: `**Sellers:** Enter through the Orange Gate off Fairview Dr (east side of Fairgrounds). Exit through the Gold Gate off 9th SW (north side). Parking available in Gold Lot.`,
+      parking: `**Parking:** Free parking available.`,
+    },
+  },
   // Add other venues as needed
 } as const;
 

@@ -8,16 +8,24 @@
 /**
  * Check if content should be published based on draft status and publishDate
  * 
+ * In development mode, drafts and future-dated content are shown.
+ * In production, only non-draft content with past/current publishDate is shown.
+ * 
  * @param data - Content data with draft and publishDate fields
  * @returns true if content should be visible
  */
 export function isPublished(data: { draft?: boolean; publishDate?: Date }): boolean {
-  // Hide if marked as draft
+  // In dev mode, show everything (drafts and future content)
+  if (import.meta.env.DEV) {
+    return true;
+  }
+  
+  // Production: hide if marked as draft
   if (data.draft === true) {
     return false;
   }
   
-  // Hide if publishDate is in the future
+  // Production: hide if publishDate is in the future
   if (data.publishDate) {
     const now = new Date();
     return data.publishDate <= now;

@@ -100,6 +100,8 @@ const events = defineCollection({
     coverAlt: z.string().optional(),
     // Event date (YYYY-MM-DD) - interpreted in the event's timezone
     eventDate: z.coerce.date(),
+    // End date for multi-day events (YYYY-MM-DD) - if omitted, event is single-day
+    endDate: z.coerce.date().optional(),
     // Start/end times (e.g., "6:00 PM" or "18:00") - no timezone suffix needed
     startTime: z.string().optional(),
     endTime: z.string().optional(),
@@ -108,7 +110,7 @@ const events = defineCollection({
     
     // --- Physical Location (optional) ---
     // Venue key from site.config.ts (pulls address, coords, directions, timezone)
-    venue: z.enum(['building-31', 'custom']).optional(),
+    venue: z.enum(['building-31', 'puyallup-fairgrounds-pavilion', 'custom']).optional(),
     // Custom location string (used if no venue, or to override venue display)
     location: z.string().optional(),
     // Map coordinates (override venue config if needed)

@@ -76,12 +76,7 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
 
           <!-- Attendance CTAs -->
           <div class="cluster" style="--cluster-gap: var(--space-3);">
-            {isExternal && (
-              <a href={event.data.eventLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer">
-                Event Details →
-              </a>
-            )}
-            {!isExternal && hasInPerson && (
+            {hasInPerson && (
               <a href="#location" class="button" data-variant="primary" data-size="sm">
                 Join In Person
               </a>
@@ -89,6 +84,11 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
             {!isExternal && hasVirtual && (
               <a href={virtualUrl} class="button" data-variant={hasInPerson ? 'secondary' : 'primary'} data-size="sm" target="_blank" rel="noopener noreferrer">
                 Join Online →
+              </a>
+            )}
+            {isExternal && (
+              <a href={event.data.eventLink} class="button" data-variant={hasInPerson ? 'secondary' : 'primary'} data-size="sm" target="_blank" rel="noopener noreferrer">
+                Event Website →
               </a>
             )}
           </div>

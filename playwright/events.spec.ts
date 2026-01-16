@@ -13,7 +13,7 @@ test.describe('Events', () => {
     });
 
     test('displays upcoming events section', async ({ page }) => {
-      const heading = page.locator('h1');
+      const heading = page.locator('main h1');
       await expect(heading).toHaveText('Events');
       
       // Should have upcoming events section
@@ -109,6 +109,16 @@ test.describe('Events', () => {
     });
 
     test('displays venue/logistics section when applicable', async ({ page }) => {
+      // External events (DXpeditions, etc.) have "Event Website →" link instead of venue
+      const externalLink = page.locator('a:has-text("Event Website →")');
+      const isExternalEvent = await externalLink.count() > 0;
+      
+      if (isExternalEvent) {
+        // External events link out - no local venue expected
+        await expect(externalLink).toBeVisible();
+        return;
+      }
+      
       // Check for in-person section
       const locationSection = page.locator('#location');
       const inPersonHeading = page.locator('h2:has-text("In Person")');

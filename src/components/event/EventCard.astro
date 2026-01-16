@@ -51,6 +51,13 @@ const getCalendarParts = (date: Date) => ({
   month: date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase(),
 });
 
+// Check if event spans multiple days
+const isMultiDay = event.data.endDate && 
+  event.data.endDate.getTime() !== event.data.eventDate.getTime();
+
+const startCal = getCalendarParts(event.data.eventDate);
+const endCal = isMultiDay ? getCalendarParts(event.data.endDate!) : null;
+
 // Common timezone options
 const tzOptions = { venue: event.data.venue, timezone: event.data.timezone };
 
@@ -61,7 +68,6 @@ const hasInPerson = !!(event.data.venue || event.data.location);
 const hasVirtual = !!(onlineMeetingConfig || event.data.teams || event.data.virtualLink);
 const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.data.virtualLink;
 
-const cal = getCalendarParts(event.data.eventDate);
 const dateStr = formatEventDate(event.data.eventDate, tzOptions);
 ---
 
@@ -135,14 +141,28 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
             <p class="card__description">{event.data.description}</p>
           )}
         </div>
-        <time 
-          class="event-cal-icon" 
-          datetime={event.data.eventDate.toISOString()}
-          aria-label={dateStr}
-        >
-          <span class="event-cal-icon__day">{cal.day}</span>
-          <span class="event-cal-icon__month">{cal.month}</span>
-        </time>
+        {isMultiDay ? (
+          <div class="event-cal-range" aria-label={`${startCal.day} ${startCal.month} to ${endCal!.day} ${endCal!.month}`}>
+            <time class="event-cal-icon event-cal-icon--start" datetime={event.data.eventDate.toISOString()}>
+              <span class="event-cal-icon__day">{startCal.day}</span>
+              <span class="event-cal-icon__month">{startCal.month}</span>
+            </time>
+            <span class="event-cal-range__sep">–</span>
+            <time class="event-cal-icon event-cal-icon--end" datetime={event.data.endDate!.toISOString()}>
+              <span class="event-cal-icon__day">{endCal!.day}</span>
+              <span class="event-cal-icon__month">{endCal!.month}</span>
+            </time>
+          </div>
+        ) : (
+          <time 
+            class="event-cal-icon" 
+            datetime={event.data.eventDate.toISOString()}
+            aria-label={dateStr}
+          >
+            <span class="event-cal-icon__day">{startCal.day}</span>
+            <span class="event-cal-icon__month">{startCal.month}</span>
+          </time>
+        )}
       </div>
     </div>
     {showJoinButtons && (
@@ -150,7 +170,7 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
         <div class="cluster" style="--cluster-gap: var(--space-3);">
           {isExternal && (
             <a href={event.data.eventLink} class="button" data-variant="primary" data-size="sm" target="_blank" rel="noopener noreferrer">
-              Event Details →
+              Event Website →
             </a>
           )}
           {!isExternal && hasInPerson && (
@@ -183,6 +203,9 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
         <span class="badge" data-variant={getEventTypeBadge(event.data.eventType)}>
           {formatEventType(event.data.eventType)}
         </span>
+        {event.data.featured && (
+          <span class="badge" data-variant="accent">Featured</span>
+        )}
       </div>
       <h3 class="card__title">
         <a href={`/events/${event.slug}`} style="text-decoration: none; color: inherit;">
