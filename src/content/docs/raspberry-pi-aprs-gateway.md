@@ -36,40 +36,40 @@ The gateway uses several open-source components:
 
 ### 1. Prepare Raspberry Pi
 
-\`\`\`bash
+```bash
 # Update system
 sudo apt update && sudo apt upgrade -y
 
 # Install dependencies
 sudo apt install -y git build-essential cmake
-\`\`\`
+```
 
 ### 2. Install RTL-SDR Drivers
 
-\`\`\`bash
+```bash
 sudo apt install -y rtl-sdr librtlsdr-dev
-\`\`\`
+```
 
 ### 3. Build Direwolf
 
-\`\`\`bash
+```bash
 git clone https://github.com/wb2osz/direwolf
 cd direwolf
 mkdir build && cd build
 cmake ..
 make -j4
 sudo make install
-\`\`\`
+```
 
 ### 4. Configure APRS
 
 Edit the configuration file to include your callsign and location:
 
-\`\`\`ini
+```ini
 MYCALL YOUR-CALL
 IGSERVER noam.aprs2.net
 IGLOGIN YOUR-CALL PASSWORD
-\`\`\`
+```
 
 ## Performance Optimization
 
