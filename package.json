@@ -2,6 +2,9 @@
   "name": "microhams",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -37,23 +40,23 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "@testing-library/jest-dom": "^6.9.1",
-    "@types/node": "^22.8.7",
+    "@types/node": "^25.0.9",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^4.0.17",
     "eslint": "^9.38.0",
     "eslint-plugin-astro": "^1.2.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "globals": "^16.4.0",
+    "globals": "^17.0.0",
     "husky": "^9.1.6",
     "jsdom": "^27.4.0",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.11",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.17"
   },
   "optionalDependencies": {
     "@playwright/test": "^1.56.1",

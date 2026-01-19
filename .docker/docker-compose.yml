@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # CI testing service - runs lint, type-check, tests, and build
+  # CI testing service - runs lint, type-check, unit tests, and build
   ci:
     build:
       context: ..
@@ -34,7 +32,6 @@ services:
       - "4321:4321"
     environment:
       - NODE_ENV=development
-    command: npm run dev -- --host 0.0.0.0
     networks:
       - microhams-net
     healthcheck:
@@ -44,12 +41,12 @@ services:
       retries: 5
       start_period: 30s
 
-  # Playwright E2E test runner (depends on dev server)
+  # Playwright E2E test runner (uses official Playwright image)
   e2e:
     build:
       context: ..
       dockerfile: .docker/Dockerfile
-      target: runtime
+      target: e2e
     volumes:
       - ..:/workspace:cached
       - /workspace/node_modules
@@ -57,7 +54,7 @@ services:
     environment:
       - CI=true
       - PLAYWRIGHT_BASE_URL=http://dev:4321
-    command: npm run test:e2e
+    command: npx playwright test
     depends_on:
       dev:
         condition: service_healthy
@@ -77,7 +74,7 @@ services:
     environment:
       - NODE_ENV=test
       - CI=true
-    command: npm run test:unit
+    command: npm run test:run
     networks:
       - microhams-net
 

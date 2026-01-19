@@ -1,8 +1,8 @@
 /**
  * Event DateTime Toggle Tests
- * 
+ *
  * Tests for client-side timezone toggle functionality
- * 
+ *
  * Critical test scenarios:
  * - Time parsing (12-hour, 24-hour, edge cases)
  * - Timezone conversion accuracy
@@ -15,7 +15,7 @@ import { describe, it, expect } from 'vitest';
 
 describe('Time Parsing', () => {
   // These test the parseTime function indirectly through DOM interactions
-  
+
   describe('12-hour format', () => {
     it('parses standard PM times (6:00 PM → 18:00)', async () => {
       const container = setupContainer(`
@@ -25,18 +25,18 @@ describe('Time Parsing', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       // Click to get UTC display
       container.querySelector('button')!.click();
       const text = container.querySelector('.datetime-text')!.textContent!;
-      
+
       // 6:00 PM UTC should display as 6:00 PM UTC
       expect(text).toContain('6:00 PM');
       expect(text).toContain('UTC');
-      
+
       container.remove();
     });
 
@@ -48,15 +48,15 @@ describe('Time Parsing', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const text = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(text).toContain('9:00 AM');
-      
+
       container.remove();
     });
 
@@ -68,15 +68,15 @@ describe('Time Parsing', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const text = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(text).toContain('12:00 PM');
-      
+
       container.remove();
     });
 
@@ -88,15 +88,15 @@ describe('Time Parsing', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const text = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(text).toContain('12:00 AM');
-      
+
       container.remove();
     });
   });
@@ -110,16 +110,16 @@ describe('Time Parsing', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const text = container.querySelector('.datetime-text')!.textContent!;
-      
+
       // Should convert to 12-hour for display
       expect(text).toContain('6:00 PM');
-      
+
       container.remove();
     });
   });
@@ -137,18 +137,18 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       // Toggle to UTC
       container.querySelector('button')!.click();
       const utcText = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(utcText).toContain('UTC');
       // 6 PM PST = 2 AM UTC next day
       expect(utcText).toContain('2:00 AM');
-      
+
       container.remove();
     });
 
@@ -160,15 +160,15 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       // Initial display should be local, toggle once to see format
       const text = container.querySelector('.datetime-text')!.textContent!;
       // Local display uses browser timezone, verify toggle works
       expect(text).toBeTruthy();
-      
+
       container.remove();
     });
   });
@@ -184,18 +184,18 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       // Toggle to UTC
       container.querySelector('button')!.click();
       const utcText = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(utcText).toContain('UTC');
       // 6 PM PDT = 1 AM UTC next day
       expect(utcText).toContain('1:00 AM');
-      
+
       container.remove();
     });
   });
@@ -211,17 +211,17 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const utcText = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(utcText).toContain('UTC');
       // 7 PM EST = midnight UTC
       expect(utcText).toContain('12:00 AM');
-      
+
       container.remove();
     });
   });
@@ -235,16 +235,16 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const utcText = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(utcText).toContain('6:00 PM');
       expect(utcText).toContain('UTC');
-      
+
       container.remove();
     });
   });
@@ -260,17 +260,17 @@ describe('Timezone Conversions', () => {
           <span class="datetime-text"></span>
         </button>
       `);
-      
+
       const { initDateTimeToggles } = await import('./event-datetime-toggle');
       initDateTimeToggles();
-      
+
       container.querySelector('button')!.click();
       const utcText = container.querySelector('.datetime-text')!.textContent!;
-      
+
       expect(utcText).toContain('UTC');
       // 7 PM JST = 10 AM UTC same day
       expect(utcText).toContain('10:00 AM');
-      
+
       container.remove();
     });
   });
@@ -285,13 +285,13 @@ describe('Toggle State Management', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const button = container.querySelector('button') as any;
     expect(button._tzMode).toBe('local');
-    
+
     container.remove();
   });
 
@@ -303,16 +303,16 @@ describe('Toggle State Management', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const button = container.querySelector('button') as any;
     button.click();
-    
+
     expect(button._tzMode).toBe('utc');
     expect(container.querySelector('.datetime-text')!.textContent).toContain('UTC');
-    
+
     container.remove();
   });
 
@@ -324,17 +324,21 @@ describe('Toggle State Management', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const button = container.querySelector('button') as any;
+    const initialText = container.querySelector('.datetime-text')!.textContent;
+
     button.click(); // → UTC
+    expect(button._tzMode).toBe('utc');
+
     button.click(); // → local
-    
     expect(button._tzMode).toBe('local');
-    expect(container.querySelector('.datetime-text')!.textContent).not.toContain('UTC');
-    
+    // Text should return to what it was initially (local mode)
+    expect(container.querySelector('.datetime-text')!.textContent).toBe(initialText);
+
     container.remove();
   });
 
@@ -345,19 +349,19 @@ describe('Toggle State Management', () => {
         <span class="datetime-text">Initial</span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
-    
+
     initDateTimeToggles();
     const button = container.querySelector('button') as any;
     const firstDate = button._eventDate;
-    
+
     // Try to init again
     initDateTimeToggles();
-    
+
     // Should be same instance
     expect(button._eventDate).toBe(firstDate);
-    
+
     container.remove();
   });
 });
@@ -372,17 +376,17 @@ describe('Time Range Display', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     container.querySelector('button')!.click();
     const text = container.querySelector('.datetime-text')!.textContent!;
-    
+
     expect(text).toContain('6:00 PM');
     expect(text).toContain('8:30 PM');
     expect(text).toContain('–'); // en-dash
-    
+
     container.remove();
   });
 
@@ -394,16 +398,16 @@ describe('Time Range Display', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     container.querySelector('button')!.click();
     const text = container.querySelector('.datetime-text')!.textContent!;
-    
+
     expect(text).toContain('6:00 PM');
     expect(text).not.toContain('–');
-    
+
     container.remove();
   });
 
@@ -414,19 +418,19 @@ describe('Time Range Display', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const text = container.querySelector('.datetime-text')!.textContent!;
-    
+
     expect(text).toContain('January');
     expect(text).toContain('20');
     expect(text).toContain('2026');
     // No time should be shown
     expect(text).not.toContain('PM');
     expect(text).not.toContain('AM');
-    
+
     container.remove();
   });
 });
@@ -439,13 +443,13 @@ describe('Edge Cases', () => {
         <span class="datetime-text"></span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const button = container.querySelector('button') as any;
     expect(button._eventTimezone).toBe('America/Los_Angeles');
-    
+
     container.remove();
   });
 
@@ -455,13 +459,13 @@ describe('Edge Cases', () => {
         <span class="datetime-text">Not an event</span>
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const button = container.querySelector('button') as any;
     expect(button._eventDate).toBeUndefined();
-    
+
     container.remove();
   });
 
@@ -471,14 +475,14 @@ describe('Edge Cases', () => {
               data-timezone="UTC">
       </button>
     `);
-    
+
     const { initDateTimeToggles } = await import('./event-datetime-toggle');
     initDateTimeToggles();
-    
+
     const textSpan = container.querySelector('.datetime-text');
     expect(textSpan).not.toBeNull();
     expect(textSpan!.textContent).toContain('January');
-    
+
     container.remove();
   });
 });
