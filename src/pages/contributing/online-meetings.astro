@@ -1,0 +1,312 @@
+---
+/**
+ * Contributing: Online Meetings Guide
+ *
+ * How to configure and use online meeting links for events.
+ * Dynamically pulls all fields from actual meeting configurations.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { onlineMeetings as meetingConfig } from '../../site.config';
+
+const currentPath = '/contributing/online-meetings';
+
+const headings = [
+  { text: 'Using Online Meetings', slug: 'using-online-meetings' },
+  { text: 'Available Configurations', slug: 'available-configurations' },
+  { text: 'Meeting Example', slug: 'meeting-example' },
+  { text: 'Hybrid Events', slug: 'hybrid-events' },
+  { text: 'Adding New Configurations', slug: 'adding-new-configurations' },
+];
+
+const onlineMeetings = Object.entries(meetingConfig);
+
+// Get a sample meeting to show structure
+const sampleMeetingKey = 'microhams-teams';
+const sampleMeeting = meetingConfig[sampleMeetingKey];
+
+// Code examples
+const basicExample = `---
+title: "Virtual Elmer Session"
+onlineMeeting: "microhams-teams"
+---`;
+
+const hybridExample = `---
+title: "February Club Meeting"
+venue: "building-31"
+onlineMeeting: "microhams-teams"
+---`;
+---
+
+<DocsLayout
+  title="Online Meetings"
+  description="How to add online meeting links to events"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Online Meetings</h1>
+
+  <p>
+    Online meeting configurations are defined in <code>src/site.config.ts</code>. Reference them by
+    key in event frontmatter to keep meeting links consistent and easy to update.
+  </p>
+
+  <h2 id="using-online-meetings">Using Online Meetings</h2>
+
+  <p>
+    Add the <code>onlineMeeting</code> field to your event frontmatter with the key of a configured meeting:
+  </p>
+
+  <pre><code>{basicExample}</code></pre>
+
+  <p>The event page will automatically display:</p>
+
+  <ul>
+    <li>The meeting platform (Teams, Zoom, etc.)</li>
+    <li>A "Join Online" button linking to the meeting</li>
+    <li>Meeting ID and passcode (if configured)</li>
+    <li>Dial-in phone numbers (if configured)</li>
+    <li>Recording disclaimer (if configured)</li>
+  </ul>
+
+  <h2 id="available-configurations">Available Configurations</h2>
+
+  <p>These online meeting configurations are ready to use:</p>
+
+  {
+    onlineMeetings.map(([key, meeting]) => (
+      <div class="meeting-card">
+        <h3>
+          <code>{key}</code>
+        </h3>
+        <dl>
+          <dt>Name</dt>
+          <dd>{meeting.name}</dd>
+          <dt>Platform</dt>
+          <dd>{meeting.platform}</dd>
+          <dt>Join Link</dt>
+          <dd>
+            <code class="url">{meeting.link}</code>
+          </dd>
+          {meeting.meetingId && (
+            <>
+              <dt>Meeting ID</dt>
+              <dd>{meeting.meetingId}</dd>
+            </>
+          )}
+          {meeting.passcode && (
+            <>
+              <dt>Passcode</dt>
+              <dd>{meeting.passcode}</dd>
+            </>
+          )}
+          {meeting.phoneNumber && (
+            <>
+              <dt>Phone</dt>
+              <dd>{meeting.phoneNumber}</dd>
+            </>
+          )}
+          {meeting.tollFreeNumber && (
+            <>
+              <dt>Toll-free</dt>
+              <dd>{meeting.tollFreeNumber}</dd>
+            </>
+          )}
+          {meeting.conferenceId && (
+            <>
+              <dt>Conference ID</dt>
+              <dd>{meeting.conferenceId}</dd>
+            </>
+          )}
+          {meeting.disclaimer && (
+            <>
+              <dt>Disclaimer</dt>
+              <dd>{Object.keys(meeting.disclaimer).length} sections configured</dd>
+            </>
+          )}
+        </dl>
+      </div>
+    ))
+  }
+
+  <h2 id="meeting-example">Meeting Example</h2>
+
+  <p>
+    Here's the complete configuration for <code>{sampleMeetingKey}</code>, showing all available
+    fields:
+  </p>
+
+  <pre><code>{`'${sampleMeetingKey}': {
+  platform: '${sampleMeeting.platform}',
+  name: '${sampleMeeting.name}',
+  link: '${sampleMeeting.link}',
+  meetingId: '${sampleMeeting.meetingId}',
+  passcode: '${sampleMeeting.passcode}',
+  phoneNumber: '${sampleMeeting.phoneNumber}',
+  tollFreeNumber: '${sampleMeeting.tollFreeNumber}',
+  conferenceId: '${sampleMeeting.conferenceId}',
+  helpUrl: '${sampleMeeting.helpUrl}',
+  disclaimer: {
+    recording: \`...\`,  // Recording notice
+    optOut: \`...\`,     // How to opt out
+  },
+}`}</code></pre>
+
+  <h3>Available meeting fields</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>platform</code></td>
+        <td>string</td>
+        <td>"teams", "zoom", "jitsi", etc.</td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td>string</td>
+        <td>Display name for the meeting</td>
+      </tr>
+      <tr>
+        <td><code>link</code></td>
+        <td>string</td>
+        <td>Full URL to join the meeting</td>
+      </tr>
+      <tr>
+        <td><code>meetingId</code></td>
+        <td>string</td>
+        <td>Meeting ID for manual entry</td>
+      </tr>
+      <tr>
+        <td><code>passcode</code></td>
+        <td>string</td>
+        <td>Meeting passcode if required</td>
+      </tr>
+      <tr>
+        <td><code>phoneNumber</code></td>
+        <td>string</td>
+        <td>Dial-in phone number</td>
+      </tr>
+      <tr>
+        <td><code>tollFreeNumber</code></td>
+        <td>string</td>
+        <td>Toll-free dial-in option</td>
+      </tr>
+      <tr>
+        <td><code>conferenceId</code></td>
+        <td>string</td>
+        <td>Conference ID for phone dial-in</td>
+      </tr>
+      <tr>
+        <td><code>helpUrl</code></td>
+        <td>string</td>
+        <td>Link to meeting platform help</td>
+      </tr>
+      <tr>
+        <td><code>disclaimer</code></td>
+        <td>object</td>
+        <td>Recording/consent notices with <code>recording</code> and <code>optOut</code> keys</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="hybrid-events">Hybrid Events</h2>
+
+  <p>
+    For events with both in-person and online attendance, include both
+    <code>venue</code> and <code>onlineMeeting</code>:
+  </p>
+
+  <pre><code>{hybridExample}</code></pre>
+
+  <p>
+    The event page will display the physical location with a map <em>and</em>
+    the online join link. This is the standard setup for monthly club meetings.
+  </p>
+
+  <div class="callout">
+    <p>
+      <strong>Tip:</strong> List the venue first in your frontmatter. It makes the YAML more readable
+      and matches the order information appears on the event page.
+    </p>
+  </div>
+
+  <h2 id="adding-new-configurations">Adding New Configurations</h2>
+
+  <p>
+    If you need a new meeting configuration (e.g., a different Zoom account for special events), add
+    it to <code>src/site.config.ts</code> in the
+    <code>onlineMeetings</code> object.
+  </p>
+
+  <h3>When to add a new configuration</h3>
+
+  <ul>
+    <li><strong>Different platform</strong> — A new Zoom, Teams, or Jitsi account</li>
+    <li>
+      <strong>Different purpose</strong> — Elmer sessions vs. board meetings vs. general meetings
+    </li>
+    <li><strong>Different organizer</strong> — Meeting hosted by a different person's account</li>
+  </ul>
+
+  <h3>When NOT to add a new configuration</h3>
+
+  <ul>
+    <li><strong>One-time meeting</strong> — Use a custom <code>virtualLink</code> field instead</li>
+    <li><strong>Same link, different name</strong> — Just use the existing configuration</li>
+  </ul>
+
+  <h3>Minimum required fields</h3>
+
+  <p>At minimum, every meeting configuration needs:</p>
+
+  <ul>
+    <li><code>platform</code> — For display and styling</li>
+    <li><code>name</code> — For display</li>
+    <li><code>link</code> — The join URL</li>
+  </ul>
+</DocsLayout>
+
+<style>
+  .meeting-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-4) 0;
+    background: var(--color-surface-muted);
+  }
+
+  .meeting-card h3 {
+    margin: 0 0 var(--space-3) 0;
+    font-size: var(--step-0);
+  }
+
+  .meeting-card dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    font-size: var(--step--1);
+  }
+
+  .meeting-card dt {
+    color: var(--color-text-muted);
+  }
+
+  .meeting-card dd {
+    margin: 0;
+  }
+
+  .meeting-card .url {
+    font-size: var(--step--2);
+    word-break: break-all;
+  }
+</style>

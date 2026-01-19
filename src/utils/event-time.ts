@@ -1,6 +1,6 @@
 /**
  * Event Time Utilities
- * 
+ *
  * Handles timezone-aware date/time formatting for events.
  * Design principles:
  * - eventDate is a calendar date (not a UTC timestamp)
@@ -14,15 +14,12 @@ import { getVenueTimezone, siteConfig, dateTimeFormats } from '../site.config';
 /**
  * Get the timezone for an event based on venue or explicit timezone field
  */
-export function getEventTimezone(
-  venue?: string,
-  explicitTimezone?: string
-): string {
+export function getEventTimezone(venue?: string, explicitTimezone?: string): string {
   // Explicit timezone takes priority
   if (explicitTimezone) {
     return explicitTimezone;
   }
-  
+
   // Derive from venue or fall back to site default
   return getVenueTimezone(venue);
 }
@@ -30,17 +27,14 @@ export function getEventTimezone(
 /**
  * Get timezone abbreviation (e.g., "PST", "PDT") for display
  */
-export function getTimezoneAbbreviation(
-  date: Date,
-  timezone: string
-): string {
+export function getTimezoneAbbreviation(date: Date, timezone: string): string {
   try {
     const formatter = new Intl.DateTimeFormat(siteConfig.locale, {
       timeZone: timezone,
       timeZoneName: 'short',
     });
     const parts = formatter.formatToParts(date);
-    const tzPart = parts.find(p => p.type === 'timeZoneName');
+    const tzPart = parts.find((p) => p.type === 'timeZoneName');
     return tzPart?.value || '';
   } catch {
     return '';
@@ -59,19 +53,17 @@ export function formatEventDate(
     format?: 'long' | 'short' | 'compact';
   } = {}
 ): string {
-  const _tz = getEventTimezone(options.venue, options.timezone);
   const format = options.format || 'long';
-  
+
   // Select format options from config
-  const formatKey = format === 'compact' ? 'dateCompact' 
-    : format === 'short' ? 'dateShort' 
-    : 'dateLong';
-  
+  const formatKey =
+    format === 'compact' ? 'dateCompact' : format === 'short' ? 'dateShort' : 'dateLong';
+
   const formatOptions: Intl.DateTimeFormatOptions = {
     ...dateTimeFormats[formatKey],
     timeZone: 'UTC', // Preserve calendar date
   };
-  
+
   return eventDate.toLocaleDateString(siteConfig.locale, formatOptions);
 }
 
@@ -88,16 +80,14 @@ export function formatEventTime(
   } = {}
 ): string {
   if (!startTime) return '';
-  
+
   const tz = getEventTimezone(options.venue, options.timezone);
-  
+
   // Get timezone abbreviation from event date (for DST awareness)
-  const tzAbbrev = options.eventDate 
-    ? getTimezoneAbbreviation(options.eventDate, tz)
-    : '';
-  
+  const tzAbbrev = options.eventDate ? getTimezoneAbbreviation(options.eventDate, tz) : '';
+
   const timeStr = endTime ? `${startTime}–${endTime}` : startTime;
-  
+
   return tzAbbrev ? `${timeStr} ${tzAbbrev}` : timeStr;
 }
 
@@ -115,10 +105,10 @@ export function formatEventDateTime(
   } = {}
 ): { date: string; time: string; timezone: string } {
   const tz = getEventTimezone(options.venue, options.timezone);
-  
+
   return {
-    date: formatEventDate(eventDate, { 
-      venue: options.venue, 
+    date: formatEventDate(eventDate, {
+      venue: options.venue,
       timezone: options.timezone,
       format: options.dateFormat,
     }),
@@ -149,16 +139,16 @@ export function formatEventDateTimeLine(
     ...dateTimeFormats.dateCompact,
     timeZone: 'UTC',
   });
-  
+
   if (!options.startTime) {
     return shortDate;
   }
-  
+
   const timeStr = formatEventTime(options.startTime, options.endTime, {
     venue: options.venue,
     timezone: options.timezone,
     eventDate,
   });
-  
+
   return `${shortDate} · ${timeStr}`;
 }

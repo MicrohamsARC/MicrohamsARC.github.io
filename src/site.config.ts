@@ -1,6 +1,6 @@
 /**
  * Site Configuration
- * 
+ *
  * Centralized settings for the MicroHAMS site.
  * Import this wherever site-wide configuration is needed.
  */
@@ -8,17 +8,34 @@
 export const siteConfig = {
   /** Site name for branding */
   name: 'MicroHAMS',
-  
+
   /** Default IANA timezone for events and dates */
   timezone: 'America/Los_Angeles',
-  
+
   /** Locale for formatting (BCP 47 language tag) */
   locale: 'en-US',
+
+  /** GitHub repository for source links */
+  github: {
+    repo: 'MicrohamsARC/MicrohamsARC.github.io',
+    branch: 'main',
+  },
 } as const;
+
+/** Base URL for GitHub source browsing */
+export function getGitHubUrl(path: string = ''): string {
+  const { repo, branch } = siteConfig.github;
+  return `https://github.com/${repo}/tree/${branch}${path}`;
+}
+
+/** URL for a specific content file/folder on GitHub */
+export function getGitHubContentUrl(collection: string, id: string): string {
+  return getGitHubUrl(`/src/content/${collection}/${id}`);
+}
 
 /**
  * Date/time format configurations
- * 
+ *
  * Centralized format options for consistent display across the site.
  * Uses Intl.DateTimeFormat options for locale-aware formatting.
  */
@@ -30,27 +47,27 @@ export const dateTimeFormats = {
     day: 'numeric',
     year: 'numeric',
   } as Intl.DateTimeFormatOptions,
-  
+
   /** Short date: "Jan 20, 2026" */
   dateShort: {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   } as Intl.DateTimeFormatOptions,
-  
+
   /** Compact date (for cards): "Jan 20" */
   dateCompact: {
     month: 'short',
     day: 'numeric',
   } as Intl.DateTimeFormatOptions,
-  
+
   /** Time: "6:00 PM" */
   time: {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
   } as Intl.DateTimeFormatOptions,
-  
+
   /** Time with timezone: "6:00 PM PST" */
   timeWithZone: {
     hour: 'numeric',
@@ -58,7 +75,7 @@ export const dateTimeFormats = {
     hour12: true,
     timeZoneName: 'short',
   } as Intl.DateTimeFormatOptions,
-  
+
   /** Full date and time: "Tuesday, January 20, 2026 at 6:00 PM" */
   dateTimeLong: {
     weekday: 'long',
@@ -73,7 +90,7 @@ export const dateTimeFormats = {
 
 /**
  * Venue configurations
- * 
+ *
  * Define physical locations with all details needed for events.
  * Events can reference these by key (e.g., venue: 'building-31').
  */
@@ -130,7 +147,7 @@ Your radio won't be heard from inside the garage.`,
 
 /**
  * Online meeting configurations
- * 
+ *
  * Define reusable virtual meeting setups.
  * Events can reference these by key (e.g., onlineMeeting: 'microhams-teams').
  */

@@ -1,0 +1,332 @@
+---
+/**
+ * Contributing: Glossary
+ *
+ * Definitions of terms used throughout the documentation.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/glossary';
+
+const headings = [
+  { text: 'Technical Terms', slug: 'technical-terms' },
+  { text: 'Acronyms', slug: 'acronyms' },
+];
+---
+
+<DocsLayout
+  title="Glossary"
+  description="Definitions of terms used in the documentation"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Glossary</h1>
+
+  <p>Common terms used throughout this documentation and the codebase.</p>
+
+  <h2 id="technical-terms">Technical Terms</h2>
+
+  <dl class="glossary">
+    <div class="glossary-entry">
+      <dt id="astro">Astro</dt>
+      <dd>
+        The static site generator used to build this website. Astro compiles markdown and components
+        into static HTML at build time.
+        <a href="https://astro.build">astro.build</a>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="build-time">Build Time</dt>
+      <dd>
+        When the site is compiled from source files into deployable HTML. Changes to content require
+        a rebuild to appear on the live site. Contrast with "runtime" (when a visitor views the
+        page).
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="collection">Collection</dt>
+      <dd>
+        A group of related content files (e.g., articles, events, docs). Each collection has a
+        schema that validates frontmatter. See <a href="/contributing/schemas">Schema Reference</a>.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="frontmatter">Frontmatter</dt>
+      <dd>
+        The metadata block at the top of a markdown file, enclosed in triple dashes (<code>---</code
+        >). Contains structured data like title, date, and tags.
+        <pre><code>---
+title: "My Article"
+date: 2026-01-15
+tags: ["example"]
+---</code></pre>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="iana-timezone">IANA Timezone</dt>
+      <dd>
+        A standardized timezone identifier like <code>America/Los_Angeles</code>
+        or <code>America/New_York</code>. Used instead of abbreviations (PST, EST) because those are
+        ambiguous.
+        <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Full list</a>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="layout">Layout</dt>
+      <dd>
+        An Astro component that wraps page content, providing consistent structure (header, footer,
+        navigation). Pages specify their layout in frontmatter or imports.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="markdown">Markdown</dt>
+      <dd>
+        A lightweight markup language for formatting text. Files use the
+        <code>.md</code> extension. Supports headings, lists, links, code blocks, and more.
+        <a href="https://www.markdownguide.org/basic-syntax/">Syntax guide</a>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="pull-request">Pull Request</dt>
+      <dd>
+        A proposed change submitted through GitHub. Contributors create a branch, make changes, then
+        request that those changes be "pulled" into the main codebase. Abbreviated as PR. See <a
+          href="/contributing/pull-requests">Pull Requests</a
+        >.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="schema">Schema</dt>
+      <dd>
+        A definition of the structure and types for frontmatter fields. Defined using <a href="#zod"
+          >Zod</a
+        > in <code>src/content/config.ts</code>. Invalid frontmatter causes build failures with
+        helpful error messages.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="slug">Slug</dt>
+      <dd>
+        The URL-friendly identifier for a page, derived from the filename or folder name. For
+        example, <code>2026-01-january-meeting</code> becomes the URL
+        <code>/events/2026-01-january-meeting</code>.
+        <ul>
+          <li>Use lowercase</li>
+          <li>Use hyphens instead of spaces</li>
+          <li>Avoid special characters</li>
+          <li>Keep it short but descriptive</li>
+        </ul>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="static-site">Static Site</dt>
+      <dd>
+        A website where all pages are pre-built as HTML files at build time, rather than generated
+        on each request. Results in fast load times and simple hosting (like GitHub Pages).
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="view-transitions">View Transitions</dt>
+      <dd>
+        A browser feature that animates between page navigations, making the site feel like a
+        single-page application. Astro enables this with client-side routing while preserving the
+        benefits of static pages.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="yaml">YAML</dt>
+      <dd>
+        The format used for frontmatter. Uses indentation for structure and colons for key-value
+        pairs.
+        <pre><code>title: "Example"
+tags:
+  - one
+  - two
+nested:
+  key: value</code></pre>
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="zod">Zod</dt>
+      <dd>
+        A TypeScript-first schema validation library. Used to define and validate frontmatter
+        schemas. Provides helpful error messages when content doesn't match the expected structure.
+        <a href="https://zod.dev">zod.dev</a>
+      </dd>
+    </div>
+  </dl>
+
+  <h2 id="acronyms">Acronyms</h2>
+
+  <dl class="glossary">
+    <div class="glossary-entry">
+      <dt id="api">API</dt>
+      <dd>
+        Application Programming Interface. A set of functions that allow programs to interact with
+        each other. In this context, usually refers to VS Code's extension API or Astro's content
+        API.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="ci">CI</dt>
+      <dd>
+        Continuous Integration. Automated processes that run when code is pushed, including builds,
+        tests, and deployments. GitHub Actions runs our CI pipeline.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="css">CSS</dt>
+      <dd>
+        Cascading Style Sheets. The language used to style web pages—colors, fonts, spacing, and
+        layout. This site uses CSS custom properties (variables) for consistent design tokens.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="dpi">DPI</dt>
+      <dd>
+        Dots Per Inch. A measure of display resolution. High-DPI displays (Retina, 4K) pack more
+        pixels, requiring larger source images to appear sharp.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="dst">DST</dt>
+      <dd>
+        Daylight Saving Time. The practice of advancing clocks during summer. IANA timezones handle
+        DST automatically—<code>America/Los_Angeles</code>
+        is PST in winter and PDT in summer.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="e2e">E2E</dt>
+      <dd>
+        End-to-End testing. Tests that simulate real user interactions with the full application.
+        This site uses Playwright for E2E tests.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="html">HTML</dt>
+      <dd>
+        HyperText Markup Language. The standard language for web page structure. Astro compiles
+        markdown and components into HTML at build time.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="json">JSON</dt>
+      <dd>
+        JavaScript Object Notation. A data format using key-value pairs and arrays. Used for
+        configuration files like <code>package.json</code> and search indexes.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="pr">PR</dt>
+      <dd>
+        Pull Request. See <a href="#pull-request">Pull Request</a>.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="seo">SEO</dt>
+      <dd>
+        Search Engine Optimization. Practices that help content appear in search results. Includes
+        descriptive titles, meta descriptions, and semantic HTML.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="svg">SVG</dt>
+      <dd>
+        Scalable Vector Graphics. An image format using mathematical shapes rather than pixels. SVGs
+        scale perfectly to any size and work well for icons, logos, and diagrams.
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="utc">UTC</dt>
+      <dd>
+        Coordinated Universal Time. The primary time standard by which the world regulates clocks.
+        Amateur radio often uses UTC for logging contacts and contest times. Equivalent to GMT
+        (Greenwich Mean Time).
+      </dd>
+    </div>
+
+    <div class="glossary-entry">
+      <dt id="webp">WebP</dt>
+      <dd>
+        A modern image format developed by Google. Offers better compression than JPEG and PNG while
+        maintaining quality. Astro automatically converts images to WebP at build time.
+      </dd>
+    </div>
+  </dl>
+</DocsLayout>
+
+<style>
+  .glossary {
+    margin: 0;
+  }
+
+  .glossary-entry {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .glossary-entry:first-child {
+    padding-top: 0;
+  }
+
+  .glossary-entry dt {
+    font-weight: 600;
+    font-size: var(--step-1);
+    margin-bottom: var(--space-2);
+  }
+
+  .glossary-entry dd {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .glossary-entry dd a {
+    color: var(--color-link);
+  }
+
+  .glossary-entry pre {
+    margin-top: var(--space-2);
+    background: var(--color-surface-muted);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--step--1);
+    overflow-x: auto;
+  }
+
+  .glossary-entry ul {
+    margin-top: var(--space-2);
+    padding-left: var(--space-5);
+  }
+
+  .glossary-entry li {
+    margin-bottom: var(--space-1);
+  }
+</style>

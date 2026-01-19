@@ -1,19 +1,22 @@
 ---
 /**
  * Homepage - MicroHAMS
- * 
+ *
  * Demonstrates design system and layout primitives
  */
 
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PageLayout from '../layouts/PageLayout.astro';
 import EventCard from '../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../utils/content';
 
 // Get all published articles, sorted by date (newest first)
 const allArticles = await getCollection('articles', publishedFilter);
-const articles = allArticles.sort((a, b) => 
-  (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
+type Article = (typeof allArticles)[number];
+type Event = (typeof allEvents)[number];
+
+const articles = allArticles.sort(
+  (a: Article, b: Article) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
 );
 
 // Get all published events
@@ -22,7 +25,7 @@ const now = new Date();
 const nowMs = now.getTime();
 
 // Helper to get event end timestamp (end of endDate day, or end of eventDate day)
-function getEventEndMs(event: typeof allEvents[number]): number {
+function getEventEndMs(event: (typeof allEvents)[number]): number {
   const endDateValue = event.data.endDate || event.data.eventDate;
   const date = new Date(endDateValue);
   date.setHours(23, 59, 59, 999);
@@ -31,20 +34,20 @@ function getEventEndMs(event: typeof allEvents[number]): number {
 
 // Current: started but not ended
 const currentEvents = allEvents
-  .filter(event => {
+  .filter((event: Event) => {
     const start = event.data.eventDate.getTime();
     const end = getEventEndMs(event);
     return start <= nowMs && end >= nowMs;
   })
-  .sort((a, b) => {
+  .sort((a: Event, b: Event) => {
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
     return a.data.eventDate.getTime() - b.data.eventDate.getTime();
   });
 
 // Upcoming: not started yet
 const upcomingEvents = allEvents
-  .filter(event => event.data.eventDate.getTime() > nowMs)
-  .sort((a, b) => {
+  .filter((event: Event) => event.data.eventDate.getTime() > nowMs)
+  .sort((a: Event, b: Event) => {
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
     return a.data.eventDate.getTime() - b.data.eventDate.getTime();
   });
@@ -54,51 +57,63 @@ const currentAndUpcoming = [...currentEvents, ...upcomingEvents];
 
 // Hero event: prioritize featured upcoming (soonest), then featured current, then soonest overall
 // This ensures the "next thing to prepare for" gets hero treatment
-const featuredUpcoming = upcomingEvents.find(e => e.data.featured);
-const featuredCurrent = currentEvents.find(e => e.data.featured);
+const featuredUpcoming = upcomingEvents.find((e: Event) => e.data.featured);
+const featuredCurrent = currentEvents.find((e: Event) => e.data.featured);
 const heroEvent = featuredUpcoming || featuredCurrent || currentAndUpcoming[0];
 
 // Next 3 events after the hero
-const moreEvents = currentAndUpcoming
-  .filter(e => e !== heroEvent)
-  .slice(0, 3);
+const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slice(0, 3);
 ---
 
-<BaseLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
+<PageLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
   <!-- Featured Event Hero -->
-  {heroEvent ? (
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-6">
-          <EventCard event={heroEvent} variant="featured" />
-          
-          {/* More upcoming events grid */}
-          {moreEvents.length > 0 && (
-            <div class="stack-4">
-              <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Current & Upcoming</h2>
-              <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-4);">
-                {moreEvents.map((event) => (
-                  <EventCard event={event} variant="default" showDescription={false} />
-                ))}
+  {
+    heroEvent ? (
+      <section class="region">
+        <div class="wrapper">
+          <div class="stack-6">
+            <EventCard event={heroEvent} variant="featured" />
+
+            {/* More upcoming events grid */}
+            {moreEvents.length > 0 && (
+              <div class="stack-4">
+                <h2
+                  class="text-sm font-semibold"
+                  style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);"
+                >
+                  Current & Upcoming
+                </h2>
+                <div
+                  class="grid"
+                  style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-4);"
+                >
+                  {moreEvents.map((event) => (
+                    <EventCard event={event} variant="default" showDescription={false} />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </section>
-  ) : (
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-6">
-          <h1 class="text-5xl">Amateur Radio<br />Community & Resources</h1>
-          <p class="lead" style="max-inline-size: var(--measure-comfortable);">
-            Technical articles, projects, documentation, and community events 
-            for amateur radio enthusiasts in the Puget Sound area.
-          </p>
+      </section>
+    ) : (
+      <section class="region">
+        <div class="wrapper">
+          <div class="stack-6">
+            <h1 class="text-5xl">
+              Amateur Radio
+              <br />
+              Community & Resources
+            </h1>
+            <p class="lead" style="max-inline-size: var(--measure-comfortable);">
+              Technical articles, projects, documentation, and community events for amateur radio
+              enthusiasts in the Puget Sound area.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
   <!-- Section Divider -->
   <div class="wrapper">
@@ -106,54 +121,71 @@ const moreEvents = currentAndUpcoming
   </div>
 
   <!-- Featured Articles - Magazine Grid -->
-  {articles.length > 0 && (
-    <section class="region">
-      <div class="wrapper">
-        <div class="stack-8">
-          <div class="stack-2">
-            <h2 class="text-sm font-semibold" style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);">Featured</h2>
-            <h3 class="text-3xl">Recent Articles</h3>
-          </div>
-          
-          <!-- Two-column magazine layout -->
-          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);">
-            {articles.slice(0, 4).map((article: typeof articles[number]) => (
-              <article class="stack-3">
-                <div class="stack-2">
-                  {article.data.tags && article.data.tags.length > 0 && (
-                    <span class="badge">{article.data.tags[0]}</span>
+  {
+    articles.length > 0 && (
+      <section class="region">
+        <div class="wrapper">
+          <div class="stack-8">
+            <div class="stack-2">
+              <h2
+                class="text-sm font-semibold"
+                style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);"
+              >
+                Featured
+              </h2>
+              <h3 class="text-3xl">Recent Articles</h3>
+            </div>
+
+            {/* Two-column magazine layout */}
+            <div
+              class="grid"
+              style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);"
+            >
+              {articles.slice(0, 4).map((article: (typeof articles)[number]) => (
+                <article class="stack-3">
+                  <div class="stack-2">
+                    {article.data.tags && article.data.tags.length > 0 && (
+                      <span class="badge">{article.data.tags[0]}</span>
+                    )}
+                    <h4 class="text-2xl">
+                      <a
+                        href={`/articles/${article.slug}`}
+                        style="text-decoration: none; color: inherit;"
+                      >
+                        {article.data.title}
+                      </a>
+                    </h4>
+                  </div>
+                  {article.data.description && (
+                    <p style="color: var(--color-text-muted);">{article.data.description}</p>
                   )}
-                  <h4 class="text-2xl">
-                    <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
-                      {article.data.title}
-                    </a>
-                  </h4>
-                </div>
-                {article.data.description && (
-                  <p style="color: var(--color-text-muted);">{article.data.description}</p>
-                )}
-                {article.data.date && (
-                  <time class="text-sm" style="color: var(--color-text-subtle);" datetime={article.data.date.toISOString()}>
-                    {article.data.date.toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </time>
-                )}
-              </article>
-            ))}
-          </div>
-          
-          <div>
-            <a href="/articles" style="font-weight: var(--font-weight-medium);">
-              All Articles →
-            </a>
+                  {article.data.date && (
+                    <time
+                      class="text-sm"
+                      style="color: var(--color-text-subtle);"
+                      datetime={article.data.date.toISOString()}
+                    >
+                      {article.data.date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </time>
+                  )}
+                </article>
+              ))}
+            </div>
+
+            <div>
+              <a href="/articles" style="font-weight: var(--font-weight-medium);">
+                All Articles →
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
   <!-- Section Divider -->
   <div class="wrapper">
@@ -163,40 +195,37 @@ const moreEvents = currentAndUpcoming
   <!-- Footer Editorial Section -->
   <section class="region" style="background-color: var(--color-surface-muted);">
     <div class="wrapper">
-      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-12);">
+      <div
+        class="grid"
+        style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-12);"
+      >
         <div class="stack-4">
           <h3 class="text-xl">About MicroHAMS</h3>
           <p style="color: var(--color-text-muted);">
-            A dynamic organization of amateur radio enthusiasts in the Puget Sound area 
-            dedicated to inspiring, informing, and educating through hands-on experimentation.
+            A dynamic organization of amateur radio enthusiasts in the Puget Sound area dedicated to
+            inspiring, informing, and educating through hands-on experimentation.
           </p>
-          <a href="/about" style="font-weight: var(--font-weight-medium);">
-            Learn More →
-          </a>
+          <a href="/about" style="font-weight: var(--font-weight-medium);"> Learn More → </a>
         </div>
-        
+
         <div class="stack-4">
           <h3 class="text-xl">Documentation</h3>
           <p style="color: var(--color-text-muted);">
-            Technical guides, reference materials, and educational resources 
-            for amateur radio operators of all skill levels.
+            Technical guides, reference materials, and educational resources for amateur radio
+            operators of all skill levels.
           </p>
-          <a href="/docs" style="font-weight: var(--font-weight-medium);">
-            Browse Docs →
-          </a>
+          <a href="/docs" style="font-weight: var(--font-weight-medium);"> Browse Docs → </a>
         </div>
-        
+
         <div class="stack-4">
           <h3 class="text-xl">Events</h3>
           <p style="color: var(--color-text-muted);">
-            Monthly meetings, workshops, and special events featuring presentations 
-            from experts and community members.
+            Monthly meetings, workshops, and special events featuring presentations from experts and
+            community members.
           </p>
-          <a href="/events" style="font-weight: var(--font-weight-medium);">
-            View Calendar →
-          </a>
+          <a href="/events" style="font-weight: var(--font-weight-medium);"> View Calendar → </a>
         </div>
       </div>
     </div>
   </section>
-</BaseLayout>
+</PageLayout>

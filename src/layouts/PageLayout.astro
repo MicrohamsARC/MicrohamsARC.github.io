@@ -1,0 +1,33 @@
+---
+/**
+ * Page Layout - Standard Site Pages
+ *
+ * Composes: RootLayout + SiteHeader + main + SiteFooter
+ *
+ * Use for most pages on the site. For specialized layouts
+ * (docs with sidebar, full-bleed pages), compose directly
+ * from RootLayout.
+ */
+
+import RootLayout from './RootLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  author?: string;
+}
+
+const { title, description, author } = Astro.props;
+---
+
+<RootLayout title={title} description={description} author={author}>
+  <SiteHeader />
+
+  <main>
+    <slot />
+  </main>
+
+  <SiteFooter />
+</RootLayout>

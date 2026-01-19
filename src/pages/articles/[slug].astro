@@ -1,7 +1,7 @@
 ---
 /**
  * Dynamic Article Pages
- * 
+ *
  * Generates individual pages for each article
  */
 
@@ -11,8 +11,9 @@ import { publishedFilter } from '../../utils/content';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles', publishedFilter);
-  
-  return articles.map((article) => ({
+  type Article = (typeof articles)[number];
+
+  return articles.map((article: Article) => ({
     params: { slug: article.slug },
     props: { article },
   }));

@@ -1,30 +1,38 @@
 ---
 /**
  * Articles Index Page
- * 
+ *
  * Lists all published articles in a gallery grid
  */
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
+type Article = CollectionEntry<'articles'>;
+
 // Get all published articles, sorted by date
-const articles = (await getCollection('articles', publishedFilter))
-  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+const articles = (await getCollection('articles', publishedFilter)).sort(
+  (a: Article, b: Article) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
+);
 
 // Warn about articles missing tags at build time
-articles.forEach(article => {
+articles.forEach((article: Article) => {
   if (!article.data.tags || article.data.tags.length === 0) {
     console.warn(`[articles] Warning: "${article.data.title}" (${article.slug}) has no tags`);
   }
 });
 
 // Extract all unique tags
-const allTags = [...new Set(articles.flatMap(article => article.data.tags ?? []))] as string[];
+const allTags = [
+  ...new Set(articles.flatMap((article: Article) => article.data.tags ?? [])),
+] as string[];
 ---
 
-<BaseLayout title="Articles" description="Technical articles and guides for amateur radio operators">
+<PageLayout
+  title="Articles"
+  description="Technical articles and guides for amateur radio operators"
+>
   <!-- Page Header -->
   <section class="region">
     <div class="wrapper wrapper--full">
@@ -42,59 +50,64 @@ const allTags = [...new Set(articles.flatMap(article => article.data.tags ?? [])
     <div class="wrapper wrapper--full">
       <div class="stack-8">
         <!-- Tag Filter -->
-        {allTags.length > 0 && (
-          <div class="cluster" style="--cluster-gap: var(--space-2);">
-            <span class="text-sm text-muted">Filter:</span>
-            {allTags.map((tag) => (
-              <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
-            ))}
-          </div>
-        )}
+        {
+          allTags.length > 0 && (
+            <div class="cluster" style="--cluster-gap: var(--space-2);">
+              <span class="text-sm text-muted">Filter:</span>
+              {allTags.map((tag) => (
+                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">
+                  {tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
 
         <!-- Articles -->
         <div class="grid grid--auto-fit">
-          {articles.map((article) => (
-            <article class="card" data-variant="interactive">
-              <div class="card__header">
-                <div class="cluster" style="--cluster-gap: var(--space-xs);">
-                  {article.data.category && (
-                    <span class="badge">{article.data.category}</span>
+          {
+            articles.map((article: Article) => (
+              <article class="card" data-variant="interactive">
+                <div class="card__header">
+                  <div class="cluster" style="--cluster-gap: var(--space-xs);">
+                    {article.data.category && <span class="badge">{article.data.category}</span>}
+                  </div>
+                  <h2 class="card__title">
+                    <a
+                      href={`/articles/${article.slug}`}
+                      style="text-decoration: none; color: inherit;"
+                    >
+                      {article.data.title}
+                    </a>
+                  </h2>
+                  {article.data.description && (
+                    <p class="card__description">{article.data.description}</p>
                   )}
                 </div>
-                <h2 class="card__title">
-                  <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
-                    {article.data.title}
-                  </a>
-                </h2>
-                {article.data.description && (
-                  <p class="card__description">{article.data.description}</p>
-                )}
-              </div>
 
-              <div class="card__footer">
-                <div class="cluster" style="--cluster-gap: var(--space-4);">
-                  {article.data.date && (
-                    <time class="text-xs text-muted" datetime={article.data.date.toISOString()}>
-                      {article.data.date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </time>
-                  )}
-                  {article.data.author && (
-                    <span class="text-xs text-muted">{article.data.author}</span>
-                  )}
+                <div class="card__footer">
+                  <div class="cluster" style="--cluster-gap: var(--space-4);">
+                    {article.data.date && (
+                      <time class="text-xs text-muted" datetime={article.data.date.toISOString()}>
+                        {article.data.date.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </time>
+                    )}
+                    {article.data.author && (
+                      <span class="text-xs text-muted">{article.data.author}</span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))
+          }
         </div>
 
-        {articles.length === 0 && (
-          <p class="text-muted">No articles found. Check back soon!</p>
-        )}
+        {articles.length === 0 && <p class="text-muted">No articles found. Check back soon!</p>}
       </div>
     </div>
   </section>
-</BaseLayout>
+</PageLayout>

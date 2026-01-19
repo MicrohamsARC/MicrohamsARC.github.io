@@ -1,0 +1,569 @@
+---
+/**
+ * Contributing: Events Guide
+ *
+ * Comprehensive guide for adding events (meetings, field days, contests).
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { venues, onlineMeetings, getGitHubContentUrl } from '../../site.config';
+import { getCollection } from 'astro:content';
+
+const currentPath = '/contributing/events';
+
+const headings = [
+  { text: 'Event Folder Structure', slug: 'event-folder-structure' },
+  { text: 'Required Fields', slug: 'required-fields' },
+  { text: 'Date & Time Fields', slug: 'date-time-fields' },
+  { text: 'Venues', slug: 'venues' },
+  { text: 'Online Meetings', slug: 'online-meetings' },
+  { text: 'All Optional Fields', slug: 'all-optional-fields' },
+  { text: 'Examples', slug: 'examples' },
+  { text: 'Current Events', slug: 'current-events' },
+];
+
+// Get venue keys for reference
+const venueKeys = Object.keys(venues);
+const meetingKeys = Object.keys(onlineMeetings);
+
+// Get all events
+const events = await getCollection('events');
+type Event = (typeof events)[number];
+---
+
+<DocsLayout
+  title="Adding Events"
+  description="How to add meetings, field days, and other events"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Adding Events</h1>
+
+  <p>
+    Events include monthly meetings, field days, contests, and special events. Each event is a
+    folder in <code>src/content/events/</code> containing an <code>index.md</code> file.
+  </p>
+
+  <h2 id="event-folder-structure">Event Folder Structure</h2>
+
+  <p>Use the naming convention <code>YYYY-MM-event-name/</code>:</p>
+
+  <pre><code>src/content/events/
+├── 2026-01-january-meeting/
+│   └── index.md
+├── 2026-01-winter-field-day/
+│   ├── index.md
+│   └── flyer.pdf
+└── 2026-02-february-meeting/
+    └── index.md</code></pre>
+
+  <div class="callout">
+    <p>
+      <strong>Folder naming:</strong> The folder name becomes the URL slug. Use <code>YYYY-MM-</code
+      > prefix for chronological sorting.
+    </p>
+  </div>
+
+  <h2 id="required-fields">Required Fields</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>title</code></td>
+        <td>Event name</td>
+      </tr>
+      <tr>
+        <td><code>date</code></td>
+        <td>Event date in <code>YYYY-MM-DD</code> format</td>
+      </tr>
+      <tr>
+        <td><code>startTime</code></td>
+        <td>Start time in 24-hour format (<code>HH:MM</code>)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="date-time-fields">Date & Time Fields</h2>
+
+  <p>Events support single-day or multi-day schedules:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Description</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>date</code></td>
+        <td>Event date</td>
+        <td><code>2026-01-15</code></td>
+      </tr>
+      <tr>
+        <td><code>startTime</code></td>
+        <td>Start time (24h)</td>
+        <td><code>"19:00"</code></td>
+      </tr>
+      <tr>
+        <td><code>endTime</code></td>
+        <td>End time (optional)</td>
+        <td><code>"21:00"</code></td>
+      </tr>
+      <tr>
+        <td><code>endDate</code></td>
+        <td>For multi-day events</td>
+        <td><code>2026-01-26</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Multi-Day Example</h3>
+
+  <pre><code>---
+title: "Winter Field Day"
+date: 2026-01-25
+startTime: "11:00"
+endDate: 2026-01-26
+endTime: "11:00"
+---</code></pre>
+
+  <h2 id="venues">Venues</h2>
+
+  <p>
+    Use a <code>venue</code> key to reference a pre-defined location from
+    <a href="/contributing/venues">site config</a>:
+  </p>
+
+  <pre><code>venue: "redmond-library"</code></pre>
+
+  <p>Available venue keys:</p>
+  <ul>
+    {
+      venueKeys.map((key) => (
+        <li>
+          <code>{key}</code>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h3>Custom Venue</h3>
+
+  <p>For one-off locations, use <code>customVenue</code> instead:</p>
+
+  <pre><code>customVenue:
+  name: "Marymoor Park"
+  address: "6046 W Lake Sammamish Pkwy NE, Redmond, WA 98052"
+  room: "Shelter #4"
+  mapUrl: "https://maps.google.com/..."</code></pre>
+
+  <h2 id="online-meetings">Online Meetings</h2>
+
+  <p>For hybrid or online-only events:</p>
+
+  <pre><code>online: "zoom-main"   # or "teams-alt"</code></pre>
+
+  <p>Available online meeting keys:</p>
+  <ul>
+    {
+      meetingKeys.map((key) => (
+        <li>
+          <code>{key}</code>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p>The join link and platform details come from site config automatically.</p>
+
+  <h2 id="all-optional-fields">All Optional Fields</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>description</code></td>
+        <td>Brief summary for SEO and listings</td>
+      </tr>
+      <tr>
+        <td><code>endTime</code></td>
+        <td>When the event ends</td>
+      </tr>
+      <tr>
+        <td><code>endDate</code></td>
+        <td>End date for multi-day events</td>
+      </tr>
+      <tr>
+        <td><code>venue</code></td>
+        <td>Key referencing a venue in site config</td>
+      </tr>
+      <tr>
+        <td><code>customVenue</code></td>
+        <td>One-off venue details (object with name, address, etc.)</td>
+      </tr>
+      <tr>
+        <td><code>onlineMeeting</code></td>
+        <td>Key referencing online meeting in site config</td>
+      </tr>
+      <tr>
+        <td><code>tags</code></td>
+        <td>Keywords for filtering</td>
+      </tr>
+      <tr>
+        <td><code>featured</code></td>
+        <td>Highlight on homepage</td>
+      </tr>
+      <tr>
+        <td><code>draft</code></td>
+        <td>Exclude from production</td>
+      </tr>
+      <tr>
+        <td><code>eventLink</code></td>
+        <td>Link to external event page (e.g., ARRL contest)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="examples">Examples</h2>
+
+  <p>
+    Below are annotated examples covering common event types. Each example includes comments
+    explaining why specific fields are used.
+  </p>
+
+  <h3>Recurring Monthly Meeting</h3>
+
+  <p>
+    The most common event type. Uses a pre-configured venue and online meeting, with full
+    presentation details.
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CORE INFORMATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "January Meeting: Modernizing the RF Data Path"
+  # Include the topic in the title for listings
+description: "This month we ask: It's 2026—why are we still using acoustic couplers?"
+  # One sentence for search results and cards
+author: "Brian Stucker, KB2S"
+  # Presenter's name and callsign
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# DATE & TIME
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventDate: 2026-01-20
+  # Third Tuesday pattern for club meetings
+startTime: "6:00 PM"
+  # Can use 12-hour ("6:00 PM") or 24-hour ("18:00") format
+endTime: "8:30 PM"
+  # Optional but helpful for calendar blocking
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LOCATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+venue: "building-31"
+  # Key from site.config.ts → provides address, map, directions
+onlineMeeting: "microhams-teams"
+  # Key from site.config.ts → provides join link, phone dial-in
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# METADATA
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventType: "meeting"
+  # Categorizes for filtering
+registrationRequired: false
+  # Most meetings are open to all
+contactPerson: "Brian Stucker, KB2S"
+featured: true
+  # Shows on homepage—use sparingly
+tags: ["SDR", "digital modes"]
+  # For topic-based discovery
+---
+
+## Presentation
+
+Brian Stucker, KB2S explores modern alternatives to traditional 
+audio-coupled digital mode interfaces...
+
+## Meeting Schedule
+
+**6:00 PM - Meeting Begins:**
+
+- Show and Tell
+- Ham Help
+- News and upcoming events
+
+**6:30 PM - Presentation:**
+
+- Modernizing Amateur Radio Sample Transport by Brian Stucker, KB2S`}</code></pre>
+
+  <h3>Multi-Day Field Event</h3>
+
+  <p>
+    Events spanning multiple days, like Field Day or contests. Uses <code>endDate</code>
+    for the duration and <code>customVenue</code> for a one-time location.
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CORE INFORMATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "Winter Field Day 2026"
+description: "Join us for 24 hours of emergency-style operating from Marymoor Park"
+author: "Field Day Committee"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# DATE & TIME — Multi-day event
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventDate: 2026-01-25
+  # Start date
+startTime: "11:00 AM"
+  # Contest starts at 11:00 AM local (19:00 UTC)
+endDate: 2026-01-26
+  # End date—shows "Happening Now" for entire duration
+endTime: "11:00 AM"
+  # 24-hour event
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LOCATION — One-time field location
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+customVenue:
+  name: "Marymoor Park"
+  address: "6046 W Lake Sammamish Pkwy NE, Redmond, WA 98052"
+  room: "Shelter #4"
+  # Additional location details as needed
+  latitude: 47.6617
+  longitude: -122.1207
+  # Enables embedded map on event page
+  coordFrequency: "146.52 MHz"
+  # Coordination frequency for mobile arrivals
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# METADATA
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventType: "field-day"
+registrationRequired: true
+registrationLink: "https://forms.example.com/wfd2026"
+contactPerson: "Field Day Chair"
+contactEmail: "fieldday@microhams.org"
+featured: true
+tags: ["field-day", "emergency-comms", "hf"]
+---
+
+## What is Winter Field Day?
+
+Winter Field Day is an annual event encouraging amateur radio operators 
+to operate under emergency-like conditions...
+
+## Schedule
+
+**Saturday 11:00 AM:** Setup begins, antennas go up
+**Saturday 12:00 PM:** Contest starts (19:00 UTC)
+**Sunday 11:00 AM:** Contest ends, teardown
+
+## What to Bring
+
+- Your radio and power supply
+- Warm clothing (it's January!)
+- Folding chair and snacks`}</code></pre>
+
+  <h3>External Event (DXpedition/Contest)</h3>
+
+  <p>
+    For events we don't host but want to highlight—DXpeditions, major contests, hamfests. Links to
+    the official event page rather than providing our own content.
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CORE INFORMATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "KP5 Desecheo Island DXpedition"
+description: "Rare DXCC activation—#7 most wanted worldwide"
+  # Brief teaser—full details on external site
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# DATE & TIME
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventDate: 2026-01-21
+startTime: "12:00 AM"
+  # 24-hour operations, approximate
+endDate: 2026-02-11
+endTime: "11:59 PM"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# EXTERNAL LINK — No venue, links to official site
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventLink: "https://kp5.us/"
+  # Official DXpedition website—"Event Website →" button appears
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# METADATA
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventType: "dxpedition"
+featured: true
+tags: ["DXpedition", "DX", "HF", "rare DXCC"]
+---
+
+## About This DXpedition
+
+Desecheo Island (KP5) is the #7 most wanted DXCC entity worldwide. 
+This major DXpedition will be active on all bands and modes.
+
+## Operating Frequencies
+
+See the [official KP5 website](https://kp5.us/) for band plans 
+and live spotting.`}</code></pre>
+
+  <h3>Period of Activity (No Physical Gathering)</h3>
+
+  <p>
+    For events that are a span of time but don't involve a meeting or specific location—operating
+    weeks, on-air events, or QSO parties.
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CORE INFORMATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "Worked All MicroHAMS Week"
+description: "Make contacts with club members throughout the week for awards"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# DATE & TIME — Week-long activity
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventDate: 2026-03-01
+  # Start of activity period
+endDate: 2026-03-07
+  # End of activity period
+# No startTime/endTime—operates 24/7
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# NO VENUE — This is an on-air event
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Omit venue, customVenue, and onlineMeeting entirely
+# The event page will focus on the rules and participation info
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# METADATA
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+eventType: "on-air-event"
+contactPerson: "Awards Manager"
+contactEmail: "awards@microhams.org"
+tags: ["on-air", "awards", "club-activity"]
+---
+
+## How to Participate
+
+Work as many MicroHAMS members as you can during the week!
+
+## Suggested Frequencies
+
+- **2m FM:** 146.52 MHz simplex
+- **70cm:** 446.000 MHz simplex  
+- **HF:** 7.260 MHz, 14.260 MHz (±QRM)
+
+## Awards
+
+- **Bronze:** 5 unique members
+- **Silver:** 10 unique members
+- **Gold:** 20 unique members
+
+Submit logs to awards@microhams.org by March 14th.`}</code></pre>
+
+  <h3>Draft Placeholder (Future Meeting)</h3>
+
+  <p>
+    Use <code>draft: true</code> for events you're setting up in advance but aren't ready to publish.
+    Drafts appear in local development but not on the live site.
+  </p>
+
+  <pre><code>{`---
+title: "February Meeting"
+  # Update with topic when confirmed
+description: "Monthly MicroHAMS meeting"
+eventDate: 2026-02-17
+startTime: "6:00 PM"
+endTime: "8:30 PM"
+venue: "building-31"
+onlineMeeting: "microhams-teams"
+eventType: "meeting"
+registrationRequired: false
+draft: true
+  # ← Hides from production until ready
+tags: []
+---
+
+## Meeting Schedule
+
+**6:00 PM - Meeting Begins:**
+
+- Show and Tell
+- Ham Help  
+- News and upcoming events
+
+**6:30 PM - Presentation:**
+
+- TBD`}</code></pre>
+
+  <p>
+    When the presentation topic is confirmed, update the title, description, author, tags, and
+    remove <code>draft: true</code> to publish.
+  </p>
+
+  <h2 id="current-events">Current Events</h2>
+
+  <p>Existing events for reference:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Published</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        events
+          .sort(
+            (a: Event, b: Event) =>
+              (b.data.eventDate?.getTime() ?? 0) - (a.data.eventDate?.getTime() ?? 0)
+          )
+          .map((event: Event) => (
+            <tr>
+              <td>{event.data.title}</td>
+              <td>
+                <a href={`/events/${event.id}`}>View page</a>
+              </td>
+              <td>
+                <a
+                  href={getGitHubContentUrl('events', event.id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Edit on GitHub ↗
+                </a>
+              </td>
+            </tr>
+          ))
+      }
+    </tbody>
+  </table>
+</DocsLayout>

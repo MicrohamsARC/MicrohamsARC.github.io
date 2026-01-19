@@ -1,0 +1,100 @@
+---
+/**
+ * Contributing Overview
+ *
+ * Landing page for contributor documentation.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { siteConfig } from '../../site.config';
+
+const currentPath = '/contributing';
+
+const headings = [
+  { text: 'Adding Content', slug: 'adding-content' },
+  { text: 'Reference', slug: 'reference' },
+  { text: 'Development', slug: 'development' },
+  { text: 'Content Principles', slug: 'content-principles' },
+];
+---
+
+<DocsLayout
+  title="Contributing"
+  description={`How to contribute to ${siteConfig.name}`}
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Contributing to {siteConfig.name}</h1>
+
+  <p class="lead" style="font-size: var(--step-1); color: var(--color-text-muted);">
+    Everything you need to add content or contribute code to this site.
+  </p>
+
+  <h2 id="adding-content">Adding Content</h2>
+
+  <p>
+    Most contributions are content: events, articles, and documentation. Each content type has its
+    own guide with examples and field references.
+  </p>
+
+  <ul>
+    <li>
+      <a href="/contributing/events">Events</a> — Meetings, field days, contests, and activities
+    </li>
+    <li><a href="/contributing/articles">Articles</a> — Guides, tutorials, news, and reviews</li>
+    <li><a href="/contributing/docs">Documentation</a> — Technical reference and how-tos</li>
+  </ul>
+
+  <p>
+    Before writing, review the <a href="/contributing/editorial">Editorial Guidelines</a>
+    for voice, tone, and structure conventions.
+  </p>
+
+  <p>
+    Events use pre-configured <a href="/contributing/venues">Venues</a> and
+    <a href="/contributing/online-meetings">Online Meeting</a> settings — you just reference them by
+    key.
+  </p>
+
+  <h2 id="reference">Reference</h2>
+
+  <p>Technical details for content authors and developers:</p>
+
+  <ul>
+    <li><a href="/contributing/markdown">Markdown</a> — Supported syntax and extensions</li>
+    <li><a href="/contributing/typography">Typography</a> — Text sizing and layout</li>
+    <li><a href="/contributing/design">Design Language</a> — Colors, spacing, components</li>
+    <li>
+      <a href="/contributing/date-time">Date & Time</a> — Timezone handling and event categorization
+    </li>
+    <li><a href="/contributing/schemas">Schema Reference</a> — Auto-generated from Zod schemas</li>
+    <li><a href="/contributing/glossary">Glossary</a> — Amateur radio terms and abbreviations</li>
+  </ul>
+
+  <h2 id="development">Development</h2>
+
+  <p>For code contributions or running the site locally:</p>
+
+  <ul>
+    <li><a href="/contributing/setup">Local Setup</a> — Clone, install, and run the dev server</li>
+    <li><a href="/contributing/pull-requests">Pull Requests</a> — How to submit changes</li>
+    <li><a href="/contributing/how-it-works">How It Works</a> — Architecture and build process</li>
+  </ul>
+
+  <h2 id="content-principles">Content Principles</h2>
+
+  <ul>
+    <li><strong>Accuracy</strong> — Technical information must be verified and correct</li>
+    <li><strong>Clarity</strong> — Write for clarity, not cleverness</li>
+    <li><strong>Completeness</strong> — Provide enough detail for readers to reproduce results</li>
+    <li><strong>Attribution</strong> — Credit sources and original authors</li>
+  </ul>
+
+  <p>
+    Questions? <a href="https://github.com/MicrohamsARC/MicrohamsARC.github.io/issues"
+      >Open an issue</a
+    > on GitHub.
+  </p>
+</DocsLayout>

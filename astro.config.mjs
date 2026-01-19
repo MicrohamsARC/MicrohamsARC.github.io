@@ -35,8 +35,9 @@ export default defineConfig({
     },
     // Build optimizations
     build: {
-      // Generate source maps for debugging
-      sourcemap: true,
+      // Disable sourcemaps in production to avoid astro:transitions warning
+      // Dev still has sourcemaps via devSourcemap below
+      sourcemap: false,
       // Report compressed size
       reportCompressedSize: true,
       // CSS code splitting

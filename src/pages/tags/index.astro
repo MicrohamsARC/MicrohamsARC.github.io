@@ -1,0 +1,188 @@
+---
+/**
+ * Tags Index Page
+ *
+ * Lists all tags used across articles, events, and docs with links to content
+ */
+
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import { publishedFilter } from '../../utils/content';
+
+// Get all published content
+const articles = await getCollection('articles', publishedFilter);
+const events = await getCollection('events');
+const docs = await getCollection('docs');
+
+type Article = (typeof articles)[number];
+type Event = (typeof events)[number];
+type Doc = (typeof docs)[number];
+
+// Build flat list: { tag, title, url, type }
+type ContentRow = { tag: string; title: string; url: string; type: 'Article' | 'Event' | 'Doc' };
+const rows: ContentRow[] = [];
+
+articles.forEach((item: Article) => {
+  const slug = item.id.replace(/\.md$/, '').replace(/\/index$/, '');
+  item.data.tags?.forEach((tag: string) =>
+    rows.push({
+      tag,
+      title: item.data.title,
+      url: `/articles/${slug}`,
+      type: 'Article',
+    })
+  );
+});
+
+events.forEach((item: Event) => {
+  const slug = item.id.replace(/\.md$/, '').replace(/\/index$/, '');
+  item.data.tags?.forEach((tag: string) =>
+    rows.push({
+      tag,
+      title: item.data.title,
+      url: `/events/${slug}`,
+      type: 'Event',
+    })
+  );
+});
+
+docs.forEach((item: Doc) => {
+  const slug = item.id.replace(/\.md$/, '').replace(/\/index$/, '');
+  item.data.tags?.forEach((tag: string) =>
+    rows.push({
+      tag,
+      title: item.data.title,
+      url: `/docs/${slug}`,
+      type: 'Doc',
+    })
+  );
+});
+
+// Sort by tag, then by title
+rows.sort((a, b) => {
+  const tagCompare = a.tag.toLowerCase().localeCompare(b.tag.toLowerCase());
+  if (tagCompare !== 0) return tagCompare;
+  return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
+});
+---
+
+<PageLayout title="Tags" description="Browse content by topic">
+  <section class="region">
+    <div class="wrapper">
+      <div class="stack-8">
+        <!-- Page Header -->
+        <header class="stack-4">
+          <h1 class="text-4xl">Tags</h1>
+          <p class="lead" style="max-inline-size: var(--measure-wide);">
+            Browse content by topic. Each row links to an article, event, or documentation page.
+          </p>
+        </header>
+
+        <!-- Tags Table -->
+        {
+          rows.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Tag</th>
+                  <th>Content</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr>
+                    <td>
+                      <code>{row.tag}</code>
+                    </td>
+                    <td>
+                      <a href={row.url}>{row.title}</a>
+                    </td>
+                    <td>
+                      <span class="type-badge" data-type={row.type.toLowerCase()}>
+                        {row.type}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p class="text-muted">No tags found. Content will appear here once tagged.</p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  table {
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  tbody tr:hover {
+    background-color: var(--color-surface-muted);
+  }
+
+  .type-badge {
+    font-size: var(--text-xs);
+    padding: 0.25em 0.75em;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  /* WCAG AA compliant badge colors (4.5:1 minimum contrast) */
+  .type-badge[data-type='article'] {
+    background-color: oklch(90% 0.05 220); /* Light blue-gray */
+    color: oklch(30% 0.08 220); /* Dark blue: ~7:1 contrast */
+  }
+
+  .type-badge[data-type='event'] {
+    background-color: oklch(90% 0.05 300); /* Light purple-gray */
+    color: oklch(30% 0.08 300); /* Dark purple: ~7:1 contrast */
+  }
+
+  .type-badge[data-type='doc'] {
+    background-color: oklch(90% 0.05 150); /* Light green-gray */
+    color: oklch(30% 0.08 150); /* Dark green: ~7:1 contrast */
+  }
+
+  /* Dark mode: invert the pattern */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .type-badge[data-type='article'] {
+      background-color: oklch(25% 0.05 220);
+      color: oklch(80% 0.08 220);
+    }
+
+    :root:not([data-theme='light']) .type-badge[data-type='event'] {
+      background-color: oklch(25% 0.05 300);
+      color: oklch(80% 0.08 300);
+    }
+
+    :root:not([data-theme='light']) .type-badge[data-type='doc'] {
+      background-color: oklch(25% 0.05 150);
+      color: oklch(80% 0.08 150);
+    }
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='article'] {
+    background-color: oklch(25% 0.05 220);
+    color: oklch(80% 0.08 220);
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='event'] {
+    background-color: oklch(25% 0.05 300);
+    color: oklch(80% 0.08 300);
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='doc'] {
+    background-color: oklch(25% 0.05 150);
+    color: oklch(80% 0.08 150);
+  }
+</style>

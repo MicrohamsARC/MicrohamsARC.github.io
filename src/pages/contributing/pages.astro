@@ -1,0 +1,240 @@
+---
+/**
+ * Contributing: Pages Guide
+ *
+ * How to edit standalone pages like About, membership info, etc.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { getCollection } from 'astro:content';
+import { getGitHubContentUrl } from '../../site.config';
+
+const currentPath = '/contributing/pages';
+
+const headings = [
+  { text: 'What are Pages?', slug: 'what-are-pages' },
+  { text: 'Editing the About Page', slug: 'editing-the-about-page' },
+  { text: 'Page Fields', slug: 'page-fields' },
+  { text: 'Content Guidelines', slug: 'content-guidelines' },
+  { text: 'Current Pages', slug: 'current-pages' },
+];
+
+const pages = await getCollection('pages');
+type Page = (typeof pages)[number];
+---
+
+<DocsLayout
+  title="Editing Pages"
+  description="How to edit standalone pages like About, membership, and contact information"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Editing Pages</h1>
+
+  <p>
+    Pages are standalone content that doesn't fit into articles, events, or documentation. The most
+    important page is the <strong>About</strong> page—the face of the club for visitors.
+  </p>
+
+  <h2 id="what-are-pages">What are Pages?</h2>
+
+  <p>
+    Unlike articles (which are dated and authored) or documentation (which is reference material),
+    pages are standalone content representing the club itself:
+  </p>
+
+  <ul>
+    <li><strong>About</strong> — Club mission, leadership, history, and membership info</li>
+    <li><strong>Contact</strong> — How to reach the club</li>
+    <li><strong>Membership</strong> — Requirements, dues, benefits</li>
+  </ul>
+
+  <p>
+    Pages live in <code>src/content/pages/</code> and are written in Markdown.
+  </p>
+
+  <h2 id="editing-the-about-page">Editing the About Page</h2>
+
+  <p>The About page is the most frequently updated page. Common updates include:</p>
+
+  <ul>
+    <li><strong>Board of Directors</strong> — Update after annual elections</li>
+    <li><strong>Meeting schedule</strong> — Verify times and locations are current</li>
+    <li><strong>Membership dues</strong> — Update if pricing changes</li>
+    <li><strong>Partner organizations</strong> — Add new partnerships</li>
+    <li><strong>"Last updated" date</strong> — Update when making any changes</li>
+  </ul>
+
+  <h3>About Page Location</h3>
+
+  <pre><code>src/content/pages/about.md</code></pre>
+
+  <p>
+    <a href={getGitHubContentUrl('pages', 'about.md')} target="_blank" rel="noopener noreferrer">
+      Edit about.md on GitHub ↗
+    </a>
+  </p>
+
+  <h3>Key Sections to Maintain</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>Update When</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Board of Directors</td>
+        <td>After annual elections (typically fall)</td>
+      </tr>
+      <tr>
+        <td>Monthly Meetings</td>
+        <td>If meeting day, time, or location changes</td>
+      </tr>
+      <tr>
+        <td>Membership Dues</td>
+        <td>If pricing structure changes</td>
+      </tr>
+      <tr>
+        <td>Focus Areas</td>
+        <td>When club priorities evolve</td>
+      </tr>
+      <tr>
+        <td>Partner Organizations</td>
+        <td>When partnerships are added or ended</td>
+      </tr>
+      <tr>
+        <td>Last Updated</td>
+        <td>Every time you edit the page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p>
+      <strong>Always update the "Last updated" date</strong> at the bottom of the About page when making
+      changes. This helps visitors know the information is current.
+    </p>
+  </div>
+
+  <h2 id="page-fields">Page Fields</h2>
+
+  <p>Pages have simple frontmatter:</p>
+
+  <pre><code>---
+title: "About"
+description: "Learn about the MicroHAMS Amateur Radio Club"
+author: "MicroHAMS Team"
+date: 2025-12-02
+hideHeader: true
+---</code></pre>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>title</code></td>
+        <td>Yes</td>
+        <td>Page title for browser tab and SEO</td>
+      </tr>
+      <tr>
+        <td><code>description</code></td>
+        <td>No</td>
+        <td>Summary for search results and social shares</td>
+      </tr>
+      <tr>
+        <td><code>author</code></td>
+        <td>No</td>
+        <td>Who maintains this content</td>
+      </tr>
+      <tr>
+        <td><code>date</code></td>
+        <td>No</td>
+        <td>Last significant update</td>
+      </tr>
+      <tr>
+        <td><code>hideHeader</code></td>
+        <td>No</td>
+        <td>If true, page content starts without auto-generated title</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="content-guidelines">Content Guidelines</h2>
+
+  <h3>Writing for the About Page</h3>
+
+  <ul>
+    <li><strong>Be welcoming:</strong> The About page is often a visitor's first impression</li>
+    <li><strong>Be accurate:</strong> Double-check names, callsigns, dates, and contact info</li>
+    <li>
+      <strong>Be current:</strong> Remove references to past events unless historically significant
+    </li>
+    <li><strong>Be concise:</strong> Visitors scan—use headings, lists, and short paragraphs</li>
+  </ul>
+
+  <h3>Board Member Updates</h3>
+
+  <p>When updating the Board of Directors section:</p>
+
+  <ol>
+    <li>Verify all names and callsigns are correct</li>
+    <li>Update the term year in the heading (e.g., "2025-2026")</li>
+    <li>
+      List positions in order: President, Vice President, Secretary, Treasurer, Members at Large
+    </li>
+    <li>Remove outgoing members; add incoming members</li>
+  </ol>
+
+  <h3>Contact Information</h3>
+
+  <p>
+    Contact information should use the club's official channels, not personal contact info. Keep the
+    mailing address, email, and website current.
+  </p>
+
+  <h2 id="current-pages">Current Pages</h2>
+
+  <p>Existing pages:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Published</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        pages.map((page: Page) => (
+          <tr>
+            <td>{page.data.title}</td>
+            <td>
+              <a href={`/${page.id.replace('.md', '')}`}>View page</a>
+            </td>
+            <td>
+              <a
+                href={getGitHubContentUrl('pages', page.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Edit on GitHub ↗
+              </a>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</DocsLayout>

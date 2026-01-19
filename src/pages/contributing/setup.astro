@@ -1,0 +1,164 @@
+---
+/**
+ * Contributing: Local Setup Guide
+ *
+ * How to set up the development environment.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/setup';
+
+const headings = [
+  { text: 'Prerequisites', slug: 'prerequisites' },
+  { text: 'Quick Start', slug: 'quick-start' },
+  { text: 'Available Commands', slug: 'available-commands' },
+  { text: 'Project Structure', slug: 'project-structure' },
+  { text: 'Content Workflow', slug: 'content-workflow' },
+  { text: 'VS Code Setup', slug: 'vs-code-setup' },
+  { text: 'Troubleshooting', slug: 'troubleshooting' },
+];
+---
+
+<DocsLayout
+  title="Local Setup"
+  description="Setting up your local development environment"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Local Setup</h1>
+
+  <p>
+    This guide walks through setting up a local development environment for the MicroHAMS website.
+  </p>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+
+  <ul>
+    <li><strong>Node.js 22+</strong> — Check with <code>node --version</code></li>
+    <li><strong>Git</strong> — For cloning and version control</li>
+    <li><strong>A code editor</strong> — VS Code recommended</li>
+  </ul>
+
+  <h2 id="quick-start">Quick Start</h2>
+
+  <pre><code># Clone the repository
+git clone https://github.com/MicrohamsARC/MicrohamsARC.github.io.git
+cd MicrohamsARC.github.io
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev</code></pre>
+
+  <p>Open <a href="http://localhost:4321">http://localhost:4321</a> in your browser.</p>
+
+  <h2 id="available-commands">Available Commands</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Command</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>npm run dev</code></td>
+        <td>Start development server with hot reload</td>
+      </tr>
+      <tr>
+        <td><code>npm run build</code></td>
+        <td>Build production site to <code>./dist</code></td>
+      </tr>
+      <tr>
+        <td><code>npm run preview</code></td>
+        <td>Preview production build locally</td>
+      </tr>
+      <tr>
+        <td><code>npm run test</code></td>
+        <td>Run unit tests (Vitest)</td>
+      </tr>
+      <tr>
+        <td><code>npm run test:e2e</code></td>
+        <td>Run end-to-end tests (Playwright)</td>
+      </tr>
+      <tr>
+        <td><code>npm run lint</code></td>
+        <td>Run ESLint</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="project-structure">Project Structure</h2>
+
+  <pre><code>src/
+├── content/           # Markdown content (events, articles, docs)
+│   ├── articles/
+│   ├── docs/
+│   ├── events/
+│   └── config.ts      # Content collection schemas
+├── pages/             # Astro pages (routes)
+├── layouts/           # Page layouts
+├── components/        # Reusable components
+├── styles/            # CSS (design tokens, utilities)
+├── lib/               # Shared utilities
+└── site.config.ts     # Site-wide configuration</code></pre>
+
+  <h2 id="content-workflow">Content Workflow</h2>
+
+  <ol>
+    <li>Create a new branch: <code>git checkout -b add-february-meeting</code></li>
+    <li>Add your content in <code>src/content/</code></li>
+    <li>Preview locally with <code>npm run dev</code></li>
+    <li>Commit and push: <code>git push -u origin add-february-meeting</code></li>
+    <li>Open a pull request on GitHub</li>
+  </ol>
+
+  <p>
+    See <a href="/contributing/pull-requests">Pull Requests</a> for the full PR workflow.
+  </p>
+
+  <h2 id="vs-code-setup">VS Code Setup</h2>
+
+  <p>Recommended extensions:</p>
+
+  <ul>
+    <li>
+      <strong>Astro</strong> — Syntax highlighting and IntelliSense for <code>.astro</code> files
+    </li>
+    <li><strong>ESLint</strong> — Automatic linting</li>
+    <li><strong>Prettier</strong> — Code formatting</li>
+  </ul>
+
+  <p>
+    The repository includes <code>.vscode/extensions.json</code> which will prompt you to install these
+    when opening the project.
+  </p>
+
+  <h2 id="troubleshooting">Troubleshooting</h2>
+
+  <h3>Port 4321 already in use</h3>
+
+  <p>Kill the existing process or use a different port:</p>
+
+  <pre><code>npm run dev -- --port 3000</code></pre>
+
+  <h3>Dependencies out of date</h3>
+
+  <p>If you get errors after pulling, reinstall dependencies:</p>
+
+  <pre><code>rm -rf node_modules
+npm install</code></pre>
+
+  <h3>Build errors</h3>
+
+  <p>
+    Check that your content frontmatter matches the schema. See <a href="/contributing/schemas"
+      >Schema Reference</a
+    > for required fields.
+  </p>
+</DocsLayout>

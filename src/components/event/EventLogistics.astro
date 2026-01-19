@@ -1,10 +1,10 @@
 ---
 /**
  * EventLogistics - Templated venue and virtual meeting information
- * 
+ *
  * Reduces boilerplate in event markdown by generating standard
  * location instructions and virtual meeting details from site config.
- * 
+ *
  * Events only need to specify venue key (e.g., 'building-31') and
  * onlineMeeting key (e.g., 'microhams-teams') - all details come from config.
  */
@@ -37,15 +37,15 @@ interface Props {
   showDisclaimer?: boolean;
 }
 
-const { 
-  venue: venueKey, 
-  location, 
+const {
+  venue: venueKey,
+  location,
   latitude: propLatitude,
   longitude: propLongitude,
   coordFrequency: propFreq,
   onlineMeeting: meetingKey,
-  teams: legacyTeams, 
-  showDisclaimer = true 
+  teams: legacyTeams,
+  showDisclaimer = true,
 } = Astro.props;
 
 // Get venue config if key provided
@@ -71,133 +71,169 @@ function mdBold(text: string): string {
 }
 
 // Process escort text with coord frequency substitution
-const escortHtml = venue?.arrival?.escort 
-  ? mdBold(venue.arrival.escort.replace('**2m alternate call channel**', '**2m alternate call channel (' + coordFrequency + ')**'))
+const escortHtml = venue?.arrival?.escort
+  ? mdBold(
+      venue.arrival.escort.replace(
+        '**2m alternate call channel**',
+        '**2m alternate call channel (' + coordFrequency + ')**'
+      )
+    )
   : '';
 ---
 
-{venue && (
-  <div id="location">
-    <h2>Join In Person</h2>
+{
+  venue && (
+    <div id="location">
+      <h2>Join In Person</h2>
 
-    <p set:html={mdBold(venue.arrival.intro)} />
-    
-    {escortHtml && (
-      <p>
-        <span set:html={escortHtml} />
-      </p>
-    )}
-    
-    {venue.arrival.noRadio && (
-      <p class="text-muted" set:html={mdBold(venue.arrival.noRadio)} />
-    )}
-      
-    <details id="directions-details" style="margin-block-start: var(--space-3);">
-      <summary class="h6" style="cursor: pointer;">Directions & Map</summary>
-      <div class="stack-4" style="padding-block-start: var(--space-3);">
-        <div class="stack-3">
-          <p>
-            <strong>{venue.name}</strong><br>
-            <span class="text-muted">{venue.address}</span>
-          </p>
-          {Object.values(venue.directions).map((direction) => (
-            <p set:html={mdBold(direction)} />
-          ))}
-          {latitude && longitude && (
-            <EventMap 
-              location={displayLocation || ''}
-              latitude={latitude}
-              longitude={longitude}
-            />
-          )}
-        </div>
-      </div>
-    </details>
-  </div>
-)}
+      <p set:html={mdBold(venue.arrival.intro)} />
 
-{teams && (
-  <div>
-    <h2>Join Online</h2>
-    <p>
-      Although we encourage in-person attendance, you can also join via Microsoft Teams.
-    </p>
-
-    <p>
-      <a href={teams.link} class="button" data-variant="secondary" target="_blank" rel="noopener noreferrer">
-        Join Online Meeting →
-      </a>
-    </p>
-
-    <details style="margin-block-start: var(--space-4);">
-      <summary class="h6" style="cursor: pointer;">Meeting Details & Phone Dial-in</summary>
-      <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
-        <dl class="meeting-details">
-          <div>
-            <dt>Meeting ID</dt>
-            <dd>{teams.meetingId}</dd>
-          </div>
-          <div>
-            <dt>Passcode</dt>
-            <dd>{teams.passcode}</dd>
-          </div>
-          {teams.phoneNumber && (
-            <div>
-              <dt>Phone</dt>
-              <dd>{teams.phoneNumber}</dd>
-            </div>
-          )}
-          {teams.tollFreeNumber && (
-            <div>
-              <dt>Toll-free</dt>
-              <dd>{teams.tollFreeNumber}</dd>
-            </div>
-          )}
-          {teams.conferenceId && (
-            <div>
-              <dt>Conference ID</dt>
-              <dd>{teams.conferenceId}</dd>
-            </div>
-          )}
-        </dl>
-        <p style="margin-block-start: var(--space-3);">
-          <a href={'helpUrl' in teams ? teams.helpUrl : 'https://aka.ms/JoinTeamsMeeting?omkt=en-US'} target="_blank" rel="noopener noreferrer">
-            Microsoft Teams Help →
-          </a>
+      {escortHtml && (
+        <p>
+          <span set:html={escortHtml} />
         </p>
-      </div>
-    </details>
+      )}
 
-    {showDisclaimer && 'disclaimer' in teams && (
-      <details style="margin-block-start: var(--space-3);">
-        <summary class="h6" style="cursor: pointer;">Recording & Privacy Policy</summary>
-        <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
-          <p>{teams.disclaimer.recording}</p>
-          <p style="margin-block-start: var(--space-2);">{teams.disclaimer.optOut}</p>
+      {venue.arrival.noRadio && <p class="text-muted" set:html={mdBold(venue.arrival.noRadio)} />}
+
+      <details id="directions-details" style="margin-block-start: var(--space-3);">
+        <summary class="h6" style="cursor: pointer;">
+          Directions & Map
+        </summary>
+        <div class="stack-4" style="padding-block-start: var(--space-3);">
+          <div class="stack-3">
+            <p>
+              <>
+                <strong>{venue.name}</strong>
+                <br />
+              </>
+              <span class="text-muted">{venue.address}</span>
+            </p>
+            {Object.values(venue.directions).map((direction) => (
+              <p set:html={mdBold(direction)} />
+            ))}
+            {latitude && longitude && (
+              <EventMap
+                location={displayLocation || ''}
+                latitude={latitude}
+                longitude={longitude}
+              />
+            )}
+          </div>
         </div>
       </details>
-    )}
-    
-    {showDisclaimer && !('disclaimer' in teams) && (
-      <details style="margin-block-start: var(--space-3);">
-        <summary class="h6" style="cursor: pointer;">Recording & Privacy Policy</summary>
-        <div class="text-sm" style="padding-block-start: var(--space-3); color: var(--color-text-muted);">
-          <p>
-            This meeting will be recorded. By attending or participating, you agree to this policy, 
-            including waivers and consent to the use of your contributions and image, voice, 
-            and other mechanisms of participation.
-          </p>
-          <p style="margin-block-start: var(--space-2);">
-            You may opt-out from identification by muting audio, disabling video, and not 
-            contributing to chat. Remaining in the meeting constitutes consent regardless of 
-            stated intent.
+    </div>
+  )
+}
+
+{
+  teams && (
+    <div>
+      <h2>Join Online</h2>
+      <p>Although we encourage in-person attendance, you can also join via Microsoft Teams.</p>
+
+      <p>
+        <a
+          href={teams.link}
+          class="button"
+          data-variant="secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Join Online Meeting →
+        </a>
+      </p>
+
+      <details style="margin-block-start: var(--space-4);">
+        <summary class="h6" style="cursor: pointer;">
+          Meeting Details & Phone Dial-in
+        </summary>
+        <div
+          class="text-sm"
+          style="padding-block-start: var(--space-3); color: var(--color-text-muted);"
+        >
+          <dl class="meeting-details">
+            <div>
+              <dt>Meeting ID</dt>
+              <dd>{teams.meetingId}</dd>
+            </div>
+            <div>
+              <dt>Passcode</dt>
+              <dd>{teams.passcode}</dd>
+            </div>
+            {teams.phoneNumber && (
+              <div>
+                <dt>Phone</dt>
+                <dd>{teams.phoneNumber}</dd>
+              </div>
+            )}
+            {teams.tollFreeNumber && (
+              <div>
+                <dt>Toll-free</dt>
+                <dd>{teams.tollFreeNumber}</dd>
+              </div>
+            )}
+            {teams.conferenceId && (
+              <div>
+                <dt>Conference ID</dt>
+                <dd>{teams.conferenceId}</dd>
+              </div>
+            )}
+          </dl>
+          <p style="margin-block-start: var(--space-3);">
+            <a
+              href={
+                'helpUrl' in teams ? teams.helpUrl : 'https://aka.ms/JoinTeamsMeeting?omkt=en-US'
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Microsoft Teams Help →
+            </a>
           </p>
         </div>
       </details>
-    )}
-  </div>
-)}
 
+      {showDisclaimer && 'disclaimer' in teams && (
+        <details style="margin-block-start: var(--space-3);">
+          <summary class="h6" style="cursor: pointer;">
+            Recording & Privacy Policy
+          </summary>
+          <div
+            class="text-sm"
+            style="padding-block-start: var(--space-3); color: var(--color-text-muted);"
+          >
+            <p>{teams.disclaimer.recording}</p>
+            <p style="margin-block-start: var(--space-2);">{teams.disclaimer.optOut}</p>
+          </div>
+        </details>
+      )}
+
+      {showDisclaimer && !('disclaimer' in teams) && (
+        <details style="margin-block-start: var(--space-3);">
+          <summary class="h6" style="cursor: pointer;">
+            Recording & Privacy Policy
+          </summary>
+          <div
+            class="text-sm"
+            style="padding-block-start: var(--space-3); color: var(--color-text-muted);"
+          >
+            <p>
+              This meeting will be recorded. By attending or participating, you agree to this
+              policy, including waivers and consent to the use of your contributions and image,
+              voice, and other mechanisms of participation.
+            </p>
+            <p style="margin-block-start: var(--space-2);">
+              You may opt-out from identification by muting audio, disabling video, and not
+              contributing to chat. Remaining in the meeting constitutes consent regardless of
+              stated intent.
+            </p>
+          </div>
+        </details>
+      )}
+    </div>
+  )
+}
 
 <style>
   .meeting-details {
@@ -206,16 +242,16 @@ const escortHtml = venue?.arrival?.escort
     gap: var(--space-1) var(--space-4);
     margin: 0;
   }
-  
+
   .meeting-details > div {
     display: contents;
   }
-  
+
   .meeting-details dt {
     font-weight: var(--font-weight-medium);
     color: var(--color-text-muted);
   }
-  
+
   .meeting-details dd {
     margin: 0;
     font-family: var(--font-mono);
@@ -226,20 +262,31 @@ const escortHtml = venue?.arrival?.escort
 <script>
   /**
    * Open directions details when navigating to #location
-   * and handle scroll offset for sticky header
    */
-  function handleLocationHash() {
-    if (window.location.hash === '#location') {
-      const details = document.getElementById('directions-details') as HTMLDetailsElement | null;
-      if (details) {
-        details.open = true;
-      }
+  function openDirectionsDetails() {
+    const details = document.getElementById('directions-details') as HTMLDetailsElement | null;
+    if (details && !details.open) {
+      details.open = true;
     }
   }
-  
+
   // Handle initial page load with hash
-  handleLocationHash();
-  
-  // Handle hash changes (e.g., clicking the "Join In Person" button)
-  window.addEventListener('hashchange', handleLocationHash);
+  if (window.location.hash === '#location') {
+    openDirectionsDetails();
+  }
+
+  // Handle hash changes (cross-page navigation) — must check hash since event fires for any change
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#location') {
+      openDirectionsDetails();
+    }
+  });
+
+  // Handle same-page anchor clicks (hashchange doesn't fire for these)
+  document.addEventListener('click', (e) => {
+    const anchor = (e.target as HTMLElement).closest('a[href="#location"]');
+    if (anchor) {
+      requestAnimationFrame(openDirectionsDetails);
+    }
+  });
 </script>

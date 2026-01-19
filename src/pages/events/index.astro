@@ -1,12 +1,12 @@
 ---
 /**
  * Events Listing Page
- * 
+ *
  * Displays upcoming and past events with filtering.
  * Client-side JS dynamically re-sorts events based on browser time.
  */
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
 import EventCard from '../../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
@@ -31,7 +31,9 @@ function getEventTimestamp(event: { data: { eventDate: Date; startTime?: string 
 }
 
 // Get end timestamp for multi-day events (end of day on endDate, or same as start for single-day)
-function getEventEndTimestamp(event: { data: { eventDate: Date; endDate?: Date; endTime?: string } }): number {
+function getEventEndTimestamp(event: {
+  data: { eventDate: Date; endDate?: Date; endTime?: string };
+}): number {
   const endDateValue = event.data.endDate || event.data.eventDate;
   const date = new Date(endDateValue);
   if (event.data.endTime) {
@@ -61,48 +63,56 @@ function getEventEndTimestamp(event: { data: { eventDate: Date; endDate?: Date; 
 
 // Get all events sorted by date (we'll split client-side)
 const allEvents = await getCollection('events', publishedFilter);
-const sortedEvents = allEvents.sort((a, b) => getEventTimestamp(a) - getEventTimestamp(b));
+type Event = (typeof allEvents)[number];
+
+const sortedEvents = allEvents.sort(
+  (a: Event, b: Event) => getEventTimestamp(a) - getEventTimestamp(b)
+);
 
 // Build time split (will be corrected client-side)
 const now = new Date();
 const nowMs = now.getTime();
 
 // Current: started but not ended
-const currentEvents = sortedEvents.filter(event => {
-  const start = getEventTimestamp(event);
-  const end = getEventEndTimestamp(event);
-  return start <= nowMs && end >= nowMs;
-}).sort((a, b) => {
-  // Featured first, then by date
-  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-  return getEventTimestamp(a) - getEventTimestamp(b);
-});
+const currentEvents = sortedEvents
+  .filter((event: Event) => {
+    const start = getEventTimestamp(event);
+    const end = getEventEndTimestamp(event);
+    return start <= nowMs && end >= nowMs;
+  })
+  .sort((a: Event, b: Event) => {
+    // Featured first, then by date
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return getEventTimestamp(a) - getEventTimestamp(b);
+  });
 
 // Upcoming: not started yet
-const upcomingEvents = sortedEvents.filter(event => {
-  const start = getEventTimestamp(event);
-  return start > nowMs;
-}).sort((a, b) => {
-  // Featured first, then by date
-  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-  return getEventTimestamp(a) - getEventTimestamp(b);
-});
+const upcomingEvents = sortedEvents
+  .filter((event: Event) => {
+    const start = getEventTimestamp(event);
+    return start > nowMs;
+  })
+  .sort((a: Event, b: Event) => {
+    // Featured first, then by date
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return getEventTimestamp(a) - getEventTimestamp(b);
+  });
 
 // Past: ended
 const pastEvents = sortedEvents
-  .filter(event => {
+  .filter((event: Event) => {
     const end = getEventEndTimestamp(event);
     return end < nowMs;
   })
-  .sort((a, b) => {
+  .sort((a: Event, b: Event) => {
     // Featured first, then by date (most recent first for past)
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
     return getEventTimestamp(b) - getEventTimestamp(a);
   });
 ---
 
-<BaseLayout 
-  title="Events" 
+<PageLayout
+  title="Events"
   description="Upcoming and past events for the MicroHAMS amateur radio community"
 >
   <!-- Page Header -->
@@ -111,43 +121,63 @@ const pastEvents = sortedEvents
       <div class="stack-4">
         <h1 class="text-4xl">Events</h1>
         <p class="lead" style="max-inline-size: var(--measure-wide);">
-          Join us for meetings, conferences, field days, and other amateur radio activities. 
-          Monthly meetings are typically held on the third Tuesday of each month at 6:00 PM Pacific.
-          All members and guests are welcome! 
+          Join us for meetings, conferences, field days, and other amateur radio activities. Monthly
+          meetings are typically held on the third Tuesday of each month at 6:00 PM Pacific. All
+          members and guests are welcome!
         </p>
       </div>
     </div>
   </section>
 
   <!-- Current Events (in progress) -->
-  <section id="current-section" class="region" style="background-color: var(--color-surface-accent); display: {currentEvents.length > 0 ? '' : 'none'};">
+  <section
+    id="current-section"
+    class="region"
+    style="background-color: var(--color-surface-accent); display: {currentEvents.length > 0 ? '' : 'none'};"
+  >
     <div class="wrapper wrapper--full">
       <div class="stack-8">
         <h2>Happening Now</h2>
         <div id="current-events" class="stack-6">
-          {currentEvents.map((event) => (
-            <div data-event-timestamp={getEventTimestamp(event)} data-event-end={getEventEndTimestamp(event)}>
-              <EventCard event={event} variant="horizontal" showJoinButtons />
-            </div>
-          ))}
+          {
+            currentEvents.map((event: Event) => (
+              <div
+                data-event-timestamp={getEventTimestamp(event)}
+                data-event-end={getEventEndTimestamp(event)}
+              >
+                <EventCard event={event} variant="horizontal" showJoinButtons />
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
   </section>
 
   <!-- Upcoming Events -->
-  <section id="upcoming-section" class="region" style="background-color: var(--color-surface-muted);">
+  <section
+    id="upcoming-section"
+    class="region"
+    style="background-color: var(--color-surface-muted);"
+  >
     <div class="wrapper wrapper--full">
       <div class="stack-8">
         <h2>Upcoming Events</h2>
         <div id="upcoming-events" class="stack-6">
-          {upcomingEvents.map((event) => (
-            <div data-event-timestamp={getEventTimestamp(event)} data-event-end={getEventEndTimestamp(event)}>
-              <EventCard event={event} variant="horizontal" showJoinButtons />
-            </div>
-          ))}
+          {
+            upcomingEvents.map((event: Event) => (
+              <div
+                data-event-timestamp={getEventTimestamp(event)}
+                data-event-end={getEventEndTimestamp(event)}
+              >
+                <EventCard event={event} variant="horizontal" showJoinButtons />
+              </div>
+            ))
+          }
         </div>
-        <p id="no-upcoming" class="text-muted" style="display: none;">No upcoming events scheduled.</p>
+        <p id="no-upcoming" class="text-muted" style="display: none;">
+          No upcoming events scheduled.
+        </p>
       </div>
     </div>
   </section>
@@ -158,17 +188,21 @@ const pastEvents = sortedEvents
       <div class="stack-8">
         <h2>Past Events</h2>
         <div id="past-events" class="grid grid--auto-fit">
-          {pastEvents.map((event) => (
-            <div data-event-timestamp={getEventTimestamp(event)} data-event-end={getEventEndTimestamp(event)}>
-              <EventCard event={event} variant="default" />
-            </div>
-          ))}
+          {
+            pastEvents.map((event: Event) => (
+              <div
+                data-event-timestamp={getEventTimestamp(event)}
+                data-event-end={getEventEndTimestamp(event)}
+              >
+                <EventCard event={event} variant="default" />
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>
   </section>
-
-</BaseLayout>
+</PageLayout>
 
 <script>
   /**
@@ -183,22 +217,22 @@ const pastEvents = sortedEvents
     const noUpcoming = document.getElementById('no-upcoming');
     const currentSection = document.getElementById('current-section');
     const upcomingSection = document.getElementById('upcoming-section');
-    
+
     if (!upcomingContainer || !pastContainer) return;
-    
+
     // Get all event elements from all containers
     const allEventEls = [
       ...(currentContainer?.querySelectorAll('[data-event-timestamp]') || []),
       ...upcomingContainer.querySelectorAll('[data-event-timestamp]'),
       ...pastContainer.querySelectorAll('[data-event-timestamp]'),
     ] as HTMLElement[];
-    
+
     // Sort into current, upcoming, and past based on current time
     const current: HTMLElement[] = [];
     const upcoming: HTMLElement[] = [];
     const past: HTMLElement[] = [];
-    
-    allEventEls.forEach(el => {
+
+    allEventEls.forEach((el) => {
       const start = parseInt(el.dataset.eventTimestamp || '0', 10);
       const end = parseInt(el.dataset.eventEnd || el.dataset.eventTimestamp || '0', 10);
       if (start <= now && end >= now) {
@@ -209,27 +243,33 @@ const pastEvents = sortedEvents
         past.push(el);
       }
     });
-    
+
     // Sort: current and upcoming by soonest first, past by most recent first
-    current.sort((a, b) => 
-      parseInt(a.dataset.eventTimestamp || '0', 10) - parseInt(b.dataset.eventTimestamp || '0', 10)
+    current.sort(
+      (a, b) =>
+        parseInt(a.dataset.eventTimestamp || '0', 10) -
+        parseInt(b.dataset.eventTimestamp || '0', 10)
     );
-    upcoming.sort((a, b) => 
-      parseInt(a.dataset.eventTimestamp || '0', 10) - parseInt(b.dataset.eventTimestamp || '0', 10)
+    upcoming.sort(
+      (a, b) =>
+        parseInt(a.dataset.eventTimestamp || '0', 10) -
+        parseInt(b.dataset.eventTimestamp || '0', 10)
     );
-    past.sort((a, b) => 
-      parseInt(b.dataset.eventTimestamp || '0', 10) - parseInt(a.dataset.eventTimestamp || '0', 10)
+    past.sort(
+      (a, b) =>
+        parseInt(b.dataset.eventTimestamp || '0', 10) -
+        parseInt(a.dataset.eventTimestamp || '0', 10)
     );
-    
+
     // Clear and re-populate containers
     if (currentContainer) currentContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
     pastContainer.innerHTML = '';
-    
-    if (currentContainer) current.forEach(el => currentContainer.appendChild(el));
-    upcoming.forEach(el => upcomingContainer.appendChild(el));
-    past.forEach(el => pastContainer.appendChild(el));
-    
+
+    if (currentContainer) current.forEach((el) => currentContainer.appendChild(el));
+    upcoming.forEach((el) => upcomingContainer.appendChild(el));
+    past.forEach((el) => pastContainer.appendChild(el));
+
     // Show/hide sections based on content
     if (currentSection) {
       currentSection.style.display = current.length === 0 ? 'none' : '';
@@ -241,10 +281,10 @@ const pastEvents = sortedEvents
       upcomingSection.style.display = upcoming.length === 0 ? 'none' : '';
     }
   }
-  
+
   // Run on page load
   sortEventsByTime();
-  
+
   // Re-check every minute (in case page is left open)
   setInterval(sortEventsByTime, 60000);
 </script>

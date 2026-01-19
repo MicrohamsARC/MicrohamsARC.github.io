@@ -1,0 +1,285 @@
+---
+/**
+ * Contributing: How It Works
+ *
+ * How the site is built, deployed, and what being public means.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/how-it-works';
+
+// Get repo info for dynamic content
+const repoUrl = 'https://github.com/MicrohamsARC/MicrohamsARC.github.io';
+const siteUrl = Astro.site?.toString() || 'https://microhams.com';
+
+const headings = [
+  { text: 'Technology overview', slug: 'technology-overview' },
+  { text: 'Public repository', slug: 'public-repository' },
+  { text: 'When things break', slug: 'when-things-break' },
+  { text: 'Development workflow', slug: 'development-workflow' },
+  { text: 'Who gets notified', slug: 'who-gets-notified' },
+  { text: 'Getting help', slug: 'getting-help' },
+];
+---
+
+<DocsLayout
+  title="How It Works"
+  description="How the site is built, deployed, and what being in a public repository means"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>How It Works</h1>
+
+  <p>
+    Understanding how the site works helps you contribute effectively and troubleshoot issues. This
+    page explains the technology, deployment process, and implications of being a public repository.
+  </p>
+
+  <h2 id="technology-overview">Technology overview</h2>
+
+  <p>
+    This site is built with <strong>Astro</strong>, a modern static site generator. "Static" means
+    the site is pre-built at deploy time—there's no server running PHP or Node.js. The result is a
+    collection of HTML, CSS, and JavaScript files that any web server can serve.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Astro</h4>
+      <p>
+        Builds the site from Markdown content and Astro components. Handles routing, content
+        collections, and page generation.
+      </p>
+    </div>
+    <div class="card">
+      <h4>GitHub</h4>
+      <p>
+        Hosts the source code, manages collaboration through pull requests, and runs the build
+        process.
+      </p>
+    </div>
+    <div class="card">
+      <h4>GitHub Pages</h4>
+      <p>
+        Serves the built static files to visitors. Free, fast, and automatically handles SSL
+        certificates.
+      </p>
+    </div>
+  </div>
+
+  <h3>The build process</h3>
+
+  <p>
+    When you push changes to the <code>main</code> branch:
+  </p>
+
+  <ol>
+    <li><strong>GitHub Actions starts</strong> — A workflow is triggered automatically</li>
+    <li>
+      <strong>Dependencies install</strong> — <code>npm install</code> downloads required packages
+    </li>
+    <li>
+      <strong>Astro builds</strong> — <code>npm run build</code> generates static files to <code
+        >dist/</code
+      >
+    </li>
+    <li><strong>Files deploy</strong> — The <code>dist/</code> folder is pushed to GitHub Pages</li>
+    <li>
+      <strong>Site updates</strong> — Changes appear at <a href={siteUrl}>{siteUrl}</a> within minutes
+    </li>
+  </ol>
+
+  <p>The entire process typically takes 2-3 minutes.</p>
+
+  <h2 id="public-repository">Public repository</h2>
+
+  <p>
+    This is a <strong>public repository</strong>. That has specific implications:
+  </p>
+
+  <h3>What "public" means</h3>
+
+  <ul>
+    <li>
+      <strong>Anyone can view the source</strong> — All code, content, and history is visible to the
+      world
+    </li>
+    <li>
+      <strong>Anyone can fork</strong> — Others can copy the repository (but can't push to ours)
+    </li>
+    <li><strong>Search engines index it</strong> — Content appears in GitHub search and Google</li>
+    <li>
+      <strong>Draft content is visible</strong> — Even unpublished work in progress can be seen
+    </li>
+    <li><strong>Commit history is permanent</strong> — Deleted content remains in git history</li>
+  </ul>
+
+  <h3>What this means for contributors</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Don't commit secrets</h4>
+      <p>
+        Never commit passwords, API keys, personal phone numbers, or home addresses. Once pushed,
+        they're in git history forever.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Drafts are visible</h4>
+      <p>
+        Work-in-progress content is visible even before it's "published." Don't put embarrassing
+        notes in your drafts.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Write for the public</h4>
+      <p>
+        Anything you write could be read by anyone. Keep it professional and assume the world is
+        watching.
+      </p>
+    </div>
+  </div>
+
+  <h3>What makes content live</h3>
+
+  <p>Content appears on the live site when:</p>
+
+  <ol>
+    <li>It's merged to the <code>main</code> branch</li>
+    <li>It passes the build process (valid frontmatter, no errors)</li>
+    <li>For events: the event date is in the future or recent past</li>
+  </ol>
+
+  <p>
+    There's no separate "publish" button—merging to <code>main</code>
+    <em>is</em> publishing.
+  </p>
+
+  <h2 id="when-things-break">When things break</h2>
+
+  <p>Sometimes deployments fail. Here's how to diagnose and fix common issues.</p>
+
+  <h3>Build failures</h3>
+
+  <p>If the build fails, the previous version of the site stays live. Common causes:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Likely cause</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"Invalid frontmatter"</td>
+        <td>YAML syntax error or missing required field</td>
+        <td
+          >Check your frontmatter against the <a href="/contributing/schema">Schema Reference</a
+          ></td
+        >
+      </tr>
+      <tr>
+        <td>"Cannot find module"</td>
+        <td>Missing import or typo in file path</td>
+        <td>Check import statements, verify file exists</td>
+      </tr>
+      <tr>
+        <td>"Type error"</td>
+        <td>TypeScript type mismatch</td>
+        <td>Run <code>npm run type-check</code> locally</td>
+      </tr>
+      <tr>
+        <td>ESLint errors</td>
+        <td>Code style violations</td>
+        <td>Run <code>npm run lint:fix</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Checking build status</h3>
+
+  <p>To see if a build succeeded or failed:</p>
+
+  <ol>
+    <li>Go to the <a href={`${repoUrl}/actions`}>Actions tab</a> on GitHub</li>
+    <li>Find the most recent workflow run</li>
+    <li>Green check = success, red X = failure</li>
+    <li>Click into a failed run to see the error log</li>
+  </ol>
+
+  <h3>Validating locally</h3>
+
+  <p>Before pushing, run the same checks that CI runs:</p>
+
+  <pre><code># Full CI pipeline (lint, type-check, tests, build)
+npm run ci
+
+# Quick validation
+npm run lint && npm run type-check
+
+# Just the build
+npm run build</code></pre>
+
+  <p>If it passes locally, it should pass on GitHub.</p>
+
+  <h2 id="development-workflow">Development workflow</h2>
+
+  <h3>Local development</h3>
+
+  <pre><code># Start dev server with hot reload
+npm run dev
+
+# Preview production build
+npm run build && npm run preview</code></pre>
+
+  <p>
+    The dev server runs at <code>http://localhost:4321</code> and updates instantly when you save changes.
+  </p>
+
+  <h3>Testing</h3>
+
+  <pre><code># Unit tests
+npm test
+
+# E2E tests
+npm run test:e2e
+
+# All tests
+npm run test:all</code></pre>
+
+  <h3>Pre-push validation</h3>
+
+  <p>A git hook runs validation before you push. If it fails, fix the issues before pushing:</p>
+
+  <pre><code># Auto-fix what can be fixed
+npm run pre-push:fix</code></pre>
+
+  <h2 id="who-gets-notified">Who gets notified</h2>
+
+  <p>When builds fail, GitHub sends notifications to:</p>
+
+  <ul>
+    <li>The person who pushed the commit</li>
+    <li>Anyone who configured GitHub notifications for the repository</li>
+    <li>Repository admins (if configured)</li>
+  </ul>
+
+  <p>To configure your notifications: GitHub → Settings → Notifications → Actions</p>
+
+  <h2 id="getting-help">Getting help</h2>
+
+  <p>If you're stuck:</p>
+
+  <ol>
+    <li>Check the <a href={`${repoUrl}/actions`}>Actions tab</a> for error messages</li>
+    <li>Read the error carefully—it usually says exactly what's wrong</li>
+    <li>Search the error message online</li>
+    <li>Ask in the club's communication channels</li>
+    <li>Open an issue on GitHub describing the problem</li>
+  </ol>
+</DocsLayout>

@@ -1,0 +1,597 @@
+---
+/**
+ * Contributing: Markdown Reference
+ *
+ * Supported markdown syntax, Astro extensions, and when to use HTML.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/markdown';
+
+const headings = [
+  { text: 'Standard markdown', slug: 'standard-markdown' },
+  { text: 'Tables', slug: 'tables' },
+  { text: 'Internal links', slug: 'internal-links' },
+  { text: 'Astro extensions', slug: 'astro-extensions' },
+  { text: 'Using HTML in markdown', slug: 'using-html-in-markdown' },
+  { text: 'Emojis', slug: 'emojis' },
+  { text: 'Best practices', slug: 'best-practices' },
+];
+---
+
+<DocsLayout
+  title="Markdown Reference"
+  description="Supported markdown syntax, Astro extensions, and when to use HTML"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Markdown Reference</h1>
+
+  <p>
+    Content is written in Markdown, a lightweight format that's easy to read and write. Astro
+    extends standard Markdown with additional features. This page covers what's supported and when
+    to use HTML instead.
+  </p>
+
+  <p>
+    For information about the fonts, type scale, and layout principles used on this site, see the <a
+      href="/contributing/typography">Typography</a
+    > guide.
+  </p>
+
+  <h2 id="standard-markdown">Standard markdown</h2>
+
+  <p>These are the core Markdown features supported everywhere.</p>
+
+  <h3>Text formatting</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>**bold**</code></td>
+        <td><strong>bold</strong></td>
+      </tr>
+      <tr>
+        <td><code>*italic*</code></td>
+        <td><em>italic</em></td>
+      </tr>
+      <tr>
+        <td><code>***bold and italic***</code></td>
+        <td><strong><em>bold and italic</em></strong></td>
+      </tr>
+      <tr>
+        <td><code>~~strikethrough~~</code></td>
+        <td><s>strikethrough</s></td>
+      </tr>
+      <tr>
+        <td><code>`inline code`</code></td>
+        <td><code>inline code</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p>
+      <strong>About backticks:</strong> The backtick character <code>`</code> is not an apostrophe <code
+        >'</code
+      >. On US keyboards, it's the key to the left of <kbd>1</kbd>, usually shared with the tilde <code
+        >~</code
+      >. Backticks wrap inline code and create code blocks—they're essential for technical writing.
+    </p>
+  </div>
+
+  <h3>Headings</h3>
+
+  <pre><code># Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4</code></pre>
+
+  <p>
+    In content files, start with <code>## Heading 2</code> since the page title from frontmatter becomes
+    the <code>&lt;h1&gt;</code>.
+  </p>
+
+  <h3>Links</h3>
+
+  <pre><code>{`<!-- External link -->
+[ARRL Website](https://www.arrl.org/)
+
+<!-- Internal link (relative) -->
+[Events page](/events/)
+
+<!-- Link with title (shows on hover) -->
+[FCC](https://www.fcc.gov/ "Federal Communications Commission")`}</code></pre>
+
+  <h3>Images</h3>
+
+  <pre><code>{`<!-- Basic image -->
+![Alt text describing the image](./image.jpg)
+
+<!-- Image with title -->
+![Antenna diagram](./antenna.png "Click to enlarge")`}</code></pre>
+
+  <p>
+    Place images in the same folder as your content file (e.g., <code
+      >src/content/articles/my-article/image.jpg</code
+    >) and reference them with <code>./</code> relative paths.
+  </p>
+
+  <h3>Lists</h3>
+
+  <pre><code>{`<!-- Unordered list -->
+- First item
+- Second item
+  - Nested item
+  - Another nested item
+- Third item
+
+<!-- Ordered list -->
+1. First step
+2. Second step
+3. Third step
+
+<!-- Task list -->
+- [x] Completed task
+- [ ] Incomplete task`}</code></pre>
+
+  <h3>Blockquotes</h3>
+
+  <pre><code>{`> This is a blockquote.
+>
+> It can span multiple paragraphs.`}</code></pre>
+
+  <blockquote>
+    <p>This is a blockquote.</p>
+    <p>It can span multiple paragraphs.</p>
+  </blockquote>
+
+  <h3>Code blocks</h3>
+
+  <p>Use triple backticks with a language identifier for syntax highlighting.</p>
+
+  <pre><code>{"```javascript\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n```"}</code></pre>
+
+  <p>
+    Supported languages include: <code>javascript</code>, <code>typescript</code>, <code
+      >python</code
+    >, <code>bash</code>, <code>html</code>, <code>css</code>, <code>json</code>, <code>yaml</code>,
+    and many more.
+  </p>
+
+  <h3>Horizontal rules</h3>
+
+  <pre><code>---</code></pre>
+
+  <p>Creates a horizontal divider. Use sparingly—headings usually provide better visual breaks.</p>
+
+  <h2 id="tables">Tables</h2>
+
+  <p>Markdown tables work well for simple data:</p>
+
+  <pre><code>| Band    | Frequency   | Mode |
+|---------|-------------|------|
+| 20m     | 14.074 MHz  | FT8  |
+| 40m     | 7.074 MHz   | FT8  |
+| 80m     | 3.573 MHz   | FT8  |</code></pre>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Band</th>
+        <th>Frequency</th>
+        <th>Mode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>20m</td>
+        <td>14.074 MHz</td>
+        <td>FT8</td>
+      </tr>
+      <tr>
+        <td>40m</td>
+        <td>7.074 MHz</td>
+        <td>FT8</td>
+      </tr>
+      <tr>
+        <td>80m</td>
+        <td>3.573 MHz</td>
+        <td>FT8</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Column alignment</h3>
+
+  <pre><code>| Left | Center | Right |
+|:-----|:------:|------:|
+| L    |   C    |     R |</code></pre>
+
+  <h3>When to use HTML tables</h3>
+
+  <p>Use HTML tables when you need:</p>
+
+  <ul>
+    <li>Cells that span rows or columns (<code>colspan</code>, <code>rowspan</code>)</li>
+    <li>Complex formatting within cells</li>
+    <li>Table captions</li>
+    <li>Custom styling</li>
+  </ul>
+
+  <pre><code>&lt;table&gt;
+  &lt;caption&gt;Band Plan Summary&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Band&lt;/th&gt;
+      &lt;th colspan="2"&gt;Frequencies&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;20m&lt;/td&gt;
+      &lt;td&gt;14.000&lt;/td&gt;
+      &lt;td&gt;14.350&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+
+  <h2 id="internal-links">Internal links</h2>
+
+  <p>
+    Link between content on this site using relative URLs starting with <code>/</code>. This ensures
+    links work in development and production.
+  </p>
+
+  <h3>Link patterns by content type</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Content Type</th>
+        <th>URL Pattern</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Article</td>
+        <td><code>/articles/{`{slug}`}</code></td>
+        <td><code>/articles/digital-modes-guide</code></td>
+      </tr>
+      <tr>
+        <td>Event</td>
+        <td><code>/events/{`{folder-name}`}</code></td>
+        <td><code>/events/2026-01-january-meeting</code></td>
+      </tr>
+      <tr>
+        <td>Documentation</td>
+        <td><code>/docs/{`{slug}`}</code></td>
+        <td><code>/docs/antenna-theory-basics</code></td>
+      </tr>
+      <tr>
+        <td>Tag</td>
+        <td><code>/tags/{`{tag-name}`}</code></td>
+        <td><code>/tags/digital-modes</code></td>
+      </tr>
+      <tr>
+        <td>Page</td>
+        <td><code>/{`{page-name}`}</code></td>
+        <td><code>/about</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Examples</h3>
+
+  <h4>From an event to an article</h4>
+
+  <pre><code>{`For background on this topic, see our 
+[guide to digital modes](/articles/digital-modes-guide).`}</code></pre>
+
+  <h4>From an article to documentation</h4>
+
+  <pre><code>{`Before building your antenna, review the 
+[antenna theory basics](/docs/antenna-theory-basics) documentation.`}</code></pre>
+
+  <h4>From documentation to an event</h4>
+
+  <pre><code>{`We covered this at our 
+[January 2026 meeting](/events/2026-01-january-meeting).`}</code></pre>
+
+  <h4>Linking to a tag</h4>
+
+  <pre><code>{`Browse all content about [digital modes](/tags/digital-modes) 
+or explore [field day](/tags/field-day) resources.`}</code></pre>
+
+  <h3>Finding the correct slug</h3>
+
+  <p>
+    The slug is determined by the folder or file name in <code>src/content/</code>:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File Location</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>src/content/articles/digital-modes-guide.md</code></td>
+        <td><code>/articles/digital-modes-guide</code></td>
+      </tr>
+      <tr>
+        <td><code>src/content/events/2026-01-january-meeting/index.md</code></td>
+        <td><code>/events/2026-01-january-meeting</code></td>
+      </tr>
+      <tr>
+        <td><code>src/content/docs/antenna-theory-basics/index.md</code></td>
+        <td><code>/docs/antenna-theory-basics</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p>
+      <strong>Tip:</strong> Use the tables on the contributing pages (<a
+        href="/contributing/articles#current-articles">articles</a
+      >,
+      <a href="/contributing/events#current-events">events</a>,
+      <a href="/contributing/docs#current-documentation">docs</a>) to find the correct URLs for
+      existing content.
+    </p>
+  </div>
+
+  <h3>URL encoding for tags</h3>
+
+  <p>Tags with spaces or special characters need URL encoding:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>digital-modes</code></td>
+        <td><code>/tags/digital-modes</code></td>
+      </tr>
+      <tr>
+        <td><code>rare DXCC</code></td>
+        <td><code>/tags/rare%20DXCC</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    To avoid encoding issues, prefer lowercase tags with hyphens: <code>rare-dxcc</code> instead of <code
+      >rare DXCC</code
+    >.
+  </p>
+
+  <h2 id="astro-extensions">Astro extensions</h2>
+
+  <p>Astro adds features beyond standard Markdown.</p>
+
+  <h3>Frontmatter</h3>
+
+  <p>
+    Every content file starts with YAML frontmatter between <code>---</code> delimiters:
+  </p>
+
+  <pre><code>---
+title: "My Article Title"
+description: "A brief description for SEO and previews"
+pubDate: 2025-01-15
+tags: ["ft8", "digital-modes"]
+---
+
+Your content starts here...</code></pre>
+
+  <p>
+    See the <a href="/contributing/schema">Schema Reference</a> for all available fields.
+  </p>
+
+  <h3>GitHub-Flavored Markdown</h3>
+
+  <p>Astro supports GFM extensions including:</p>
+
+  <ul>
+    <li>Autolinked URLs: <code>https://example.com</code> becomes a link</li>
+    <li>Strikethrough: <code>~~deleted~~</code></li>
+    <li>Task lists: <code>- [x] Done</code></li>
+    <li>Tables (covered above)</li>
+    <li>Footnotes (see below)</li>
+  </ul>
+
+  <h3>Footnotes</h3>
+
+  <pre><code>Here's a statement that needs a citation.[^1]
+
+[^1]: This is the footnote content.</code></pre>
+
+  <p>Footnotes are collected and rendered at the bottom of the page.</p>
+
+  <h2 id="using-html-in-markdown">Using HTML in markdown</h2>
+
+  <p>You can use HTML directly in Markdown files when you need more control.</p>
+
+  <h3>When HTML is appropriate</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Complex layouts</h4>
+      <p>Multi-column layouts, grids, or custom spacing that Markdown can't express.</p>
+    </div>
+    <div class="card">
+      <h4>Custom attributes</h4>
+      <p>Adding IDs, classes, or ARIA attributes for accessibility.</p>
+    </div>
+    <div class="card">
+      <h4>Semantic elements</h4>
+      <p>
+        Using <code>&lt;details&gt;</code>, <code>&lt;summary&gt;</code>, <code>&lt;abbr&gt;</code>,
+        or other semantic tags.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Embedded content</h4>
+      <p>YouTube videos, iframes, or other embeds that need specific markup.</p>
+    </div>
+  </div>
+
+  <h3>Common HTML patterns</h3>
+
+  <h4>Details/summary (collapsible sections)</h4>
+
+  <pre><code>&lt;details&gt;
+&lt;summary&gt;Click to expand&lt;/summary&gt;
+
+Hidden content goes here. You can use **Markdown** inside!
+
+&lt;/details&gt;</code></pre>
+
+  <details>
+    <summary>Click to expand</summary>
+    <p>Hidden content goes here. You can use <strong>Markdown</strong> inside!</p>
+  </details>
+
+  <h4>Abbreviations</h4>
+
+  <pre><code>The &lt;abbr title="Automatic Packet Reporting System"&gt;APRS&lt;/abbr&gt; network...</code></pre>
+
+  <p>
+    The <abbr title="Automatic Packet Reporting System">APRS</abbr> network...
+  </p>
+
+  <h4>Figures with captions</h4>
+
+  <pre><code>&lt;figure&gt;
+  &lt;img src="./antenna.jpg" alt="Dipole antenna installation"&gt;
+  &lt;figcaption&gt;A horizontal dipole mounted between two trees.&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+
+  <h4>Definition lists</h4>
+
+  <pre><code>&lt;dl&gt;
+  &lt;dt&gt;QSO&lt;/dt&gt;
+  &lt;dd&gt;A contact or conversation between amateur radio stations.&lt;/dd&gt;
+  
+  &lt;dt&gt;QTH&lt;/dt&gt;
+  &lt;dd&gt;Location or "where are you located?"&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+
+  <h3>Important: blank lines</h3>
+
+  <p>When mixing HTML and Markdown, add blank lines around HTML blocks:</p>
+
+  <pre><code>Some markdown text.
+
+&lt;div class="custom"&gt;
+
+**Markdown works here** because of the blank lines.
+
+&lt;/div&gt;
+
+More markdown text.</code></pre>
+
+  <p>Without blank lines, the Markdown processor may not parse content inside HTML tags.</p>
+
+  <h2 id="emojis">Emojis</h2>
+
+  <p>
+    Emojis are supported in Markdown and render correctly on the site. See the <a
+      href="/contributing/editorial#emojis">Editorial Guidelines</a
+    > for when to use them and when to avoid them.
+  </p>
+
+  <h3>Syntax</h3>
+
+  <p>Type emojis directly (copy/paste) or use shortcodes if your editor supports them:</p>
+
+  <pre><code>{`<!-- Direct emoji -->
+Join us for Field Day! 📻
+
+<!-- Note: GitHub-style shortcodes like :radio: don't work in Astro -->`}</code></pre>
+
+  <p>
+    <strong>Recommendation:</strong> Copy emojis from <a
+      href="https://emojipedia.org/"
+      rel="noopener noreferrer">Emojipedia</a
+    >
+    or use your operating system's emoji picker (macOS: <kbd>Control</kbd>+<kbd>Command</kbd>+<kbd
+      >Space</kbd
+    >, Windows: <kbd>Win</kbd>+<kbd>.</kbd>).
+  </p>
+
+  <h2 id="best-practices">Best practices</h2>
+
+  <h3>Prefer Markdown when possible</h3>
+
+  <p>
+    Markdown is easier to read, write, and maintain. Only use HTML when Markdown can't achieve what
+    you need.
+  </p>
+
+  <h3>One sentence per line</h3>
+
+  <p>
+    While optional, putting each sentence on its own line makes diffs cleaner and editing easier:
+  </p>
+
+  <pre><code>This is the first sentence.
+This is the second sentence.
+They render as one paragraph.</code></pre>
+
+  <h3>Consistent heading hierarchy</h3>
+
+  <p>
+    Don't skip heading levels. After <code>## Heading 2</code>, use <code>### Heading 3</code>, not <code
+      >#### Heading 4</code
+    >.
+  </p>
+
+  <h3>Meaningful link text</h3>
+
+  <p>
+    Link text should describe the destination, not the action. Screen readers often navigate by
+    links alone, so "click here" provides no context.
+  </p>
+
+  <pre><code>{`<!-- Good -->
+See the [antenna building guide](/docs/antenna-theory-basics/).
+
+<!-- Bad -->
+For antenna building, [click here](/docs/antenna-theory-basics/).`}</code></pre>
+
+  <h3>Alt text for images</h3>
+
+  <p>
+    Every image needs alt text that describes what the image shows, not just what it is. Think about
+    what information the image conveys.
+  </p>
+
+  <pre><code>{`<!-- Good: describes the content -->
+![Dipole antenna mounted horizontally between two trees](./dipole.jpg)
+
+<!-- Bad: describes the file -->
+![antenna photo](./dipole.jpg)`}</code></pre>
+
+  <p>
+    For decorative images that don't add information, use an empty alt attribute: <code>alt=""</code
+    >.
+  </p>
+</DocsLayout>

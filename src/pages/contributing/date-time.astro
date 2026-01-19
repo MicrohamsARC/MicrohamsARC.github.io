@@ -1,0 +1,382 @@
+---
+/**
+ * Contributing: Date & Time Reference
+ *
+ * Documents how the site handles event dates, times, and timezones.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { siteConfig } from '../../site.config';
+import EventDateTime from '../../components/event/EventDateTime.astro';
+
+// Example event for the interactive demo
+const exampleDate = new Date('2026-01-20T00:00:00Z');
+
+const currentPath = '/contributing/date-time';
+
+const headings = [
+  { text: 'Design Principles', slug: 'design-principles' },
+  { text: 'Calendar Dates vs Timestamps', slug: 'calendar-dates' },
+  { text: 'Timezone Resolution', slug: 'timezone-resolution' },
+  { text: 'Interactive Time Toggle', slug: 'interactive-toggle' },
+  { text: 'Event Categorization', slug: 'event-categorization' },
+  { text: 'Client-Side Re-sorting', slug: 'client-side-resorting' },
+  { text: 'Multi-Day Events', slug: 'multi-day-events' },
+  { text: 'Format Configuration', slug: 'format-configuration' },
+];
+---
+
+<DocsLayout
+  title="Date & Time Reference"
+  description="How the site handles event dates, times, and timezones"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Date & Time Reference</h1>
+
+  <p>
+    Event timing is critically important for an amateur radio club. Members need to know exactly
+    when meetings start, contests run, and field days happen—often across timezone boundaries. This
+    page documents how we handle all date/time concerns to ensure accuracy and usability.
+  </p>
+
+  <h2 id="design-principles">Design Principles</h2>
+
+  <ol>
+    <li>
+      <strong>Dates are calendar dates.</strong> When someone says "the meeting is January 20th," they
+      mean the calendar date, not a UTC timestamp that might resolve to a different day depending on
+      timezone.
+    </li>
+    <li>
+      <strong>Times display in context.</strong> Event times show in the event's timezone by default,
+      but users can toggle to see their local time or UTC.
+    </li>
+    <li>
+      <strong>Timezone derives from venue.</strong> If you specify a venue, the timezone comes from that
+      venue's configuration. You only need explicit
+      <code>timezone</code> for events at unusual locations.
+    </li>
+    <li>
+      <strong>Categorization adapts to viewer.</strong> "Upcoming" vs "past" is determined client-side
+      based on the viewer's actual time, not the server's build time.
+    </li>
+  </ol>
+
+  <h2 id="calendar-dates">Calendar Dates vs Timestamps</h2>
+
+  <p>
+    The <code>eventDate</code> field is stored as a <strong>calendar date</strong>, not a
+    timezone-aware timestamp. Internally, it's represented as midnight UTC on that date, but we
+    always render it as a pure calendar date (ignoring the time component).
+  </p>
+
+  <div class="callout">
+    <p>
+      <strong>Why this matters:</strong> If you store "January 20, 2026" as a UTC timestamp and a user
+      in Hawaii views the page, JavaScript's
+      <code>toLocaleDateString()</code> would show "January 19" (because midnight UTC is still the previous
+      day in HST). By treating it as a calendar date, January 20 is always January 20, regardless of
+      viewer timezone.
+    </p>
+  </div>
+
+  <p>In frontmatter, specify dates without time components:</p>
+
+  <pre><code>eventDate: 2026-01-20
+endDate: 2026-01-21</code></pre>
+
+  <h2 id="timezone-resolution">Timezone Resolution</h2>
+
+  <p>The timezone for an event is determined by this priority chain:</p>
+
+  <ol>
+    <li><strong>Explicit <code>timezone</code> field</strong> — highest priority</li>
+    <li><strong>Venue's configured timezone</strong> — from <code>site.config.ts</code></li>
+    <li><strong>Site default</strong> — <code>{siteConfig.timezone}</code></li>
+  </ol>
+
+  <pre><code>{`// Most events: timezone comes from venue
+venue: "building-31"   // → ${siteConfig.timezone}
+
+// Override for unusual cases
+venue: "building-31"
+timezone: "America/Denver"  // Explicit override
+
+// No venue: falls back to site default
+customVenue:
+  name: "Special Location"
+  address: "123 Main St"`}</code></pre>
+
+  <p>
+    This means contributors rarely need to think about timezones. Just specify the venue, and the
+    correct timezone is applied automatically.
+  </p>
+
+  <h3>Supported Timezones</h3>
+
+  <p>
+    We use <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
+      >IANA timezone identifiers</a
+    >, which are recognized worldwide and handle daylight saving time automatically. Common US
+    timezones:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>IANA Identifier</th>
+        <th>Common Name</th>
+        <th>UTC Offset (Winter)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>America/Los_Angeles</code></td>
+        <td>Pacific Time</td>
+        <td>UTC-8</td>
+      </tr>
+      <tr>
+        <td><code>America/Denver</code></td>
+        <td>Mountain Time</td>
+        <td>UTC-7</td>
+      </tr>
+      <tr>
+        <td><code>America/Chicago</code></td>
+        <td>Central Time</td>
+        <td>UTC-6</td>
+      </tr>
+      <tr>
+        <td><code>America/New_York</code></td>
+        <td>Eastern Time</td>
+        <td>UTC-5</td>
+      </tr>
+      <tr>
+        <td><code>America/Phoenix</code></td>
+        <td>Arizona (no DST)</td>
+        <td>UTC-7</td>
+      </tr>
+      <tr>
+        <td><code>Pacific/Honolulu</code></td>
+        <td>Hawaii (no DST)</td>
+        <td>UTC-10</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p>
+      <strong>Why not PST/PDT?</strong> Abbreviations like "PST" are ambiguous (Pakistan Standard Time
+      also uses PST) and don't automatically switch for daylight saving. <code
+        >America/Los_Angeles</code
+      >
+      is unambiguous and handles DST transitions correctly.
+    </p>
+  </div>
+
+  <h2 id="interactive-toggle">Interactive Time Toggle</h2>
+
+  <p>
+    On event detail pages, clicking the date/time line toggles between display modes. Try it
+    yourself:
+  </p>
+
+  <div class="callout" style="background: var(--color-surface-muted);">
+    <p
+      style="margin-bottom: var(--space-2); font-size: var(--step--1); color: var(--color-text-muted);"
+    >
+      Click to toggle between your local time and UTC:
+    </p>
+    <EventDateTime
+      eventDate={exampleDate}
+      startTime="6:00 PM"
+      endTime="8:30 PM"
+      timezone="America/Los_Angeles"
+      style="font-size: var(--step-1); font-weight: 500;"
+    />
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>Display</th>
+        <th>Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Local (default)</td>
+        <td>User's browser timezone</td>
+        <td>When is this event <em>for me</em>?</td>
+      </tr>
+      <tr>
+        <td>UTC</td>
+        <td>Coordinated Universal Time</td>
+        <td>Contest logs, satellite passes, DXpeditions</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The toggle is implemented as a <code>&lt;button&gt;</code> with
+    <code>data-event-datetime</code> attributes. JavaScript reads the event's ISO date, start time, end
+    time, and timezone, then recalculates the display for the target timezone.
+  </p>
+
+  <h3>How Time Conversion Works</h3>
+
+  <p>
+    Converting "6:00 PM Pacific" to UTC requires knowing the <em>actual UTC instant</em>
+    that corresponds to 6 PM in Pacific time on that calendar date. The code:
+  </p>
+
+  <ol>
+    <li>Takes the calendar date (e.g., Jan 20, 2026)</li>
+    <li>Parses the time string (e.g., "6:00 PM" → 18:00)</li>
+    <li>Constructs what that time <em>means</em> in the event's timezone</li>
+    <li>Calculates the corresponding UTC instant</li>
+    <li>Formats that instant in the target timezone</li>
+  </ol>
+
+  <p>
+    This handles DST transitions correctly because we use <code>Intl.DateTimeFormat</code>
+    with explicit IANA timezone identifiers, not fixed offsets.
+  </p>
+
+  <h2 id="event-categorization">Event Categorization</h2>
+
+  <p>The events listing page divides events into three categories:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Condition</th>
+        <th>Display</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Happening Now</strong></td>
+        <td><code>start ≤ now ≤ end</code></td>
+        <td>Highlighted section, join buttons</td>
+      </tr>
+      <tr>
+        <td><strong>Upcoming</strong></td>
+        <td><code>start &gt; now</code></td>
+        <td>Soonest first, join buttons</td>
+      </tr>
+      <tr>
+        <td><strong>Past</strong></td>
+        <td><code>end &lt; now</code></td>
+        <td>Most recent first, compact cards</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Timestamp Calculation</h3>
+
+  <p>
+    For categorization, we need actual timestamps (not just calendar dates). The event timestamp is
+    calculated as:
+  </p>
+
+  <pre><code>start = eventDate + startTime (or midnight if no startTime)
+end   = endDate + endTime (or end of day on eventDate/endDate)</code></pre>
+
+  <div class="callout callout--warning">
+    <p>
+      <strong>Build time vs runtime:</strong> At build time, events are categorized based on the server's
+      clock. This categorization is then
+      <em>corrected</em> client-side to match the viewer's actual time. See the next section.
+    </p>
+  </div>
+
+  <h2 id="client-side-resorting">Client-Side Re-sorting</h2>
+
+  <p>
+    Because Astro generates static HTML at build time, an event that's "upcoming" when the site is
+    built might be "happening now" or "past" when someone views the page hours or days later.
+  </p>
+
+  <p>The events listing page includes a client-side script that:</p>
+
+  <ol>
+    <li>
+      Reads <code>data-event-timestamp</code> and <code>data-event-end</code> from each event card
+    </li>
+    <li>Compares against the viewer's current <code>Date.now()</code></li>
+    <li>Moves event cards between the "Happening Now", "Upcoming", and "Past" sections</li>
+    <li>Re-sorts within each section (soonest first for upcoming, most recent first for past)</li>
+    <li>Runs every 60 seconds to catch events that start/end while the page is open</li>
+  </ol>
+
+  <p>
+    This means even if a page was built days ago, users always see the correct categorization when
+    they view it.
+  </p>
+
+  <h2 id="multi-day-events">Multi-Day Events</h2>
+
+  <p>
+    Field Days, contests, and conventions often span multiple days. The schema supports this with <code
+      >endDate</code
+    >:
+  </p>
+
+  <pre><code>---
+title: "Winter Field Day"
+eventDate: 2026-01-25
+startTime: "11:00 AM"
+endDate: 2026-01-26
+endTime: "11:00 AM"
+---</code></pre>
+
+  <p>
+    Multi-day events show as "Happening Now" for the entire duration, from the start time on the
+    first day through the end time on the last day.
+  </p>
+
+  <h2 id="format-configuration">Format Configuration</h2>
+
+  <p>
+    Date and time formats are centralized in <code>site.config.ts</code> under
+    <code>dateTimeFormats</code>:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Use</th>
+        <th>Example Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>dateLong</code></td>
+        <td>Event detail pages</td>
+        <td>Monday, January 20, 2026</td>
+      </tr>
+      <tr>
+        <td><code>dateShort</code></td>
+        <td>Card headers</td>
+        <td>January 20, 2026</td>
+      </tr>
+      <tr>
+        <td><code>dateCompact</code></td>
+        <td>Inline references</td>
+        <td>Jan 20</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    All formatting uses <code>Intl.DateTimeFormat</code> with the site's configured locale (<code
+      >{siteConfig.locale}</code
+    >). This ensures consistent, locale-appropriate formatting throughout the site.
+  </p>
+</DocsLayout>

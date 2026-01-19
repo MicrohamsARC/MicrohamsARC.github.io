@@ -1,0 +1,383 @@
+---
+/**
+ * Contributing: Design Language
+ *
+ * Design tokens, color system, spacing, and visual principles.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/design';
+
+const headings = [
+  { text: 'Core principles', slug: 'core-principles' },
+  { text: 'Color system', slug: 'color-system' },
+  { text: 'Spacing system', slug: 'spacing-system' },
+  { text: 'Layout tokens', slug: 'layout-tokens' },
+  { text: 'Transitions', slug: 'transitions' },
+  { text: 'Z-index scale', slug: 'z-index-scale' },
+  { text: 'Implementation', slug: 'implementation' },
+];
+---
+
+<DocsLayout
+  title="Design Language"
+  description="Design tokens, color system, spacing, and visual principles"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Design Language</h1>
+
+  <p>
+    This site follows a <strong>Swiss/International Style</strong> approach: systematic design with restraint.
+    Every visual choice is intentional. No arbitrary decisions, no "magic numbers."
+  </p>
+
+  <p>
+    The design system is built on <strong>design tokens</strong>—named values that encode all visual
+    decisions. Using tokens instead of raw values ensures consistency and makes updates trivial.
+  </p>
+
+  <h2 id="core-principles">Core principles</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Systematic</h4>
+      <p>
+        Every value derives from a mathematical system. Typography uses the Golden Ratio. Spacing
+        uses powers of 2. Colors use OKLCH for perceptual uniformity.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Restrained</h4>
+      <p>
+        Use the minimum visual treatments necessary. Let content speak. Reduce, don't add. When in
+        doubt, remove.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Accessible</h4>
+      <p>
+        WCAG AA minimum (4.5:1 text contrast, 3:1 UI components). No information conveyed by color
+        alone. Clear focus states.
+      </p>
+    </div>
+  </div>
+
+  <h2 id="color-system">Color system</h2>
+
+  <p>
+    The palette is deliberately limited: <strong>black, white, and one accent color</strong>. This
+    constraint creates a clean, professional appearance and makes the accent color more impactful
+    when used.
+  </p>
+
+  <h3>Semantic colors</h3>
+
+  <p>
+    Rather than using colors directly, components use semantic tokens that adapt to light and dark
+    modes:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--color-text</code></td>
+        <td>Primary text color</td>
+      </tr>
+      <tr>
+        <td><code>--color-text-muted</code></td>
+        <td>Secondary text (less emphasis)</td>
+      </tr>
+      <tr>
+        <td><code>--color-text-subtle</code></td>
+        <td>Tertiary text (captions, hints)</td>
+      </tr>
+      <tr>
+        <td><code>--color-surface</code></td>
+        <td>Base background</td>
+      </tr>
+      <tr>
+        <td><code>--color-surface-muted</code></td>
+        <td>Recessed areas (less prominent)</td>
+      </tr>
+      <tr>
+        <td><code>--color-surface-raised</code></td>
+        <td>Elevated elements (cards, modals)</td>
+      </tr>
+      <tr>
+        <td><code>--color-border</code></td>
+        <td>Standard borders</td>
+      </tr>
+      <tr>
+        <td><code>--color-border-muted</code></td>
+        <td>Subtle dividers</td>
+      </tr>
+      <tr>
+        <td><code>--color-link</code></td>
+        <td>Link text</td>
+      </tr>
+      <tr>
+        <td><code>--color-link-hover</code></td>
+        <td>Link hover state</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Using accent colors</h3>
+
+  <p>The accent color is reserved for:</p>
+
+  <ul>
+    <li>Interactive elements that need emphasis</li>
+    <li>Current navigation state</li>
+    <li>Important calls to action</li>
+    <li>Errors and warnings (with appropriate color adjustments)</li>
+  </ul>
+
+  <p>
+    <strong>Don't overuse it.</strong> The power of an accent comes from its scarcity. If everything
+    is accented, nothing is.
+  </p>
+
+  <h3>Dark mode</h3>
+
+  <p>
+    The site respects the user's system preference (<code>prefers-color-scheme</code>) and provides
+    a manual toggle. Semantic tokens automatically adapt—you never need to write conditional color
+    logic.
+  </p>
+
+  <p>
+    Dark mode isn't "inverted light mode." It's designed specifically for low-light reading with
+    appropriate contrast ratios that don't strain the eyes.
+  </p>
+
+  <h2 id="spacing-system">Spacing system</h2>
+
+  <p>
+    Spacing uses a <strong>base-4 grid</strong>. The fundamental unit is 4px, and all spacing values
+    are multiples of this unit.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Value</th>
+        <th>Typical use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--space-1</code></td>
+        <td>4px</td>
+        <td>Tight internal spacing</td>
+      </tr>
+      <tr>
+        <td><code>--space-2</code></td>
+        <td>8px</td>
+        <td>Small gaps, inline spacing</td>
+      </tr>
+      <tr>
+        <td><code>--space-3</code></td>
+        <td>12px</td>
+        <td>Medium-tight spacing</td>
+      </tr>
+      <tr>
+        <td><code>--space-4</code></td>
+        <td>16px</td>
+        <td>Base rhythm, gutter (1rem)</td>
+      </tr>
+      <tr>
+        <td><code>--space-6</code></td>
+        <td>24px</td>
+        <td>Standard section spacing</td>
+      </tr>
+      <tr>
+        <td><code>--space-8</code></td>
+        <td>32px</td>
+        <td>Large component spacing</td>
+      </tr>
+      <tr>
+        <td><code>--space-12</code></td>
+        <td>48px</td>
+        <td>Section breaks</td>
+      </tr>
+      <tr>
+        <td><code>--space-16</code></td>
+        <td>64px</td>
+        <td>Major section gaps</td>
+      </tr>
+      <tr>
+        <td><code>--space-24</code></td>
+        <td>96px</td>
+        <td>Large section gaps</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Semantic spacing</h3>
+
+  <p>For common patterns, use semantic tokens:</p>
+
+  <ul>
+    <li><code>--gutter</code> — Standard margin/padding (16px)</li>
+    <li><code>--section-gap</code> — Between major sections (64px)</li>
+    <li><code>--section-gap-large</code> — Hero to content transition (96px)</li>
+  </ul>
+
+  <h2 id="layout-tokens">Layout tokens</h2>
+
+  <h3>Container widths</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Value</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--width-narrow</code></td>
+        <td>576px</td>
+        <td>~60ch, narrow reading column</td>
+      </tr>
+      <tr>
+        <td><code>--width-normal</code></td>
+        <td>672px</td>
+        <td>~72ch, standard content</td>
+      </tr>
+      <tr>
+        <td><code>--width-wide</code></td>
+        <td>768px</td>
+        <td>~80ch, wide content</td>
+      </tr>
+      <tr>
+        <td><code>--width-full</code></td>
+        <td>1280px</td>
+        <td>Full-width layouts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Border radius</h3>
+
+  <p>
+    Corners are slightly rounded to soften the appearance. The site uses a restrained approach—not
+    too sharp, not too pill-shaped.
+  </p>
+
+  <ul>
+    <li><code>--radius-sm</code> — 4px, subtle rounding</li>
+    <li><code>--radius-md</code> — 8px, standard components</li>
+    <li><code>--radius-lg</code> — 16px, cards, large elements</li>
+    <li><code>--radius-full</code> — Pills, circular elements</li>
+  </ul>
+
+  <h3>Shadows</h3>
+
+  <p>
+    Shadows are subtle and used sparingly. They indicate elevation (raised elements) rather than
+    decoration.
+  </p>
+
+  <ul>
+    <li><code>--shadow-sm</code> — Subtle lift, buttons</li>
+    <li><code>--shadow-md</code> — Cards, dropdowns</li>
+    <li><code>--shadow-lg</code> — Modals, popovers</li>
+  </ul>
+
+  <h2 id="transitions">Transitions</h2>
+
+  <p>Animations use consistent easing and duration for a cohesive feel.</p>
+
+  <ul>
+    <li><code>--transition-fast</code> — 150ms, hover states, small elements</li>
+    <li><code>--transition-base</code> — 200ms, most interactions</li>
+    <li><code>--transition-slow</code> — 300ms, larger state changes</li>
+  </ul>
+
+  <p>
+    All transitions use <code>cubic-bezier(0.4, 0, 0.2, 1)</code>—a smooth ease-out curve that feels
+    natural and responsive.
+  </p>
+
+  <h2 id="z-index-scale">Z-index scale</h2>
+
+  <p>Layer ordering uses a defined scale to prevent z-index wars:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Value</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--z-base</code></td>
+        <td>0</td>
+        <td>Default stacking</td>
+      </tr>
+      <tr>
+        <td><code>--z-dropdown</code></td>
+        <td>1000</td>
+        <td>Dropdown menus</td>
+      </tr>
+      <tr>
+        <td><code>--z-sticky</code></td>
+        <td>1100</td>
+        <td>Sticky headers</td>
+      </tr>
+      <tr>
+        <td><code>--z-fixed</code></td>
+        <td>1200</td>
+        <td>Fixed position elements</td>
+      </tr>
+      <tr>
+        <td><code>--z-modal</code></td>
+        <td>1300</td>
+        <td>Modal dialogs</td>
+      </tr>
+      <tr>
+        <td><code>--z-popover</code></td>
+        <td>1400</td>
+        <td>Popovers, tooltips over modals</td>
+      </tr>
+      <tr>
+        <td><code>--z-tooltip</code></td>
+        <td>1500</td>
+        <td>Tooltips (always on top)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="implementation">Implementation</h2>
+
+  <p>
+    All tokens are defined in <code>src/styles/00-settings/_tokens.css</code>. When building
+    components or layouts:
+  </p>
+
+  <ol>
+    <li>Always use tokens, never raw values</li>
+    <li>
+      Use semantic tokens (<code>--color-text</code>) over raw colors (<code>--color-gray-900</code
+      >)
+    </li>
+    <li>Test in both light and dark modes</li>
+    <li>Verify contrast ratios meet WCAG AA</li>
+  </ol>
+</DocsLayout>

@@ -1,0 +1,364 @@
+---
+/**
+ * Contributing: Documentation Guide
+ *
+ * How to add technical documentation to the docs collection.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { getCollection } from 'astro:content';
+import { getGitHubContentUrl } from '../../site.config';
+
+const currentPath = '/contributing/docs';
+
+const headings = [
+  { text: 'Docs vs Articles', slug: 'docs-vs-articles' },
+  { text: 'Create Documentation', slug: 'create-documentation' },
+  { text: 'Fields', slug: 'fields' },
+  { text: 'Organization', slug: 'organization' },
+  { text: 'Writing Tips', slug: 'writing-tips' },
+  { text: 'Complete Example', slug: 'complete-example' },
+  { text: 'Current Documentation', slug: 'current-documentation' },
+];
+
+const docs = await getCollection('docs');
+type Doc = (typeof docs)[number];
+---
+
+<DocsLayout
+  title="Adding Documentation"
+  description="How to add technical documentation and reference guides"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Adding Documentation</h1>
+
+  <p>
+    The docs collection is for technical documentation, reference guides, and how-tos that don't age
+    like articles. These live in <code>src/content/docs/</code>.
+  </p>
+
+  <h2 id="docs-vs-articles">Docs vs Articles</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Use Docs for</th>
+        <th>Use Articles for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Antenna theory fundamentals</td>
+        <td>New antenna product review</td>
+      </tr>
+      <tr>
+        <td>APRS gateway setup guide</td>
+        <td>Our club's APRS deployment story</td>
+      </tr>
+      <tr>
+        <td>FCC licensing requirements</td>
+        <td>Tips for passing the Extra exam</td>
+      </tr>
+      <tr>
+        <td>Reference that stays current</td>
+        <td>News, opinions, dated content</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="create-documentation">Create Documentation</h2>
+
+  <p>
+    Documentation lives in folders to keep content and assets together. Create a folder with an <code
+      >index.md</code
+    > file:
+  </p>
+
+  <pre><code>src/content/docs/my-topic/
+└── index.md</code></pre>
+
+  <p>
+    The folder name becomes the URL slug (e.g., <code>/docs/my-topic</code>).
+  </p>
+
+  <pre><code>---
+title: "Antenna Theory Basics"
+description: "Fundamental concepts for understanding antennas"
+order: 1
+category: "antennas"
+---
+
+Your documentation content here...</code></pre>
+
+  <h2 id="fields">Fields</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>title</code></td>
+        <td>Yes</td>
+        <td>Document title</td>
+      </tr>
+      <tr>
+        <td><code>description</code></td>
+        <td>No</td>
+        <td>Brief summary for SEO and listings</td>
+      </tr>
+      <tr>
+        <td><code>order</code></td>
+        <td>No</td>
+        <td>Sort order within a category (lower = first)</td>
+      </tr>
+      <tr>
+        <td><code>category</code></td>
+        <td>No</td>
+        <td>Topic category for grouping related docs</td>
+      </tr>
+      <tr>
+        <td><code>tags</code></td>
+        <td>No</td>
+        <td>Keywords for filtering</td>
+      </tr>
+      <tr>
+        <td><code>draft</code></td>
+        <td>No</td>
+        <td>If true, excluded from production</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="organization">Organization</h2>
+
+  <h3>Folder Structure</h3>
+
+  <p>
+    Each doc lives in its own folder. Add images and other assets alongside the <code>index.md</code
+    >:
+  </p>
+
+  <pre><code>src/content/docs/aprs-gateway/
+├── index.md
+├── diagram.png
+└── config-example.txt</code></pre>
+
+  <h3>Use Categories</h3>
+
+  <p>Group related documentation with the <code>category</code> field:</p>
+
+  <pre><code># antennas/antenna-theory.md
+category: "antennas"
+order: 1
+
+# antennas/dipole-design.md  
+category: "antennas"
+order: 2
+
+# digital/aprs-setup.md
+category: "digital"
+order: 1</code></pre>
+
+  <h3>Use Order for Sequencing</h3>
+
+  <p>
+    The <code>order</code> field controls sort order within a category. Use it for documentation that
+    should be read in sequence:
+  </p>
+
+  <ol>
+    <li><code>order: 1</code> — Prerequisites</li>
+    <li><code>order: 2</code> — Basic setup</li>
+    <li><code>order: 3</code> — Advanced configuration</li>
+  </ol>
+
+  <h2 id="writing-tips">Writing Tips</h2>
+
+  <ul>
+    <li>
+      <strong>Be evergreen:</strong> Write docs that won't need constant updates. Avoid specific software
+      versions unless necessary.
+    </li>
+    <li>
+      <strong>Link liberally:</strong> Reference other docs and articles. Internal links use markdown:
+      <code>[text](/docs/other-doc)</code>
+    </li>
+    <li>
+      <strong>Include examples:</strong> Show real commands, configurations, and expected outputs.
+    </li>
+    <li>
+      <strong>Use headings:</strong> Break content into scannable sections. H2 for main sections, H3
+      for subsections.
+    </li>
+  </ul>
+
+  <h2 id="complete-example">Complete Example</h2>
+
+  <p>
+    Here's a complete documentation page for a Raspberry Pi APRS gateway guide, annotated to explain
+    each field:
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# REQUIRED: Title
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "Raspberry Pi APRS Gateway"
+# Descriptive title that tells users exactly what this doc covers.
+# Keep it specific—"APRS Gateway" is too vague.
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# RECOMMENDED: Description for SEO and listings
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+description: >-
+  Build an IGate or digipeater with a Raspberry Pi
+  and Direwolf—from hardware selection to configuration.
+# Multi-line string using >- for readability.
+# Appears in search results and social shares.
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# OPTIONAL: Organization fields
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+category: "digital"
+# Groups related docs together. Use lowercase, single word.
+# Common categories: antennas, digital, operating, equipment
+
+order: 1
+# Sort order within the category. Lower numbers appear first.
+# Use for sequential documentation (1 = read first).
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# OPTIONAL: Discoverability
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+tags:
+  - aprs
+  - raspberry-pi
+  - direwolf
+  - digital
+# Keywords for search and filtering. Use lowercase with hyphens.
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# OPTIONAL: Publishing control
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+draft: false
+# Set true while writing. Draft docs are hidden in production.
+# Remove or set false when ready to publish.
+---
+
+Build a reliable APRS gateway using a Raspberry Pi. This guide covers
+both IGate (internet gateway) and digipeater configurations.
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- Raspberry Pi 3B+ or newer (Pi 4 recommended)
+- 32GB+ microSD card
+- 2m radio with data port (Baofeng with APRS cable works)
+- USB sound card or dedicated TNC
+
+## Hardware Setup
+
+![Wiring diagram for Pi APRS gateway](./wiring-diagram.png)
+
+Connect your radio's data port to the USB sound card:
+
+| Radio Pin | Sound Card |
+|-----------|------------|
+| Audio Out | Line In    |
+| Audio In  | Line Out   |
+| PTT       | GPIO 17    |
+| Ground    | Ground     |
+
+## Installing Direwolf
+
+\`\`\`bash
+sudo apt update
+sudo apt install direwolf
+\`\`\`
+
+See the [Direwolf documentation](https://github.com/wb2osz/direwolf)
+for version-specific notes.
+
+## Configuration
+
+Create \`/etc/direwolf.conf\`:
+
+\`\`\`
+MYCALL N0CALL-10
+MODEM 1200
+IGSERVER noam.aprs2.net
+IGLOGIN N0CALL 12345
+\`\`\`
+
+Replace \`N0CALL\` with your callsign and \`12345\` with your
+[APRS-IS passcode](https://apps.magicbug.co.uk/passcode/).
+
+## Troubleshooting
+
+Common issues and solutions:
+
+- **No packets decoded**: Check audio levels with \`alsamixer\`
+- **PTT not keying**: Verify GPIO permissions and wiring
+- **Not reaching APRS-IS**: Check internet and firewall settings
+
+## Related Documentation
+
+- [APRS Fundamentals](/docs/aprs-basics) — protocol overview
+- [Audio Interface Guide](/docs/audio-interfaces) — sound card setup
+`}</code></pre>
+
+  <h3>Folder Structure</h3>
+
+  <p>This doc lives in its own folder with co-located assets:</p>
+
+  <pre><code>{`src/content/docs/raspberry-pi-aprs-gateway/
+├── index.md              # The documentation above
+└── wiring-diagram.png    # Referenced as ./wiring-diagram.png`}</code></pre>
+
+  <h2 id="current-documentation">Current Documentation</h2>
+
+  <p>Existing docs for reference:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Published</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        docs.map((doc: Doc) => (
+          <tr>
+            <td>
+              {doc.data.title}
+              {doc.data.category && <span class="text-muted"> — {doc.data.category}</span>}
+            </td>
+            <td>
+              <a href={`/docs/${doc.id}`}>View page</a>
+            </td>
+            <td>
+              <a
+                href={getGitHubContentUrl('docs', doc.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Edit on GitHub ↗
+              </a>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</DocsLayout>

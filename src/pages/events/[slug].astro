@@ -1,13 +1,13 @@
 ---
 /**
  * Individual Event Page
- * 
+ *
  * Dynamic route for displaying individual event details
  */
 
 import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
 import EventLogistics from '../../components/event/EventLogistics.astro';
 import EventDateTime from '../../components/event/EventDateTime.astro';
 import { publishedFilter } from '../../utils/content';
@@ -16,7 +16,8 @@ import { getOnlineMeeting, getVenue } from '../../site.config';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events', publishedFilter);
-  return events.map((event) => ({
+  type Event = (typeof events)[number];
+  return events.map((event: Event) => ({
     params: { slug: event.slug },
     props: { event },
   }));
@@ -36,7 +37,9 @@ const timezoneOptions = { venue: event.data.venue, timezone: event.data.timezone
 
 // Get venue and meeting configs
 const venueConfig = event.data.venue ? getVenue(event.data.venue) : undefined;
-const onlineMeetingConfig = event.data.onlineMeeting ? getOnlineMeeting(event.data.onlineMeeting) : undefined;
+const onlineMeetingConfig = event.data.onlineMeeting
+  ? getOnlineMeeting(event.data.onlineMeeting)
+  : undefined;
 
 // Resolve location: frontmatter overrides venue config
 const location = event.data.location || venueConfig?.address;
@@ -48,9 +51,10 @@ const hasVirtual = !!(onlineMeetingConfig || event.data.teams || event.data.virt
 const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.data.virtualLink;
 ---
 
-<BaseLayout 
+<PageLayout
   title={event.data.title}
-  description={event.data.description || `Event on ${formatEventDate(event.data.eventDate, timezoneOptions)}`}
+  description={event.data.description ||
+    `Event on ${formatEventDate(event.data.eventDate, timezoneOptions)}`}
 >
   <article>
     <!-- Event Header -->
@@ -64,7 +68,7 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
           <h1>{event.data.title}</h1>
 
           <!-- Date & Time (interactive toggle) -->
-          <EventDateTime 
+          <EventDateTime
             eventDate={event.data.eventDate}
             startTime={event.data.startTime}
             endTime={event.data.endTime}
@@ -76,21 +80,41 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
 
           <!-- Attendance CTAs -->
           <div class="cluster" style="--cluster-gap: var(--space-3);">
-            {hasInPerson && (
-              <a href="#location" class="button" data-variant="primary" data-size="sm">
-                Join In Person
-              </a>
-            )}
-            {!isExternal && hasVirtual && (
-              <a href={virtualUrl} class="button" data-variant={hasInPerson ? 'secondary' : 'primary'} data-size="sm" target="_blank" rel="noopener noreferrer">
-                Join Online →
-              </a>
-            )}
-            {isExternal && (
-              <a href={event.data.eventLink} class="button" data-variant={hasInPerson ? 'secondary' : 'primary'} data-size="sm" target="_blank" rel="noopener noreferrer">
-                Event Website →
-              </a>
-            )}
+            {
+              hasInPerson && (
+                <a href="#location" class="button" data-variant="primary" data-size="sm">
+                  Join In Person
+                </a>
+              )
+            }
+            {
+              !isExternal && hasVirtual && (
+                <a
+                  href={virtualUrl}
+                  class="button"
+                  data-variant={hasInPerson ? 'secondary' : 'primary'}
+                  data-size="sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Join Online →
+                </a>
+              )
+            }
+            {
+              isExternal && (
+                <a
+                  href={event.data.eventLink}
+                  class="button"
+                  data-variant={hasInPerson ? 'secondary' : 'primary'}
+                  data-size="sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Event Website →
+                </a>
+              )
+            }
           </div>
         </div>
       </div>
@@ -101,20 +125,22 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
       <div class="wrapper wrapper--wide">
         <div class="flow flow--lg">
           <Content />
-          
+
           {/* Templated Logistics (venue directions, map, Teams details, disclaimers) */}
-          {(event.data.venue || event.data.teams || event.data.onlineMeeting) && (
-            <EventLogistics 
-              venue={event.data.venue}
-              location={event.data.location}
-              latitude={event.data.latitude}
-              longitude={event.data.longitude}
-              coordFrequency={event.data.coordFrequency}
-              onlineMeeting={event.data.onlineMeeting}
-              teams={event.data.teams}
-              showDisclaimer={event.data.showDisclaimer}
-            />
-          )}
+          {
+            (event.data.venue || event.data.teams || event.data.onlineMeeting) && (
+              <EventLogistics
+                venue={event.data.venue}
+                location={event.data.location}
+                latitude={event.data.latitude}
+                longitude={event.data.longitude}
+                coordFrequency={event.data.coordFrequency}
+                onlineMeeting={event.data.onlineMeeting}
+                teams={event.data.teams}
+                showDisclaimer={event.data.showDisclaimer}
+              />
+            )
+          }
         </div>
       </div>
     </section>
@@ -122,27 +148,41 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
     <!-- Footer meta -->
     <section class="region--sm">
       <div class="wrapper wrapper--wide">
-        <div class="stack-3 text-sm" style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);">
+        <div
+          class="stack-3 text-sm"
+          style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);"
+        >
           {location && <div>{location}</div>}
-          
-          {event.data.contactPerson && (
-            <div>
-              Contact: {event.data.contactPerson}
-              {event.data.contactEmail && (
-                <> — <a href={`mailto:${event.data.contactEmail}`}>{event.data.contactEmail}</a></>
-              )}
-            </div>
-          )}
-          
-          {event.data.tags && event.data.tags.length > 0 && (
-            <ul class="tag-list">
-              {event.data.tags.map((tag) => (
-                <li><a href={`/tags/${tag}`} class="tag">{tag}</a></li>
-              ))}
-            </ul>
-          )}
+
+          {
+            event.data.contactPerson && (
+              <div>
+                Contact: {event.data.contactPerson}
+                {event.data.contactEmail && (
+                  <>
+                    {' '}
+                    — <a href={`mailto:${event.data.contactEmail}`}>{event.data.contactEmail}</a>
+                  </>
+                )}
+              </div>
+            )
+          }
+
+          {
+            event.data.tags && event.data.tags.length > 0 && (
+              <ul class="tag-list">
+                {event.data.tags.map((tag: string) => (
+                  <li>
+                    <a href={`/tags/${tag}`} class="tag">
+                      {tag}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
         </div>
       </div>
     </section>
   </article>
-</BaseLayout>
+</PageLayout>

@@ -1,0 +1,730 @@
+---
+/**
+ * Contributing: Editorial Guidelines
+ *
+ * Writing standards and style guidance based on AP Style.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/editorial';
+
+const headings = [
+  { text: 'Voice and tone', slug: 'voice-and-tone' },
+  { text: 'Formatting conventions', slug: 'formatting-conventions' },
+  { text: 'Images', slug: 'images' },
+  { text: 'Emojis', slug: 'emojis' },
+  { text: 'Tags', slug: 'tags' },
+  { text: 'Amateur radio conventions', slug: 'amateur-radio-conventions' },
+  { text: 'Punctuation', slug: 'punctuation' },
+  { text: 'Accessibility', slug: 'accessibility' },
+  { text: 'References', slug: 'references' },
+];
+---
+
+<DocsLayout
+  title="Editorial Guidelines"
+  description="Writing standards and style guidance for MicroHAMS content"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Editorial Guidelines</h1>
+
+  <p>
+    Clear, consistent writing helps readers find and understand information. These guidelines ensure
+    content across the site feels cohesive, regardless of who wrote it.
+  </p>
+
+  <p>
+    We follow the <strong>Associated Press Stylebook</strong> (AP Style) as our primary reference. AP
+    Style is the standard for news organizations and technical publications because it's clear, concise,
+    and widely understood. When this guide doesn't cover something, defer to AP Style.
+  </p>
+
+  <h2 id="voice-and-tone">Voice and tone</h2>
+
+  <p>
+    Write as if you're explaining something to a fellow amateur radio operator at a club meeting. Be
+    helpful, direct, and respectful of the reader's time.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Be direct</h4>
+      <p>
+        Say what you mean. Avoid hedging, filler words, and unnecessary qualifiers. "Connect the
+        antenna" not "You might want to consider connecting the antenna."
+      </p>
+    </div>
+    <div class="card">
+      <h4>Be inclusive</h4>
+      <p>
+        Assume readers have varied backgrounds. Explain jargon when first used. Don't assume
+        everyone knows what CTCSS means.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Be practical</h4>
+      <p>
+        Focus on what readers can do with the information. Include examples, expected outcomes, and
+        troubleshooting tips.
+      </p>
+    </div>
+  </div>
+
+  <h3>Active voice</h3>
+
+  <p>Use active voice. It's clearer and more engaging.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Passive (avoid)</th>
+        <th>Active (prefer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"The antenna should be connected to the radio."</td>
+        <td>"Connect the antenna to the radio."</td>
+      </tr>
+      <tr>
+        <td>"The frequency was changed by the operator."</td>
+        <td>"The operator changed the frequency."</td>
+      </tr>
+      <tr>
+        <td>"It is recommended that you check SWR."</td>
+        <td>"Check your SWR."</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Second person</h3>
+
+  <p>
+    Address readers directly as "you" in instructions and guides. It's more engaging than "the user"
+    or "one."
+  </p>
+
+  <pre><code>Good: "You'll need a 50-ohm coax cable."
+Avoid: "The user will need a 50-ohm coax cable."
+Avoid: "One needs a 50-ohm coax cable."</code></pre>
+
+  <h2 id="formatting-conventions">Formatting conventions</h2>
+
+  <h3>Lists vs. tables</h3>
+
+  <p>Choose the right format for your content:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Format</th>
+        <th>Use when</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Bulleted list</strong></td>
+        <td>Items are independent, no particular order matters</td>
+        <td>Features, requirements, things to bring</td>
+      </tr>
+      <tr>
+        <td><strong>Numbered list</strong></td>
+        <td>Sequence matters, steps in a process</td>
+        <td>Instructions, procedures, rankings</td>
+      </tr>
+      <tr>
+        <td><strong>Table</strong></td>
+        <td>Comparing items across multiple attributes</td>
+        <td>Specifications, before/after, correct/incorrect</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    When showing comparisons (correct vs. incorrect, before vs. after), always use a table. It's
+    easier to scan and makes the relationship between items clear.
+  </p>
+
+  <h3>Headings</h3>
+
+  <p>Use sentence case for headings—capitalize only the first word and proper nouns.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Correct</th>
+        <th>Incorrect</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Getting started with FT8</td>
+        <td>Getting Started With FT8</td>
+      </tr>
+      <tr>
+        <td>How to build an antenna</td>
+        <td>How To Build An Antenna</td>
+      </tr>
+      <tr>
+        <td>Understanding APRS networks</td>
+        <td>Understanding APRS Networks</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Numbers</h3>
+
+  <p>
+    Spell out numbers zero through nine. Use numerals for 10 and above. Always use numerals with
+    units.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Context</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small numbers (0–9)</td>
+        <td>"Connect three wires"</td>
+      </tr>
+      <tr>
+        <td>Large numbers (10+)</td>
+        <td>"Connect 15 wires"</td>
+      </tr>
+      <tr>
+        <td>With units (always numerals)</td>
+        <td>"5 watts," "7 MHz," "2 meters"</td>
+      </tr>
+      <tr>
+        <td>Frequencies</td>
+        <td>"14.074 MHz" (use decimals)</td>
+      </tr>
+      <tr>
+        <td>Times</td>
+        <td>"7:30 PM" (12-hour with AM/PM)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Abbreviations and acronyms</h3>
+
+  <p>
+    Spell out terms on first use, followed by the abbreviation in parentheses. Use the abbreviation
+    thereafter.
+  </p>
+
+  <pre><code>First use: "The Automatic Packet Reporting System (APRS) enables..."
+Subsequent: "APRS stations can be configured to..."</code></pre>
+
+  <p>
+    Common amateur radio abbreviations (CW, SSB, FM, HF, VHF, UHF) don't need expansion for this
+    audience. Use judgment—if most readers will know it, skip the expansion.
+  </p>
+
+  <h3>Callsigns</h3>
+
+  <p>
+    Format callsigns in uppercase: W1ABC, KG7XYZ, JA1ABC. When including a name, use the format
+    "Jane Smith, W1ABC" or "W1ABC (Jane Smith)."
+  </p>
+
+  <h3>Technical terms</h3>
+
+  <p>
+    Use <code>code formatting</code> for technical content:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>File names</td>
+        <td><code>index.md</code></td>
+      </tr>
+      <tr>
+        <td>Folder paths</td>
+        <td><code>src/content/articles/</code></td>
+      </tr>
+      <tr>
+        <td>Commands</td>
+        <td><code>npm run dev</code></td>
+      </tr>
+      <tr>
+        <td>Configuration values</td>
+        <td><code>true</code>, <code>false</code></td>
+      </tr>
+      <tr>
+        <td>Code references</td>
+        <td>the <code>title</code> field</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Don't use code formatting for general technical terms (antenna, coax, transceiver) or brand
+    names (Yaesu, Icom, Kenwood).
+  </p>
+
+  <h2 id="images">Images</h2>
+
+  <p>
+    Images add value when they clarify concepts, show equipment, or document activities. Every image
+    should serve a purpose—don't add images just to break up text.
+  </p>
+
+  <h3>When to use images</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Good uses</th>
+        <th>Avoid</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Showing antenna configurations or installations</td>
+        <td>Generic stock photos of "technology"</td>
+      </tr>
+      <tr>
+        <td>Documenting club events and activities</td>
+        <td>Low-quality or blurry photos</td>
+      </tr>
+      <tr>
+        <td>Illustrating step-by-step procedures</td>
+        <td>Screenshots that will quickly become outdated</td>
+      </tr>
+      <tr>
+        <td>Circuit diagrams and schematics</td>
+        <td>Decorative images with no informational value</td>
+      </tr>
+      <tr>
+        <td>Equipment photos for reviews or comparisons</td>
+        <td>Copyrighted images without permission</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Rights and attribution</h3>
+
+  <p>Only use images you have the right to publish:</p>
+
+  <ul>
+    <li><strong>Your own photos</strong> — You took it, you can use it</li>
+    <li><strong>Club photos</strong> — Taken at club events with implied consent</li>
+    <li>
+      <strong>Creative Commons</strong> — Check the specific license (some require attribution, some
+      prohibit commercial use)
+    </li>
+    <li><strong>Public domain</strong> — No restrictions</li>
+    <li><strong>Licensed images</strong> — Only if you have explicit permission</li>
+  </ul>
+
+  <div class="callout callout--warning">
+    <p>
+      <strong>Never</strong> copy images from Google Image Search, other ham radio sites, or manufacturer
+      websites without explicit permission. "Found it online" is not a license.
+    </p>
+  </div>
+
+  <p>
+    When attribution is required, include it in the image caption or immediately below the image:
+  </p>
+
+  <pre><code>Photo: John Smith, W1ABC
+Image: ARRL, used with permission
+Diagram: Creative Commons CC BY-SA 4.0</code></pre>
+
+  <h3>Aspect ratios</h3>
+
+  <p>Use consistent aspect ratios for visual harmony:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Use case</th>
+        <th>Aspect ratio</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Article cover images</td>
+        <td>16:9 or 3:2</td>
+        <td>Landscape orientation works best</td>
+      </tr>
+      <tr>
+        <td>Event photos</td>
+        <td>16:9, 3:2, or 4:3</td>
+        <td>Match the natural composition</td>
+      </tr>
+      <tr>
+        <td>Equipment photos</td>
+        <td>Match the subject</td>
+        <td>Don't distort proportions</td>
+      </tr>
+      <tr>
+        <td>Diagrams and schematics</td>
+        <td>As needed</td>
+        <td>Legibility is more important than consistency</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Composition guidelines</h3>
+
+  <ul>
+    <li><strong>Fill the frame</strong> — Get close enough that the subject is clear</li>
+    <li><strong>Clean backgrounds</strong> — Avoid clutter that distracts from the subject</li>
+    <li>
+      <strong>Good lighting</strong> — Natural light or well-lit environments; avoid harsh shadows
+    </li>
+    <li>
+      <strong>Horizontal for landscapes</strong> — Antenna farms, operating positions, group shots
+    </li>
+    <li>
+      <strong>Crop thoughtfully</strong> — Remove unnecessary elements, but don't cut off important details
+    </li>
+  </ul>
+
+  <h3>People in photos</h3>
+
+  <p>For club event photos showing identifiable people:</p>
+
+  <ul>
+    <li>Attendees at public club events have implied consent for event documentation</li>
+    <li>For individual portraits or featured shots, ask permission</li>
+    <li>Be mindful of backgrounds (license plates, addresses, computer screens)</li>
+    <li>If someone asks to not be photographed or to have a photo removed, honor that request</li>
+  </ul>
+
+  <h3>Alt text</h3>
+
+  <p>
+    Every image needs descriptive alt text for accessibility. Describe what the image shows, not
+    just what it is.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Weak alt text</th>
+        <th>Good alt text</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"antenna"</td>
+        <td>"A 20-meter dipole antenna suspended between two trees at approximately 30 feet"</td>
+      </tr>
+      <tr>
+        <td>"club meeting"</td>
+        <td>"Fifteen members seated around tables during the January 2026 club meeting"</td>
+      </tr>
+      <tr>
+        <td>"schematic"</td>
+        <td>"Circuit schematic showing a simple CW keyer using a 555 timer IC"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    For technical diagrams, the alt text should convey the key information—someone using a screen
+    reader should understand what the diagram illustrates.
+  </p>
+
+  <h2 id="emojis">Emojis</h2>
+
+  <p>
+    Emojis are supported in content but should be used sparingly. They can add warmth to social
+    announcements while potentially undermining technical credibility.
+  </p>
+
+  <h3>When emojis work well</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Context</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Event announcements</td>
+        <td>"Join us for Field Day! 📻"</td>
+      </tr>
+      <tr>
+        <td>Social recaps</td>
+        <td>"Great turnout at the swapmeet! 🎉"</td>
+      </tr>
+      <tr>
+        <td>Callout boxes</td>
+        <td>⚠️ Warning: High voltage</td>
+      </tr>
+      <tr>
+        <td>Visual list markers</td>
+        <td>📡 Antennas, 🔧 Tools, 📅 Schedule</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>When to avoid emojis</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Context</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Technical documentation</td>
+        <td>Undermines professional tone</td>
+      </tr>
+      <tr>
+        <td>Headings</td>
+        <td>Breaks anchor links, clutters navigation</td>
+      </tr>
+      <tr>
+        <td>As sole meaning indicator</td>
+        <td>Not accessible to screen readers</td>
+      </tr>
+      <tr>
+        <td>Excessive use (more than 2-3 per section)</td>
+        <td>Becomes distracting, appears unprofessional</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Guidelines</h3>
+
+  <ul>
+    <li><strong>One or two per section maximum</strong> — More becomes noise</li>
+    <li><strong>Never in headings</strong> — Keep navigation clean</li>
+    <li><strong>Pair with text</strong> — Don't rely on emoji alone to convey meaning</li>
+    <li><strong>Match the tone</strong> — Casual for social content, absent for technical</li>
+  </ul>
+
+  <p>
+    For syntax and how to insert emojis, see the <a href="/contributing/markdown#emojis"
+      >Markdown Reference</a
+    >.
+  </p>
+
+  <h2 id="tags">Tags</h2>
+
+  <p>
+    Tags connect related content across the site. Consistent tagging helps readers discover
+    articles, events, and documentation on topics they care about.
+  </p>
+
+  <h3>Tag format</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rule</th>
+        <th>Correct</th>
+        <th>Incorrect</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lowercase</td>
+        <td><code>digital-modes</code></td>
+        <td><code>Digital-Modes</code></td>
+      </tr>
+      <tr>
+        <td>Hyphens for spaces</td>
+        <td><code>field-day</code></td>
+        <td><code>field day</code></td>
+      </tr>
+      <tr>
+        <td>Singular form</td>
+        <td><code>antenna</code></td>
+        <td><code>antennas</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Exception:</strong> Proper nouns keep their capitalization: <code>FT8</code>,
+    <code>ARRL</code>, <code>POTA</code>.
+  </p>
+
+  <h3>Guidelines</h3>
+
+  <ul>
+    <li><strong>Use 2–5 tags</strong> — Fewer misses connections; more dilutes the signal</li>
+    <li><strong>Be specific</strong> — <code>ft8</code> is better than <code>digital</code></li>
+    <li>
+      <strong>Reuse existing tags</strong> — Check the <a href="/tags">tags page</a> before creating
+      new ones
+    </li>
+    <li><strong>Tag at multiple levels</strong> — <code>["ft8", "digital-modes", "hf"]</code></li>
+  </ul>
+
+  <p>
+    See the <a href="/contributing/tags">Tags Reference</a> for the complete list of current tags and
+    detailed guidance.
+  </p>
+
+  <h2 id="amateur-radio-conventions">Amateur radio conventions</h2>
+
+  <h3>Frequencies</h3>
+
+  <p>
+    Use MHz for HF and above, kHz for below 1 MHz. Include three decimal places for precision when
+    relevant.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Band</th>
+        <th>Format</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HF</td>
+        <td>"14.074 MHz" or "7.074 MHz"</td>
+      </tr>
+      <tr>
+        <td>VHF</td>
+        <td>"146.52 MHz" or "144.200 MHz"</td>
+      </tr>
+      <tr>
+        <td>UHF</td>
+        <td>"446.000 MHz"</td>
+      </tr>
+      <tr>
+        <td>General reference</td>
+        <td>"the 20-meter band" or "2 meters"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Power levels</h3>
+
+  <p>Use "watts" or "W" with a space: "100 watts" or "100 W." For milliwatts, use "mW."</p>
+
+  <h3>Q-signals and prosigns</h3>
+
+  <p>
+    Italicize Q-signals on first use with definitions: <em>QSO</em> (contact), <em>QTH</em> (location),
+    <em>QRM</em> (interference). Common ones like QSO, QSL, and QTH don't need definitions for this audience.
+  </p>
+
+  <h2 id="punctuation">Punctuation</h2>
+
+  <h3>Serial comma</h3>
+
+  <p>Use the serial comma (Oxford comma) before "and" or "or" in a list of three or more items.</p>
+
+  <pre><code>Correct: "You'll need an antenna, coax, and a radio."
+Incorrect: "You'll need an antenna, coax and a radio."</code></pre>
+
+  <h3>Dashes</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Use</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Hyphen (-)</td>
+        <td>Join compound words</td>
+        <td>"well-known," "20-meter"</td>
+      </tr>
+      <tr>
+        <td>En dash (–)</td>
+        <td>Indicate ranges</td>
+        <td>"pages 10–15," "7–14 MHz"</td>
+      </tr>
+      <tr>
+        <td>Em dash (—)</td>
+        <td>Set off phrases for emphasis</td>
+        <td>"signals—like this—stand out"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="accessibility">Accessibility</h2>
+
+  <p>
+    Write content that works for everyone, including people using screen readers or who have visual
+    impairments.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Element</th>
+        <th>Guideline</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Image alt text</td>
+        <td>Describe what the image shows, not just what it is</td>
+        <td>"Dipole antenna mounted on a portable mast" not "antenna.jpg"</td>
+      </tr>
+      <tr>
+        <td>Link text</td>
+        <td>Be descriptive about the destination</td>
+        <td>"See the setup guide" not "click here"</td>
+      </tr>
+      <tr>
+        <td>Color</td>
+        <td>Don't rely on color alone to convey meaning</td>
+        <td>Use icons or text labels alongside color</td>
+      </tr>
+      <tr>
+        <td>Headings</td>
+        <td>Use proper hierarchy, don't skip levels</td>
+        <td>H1 → H2 → H3, never H1 → H3</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="references">References</h2>
+
+  <p>For questions not covered here, consult these resources:</p>
+
+  <ul>
+    <li><a href="https://www.apstylebook.com/">AP Stylebook</a> — Primary style reference</li>
+    <li>
+      <a href="https://developers.google.com/style">Google Developer Documentation Style Guide</a> —
+      Technical writing guidance
+    </li>
+    <li>
+      <a href="https://www.microsoft.com/en-us/style-guide">Microsoft Writing Style Guide</a> — Accessible
+      writing
+    </li>
+    <li>
+      <a href="https://www.arrl.org/style-guide">ARRL Style Guide</a> — Amateur radio terminology
+    </li>
+  </ul>
+</DocsLayout>

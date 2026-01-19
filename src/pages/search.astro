@@ -4,14 +4,11 @@
  * Vignelli: "Design is a discipline"
  */
 
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PageLayout from '../layouts/PageLayout.astro';
 import SearchBar from '../components/SearchBar.astro';
 ---
 
-<BaseLayout 
-  title="Search"
-  description="Search articles, docs, and projects"
->
+<PageLayout title="Search" description="Search articles, docs, and projects">
   <section class="region">
     <div class="wrapper">
       <div class="center--measure">
@@ -20,10 +17,13 @@ import SearchBar from '../components/SearchBar.astro';
             <h1>Search</h1>
             <p class="lead">Find articles, documentation, and projects</p>
           </div>
-          
+
           <SearchBar />
-          
-          <div class="box--lg" style="background: var(--color-surface-muted); border-radius: var(--radius-md);">
+
+          <div
+            class="box--lg"
+            style="background: var(--color-surface-muted); border-radius: var(--radius-md);"
+          >
             <div class="stack-2">
               <p class="text-sm font-semibold">Search tips:</p>
               <ul class="text-sm" style="margin: 0; padding-left: var(--space-6);">
@@ -38,4 +38,4 @@ import SearchBar from '../components/SearchBar.astro';
       </div>
     </div>
   </section>
-</BaseLayout>
+</PageLayout>

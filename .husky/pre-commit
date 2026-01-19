@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Determine what changed
+STAGED=$(git diff --cached --name-only)
+
+# Check if only content files changed
+CONTENT_ONLY=true
+for file in $STAGED; do
+  case "$file" in
+    src/content/*.md|src/content/**/*.md) ;;
+    *) CONTENT_ONLY=false; break ;;
+  esac
+done
+
+if [ "$CONTENT_ONLY" = true ] && [ -n "$STAGED" ]; then
+  echo "📝 Content-only changes detected - running schema validation"
+  npx astro check
+else
+  echo "🔧 Code changes detected - running full pre-commit"
+  npx lint-staged
+  npx astro check
+fi
