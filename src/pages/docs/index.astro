@@ -1,19 +1,22 @@
 ---
 /**
  * Documentation Index Page
- * 
+ *
  * Lists all documentation in a gallery grid, grouped by section
  */
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
-const docs = (await getCollection('docs', publishedFilter))
-  .sort((a, b) => a.data.order - b.data.order);
+type Doc = CollectionEntry<'docs'>;
+
+const docs = (await getCollection('docs', publishedFilter)).sort(
+  (a: Doc, b: Doc) => a.data.order - b.data.order
+);
 
 // Group by section
-const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]>, doc) => {
+const docsBySection = docs.reduce((acc: Record<string, Doc[]>, doc: Doc) => {
   const section = doc.data.section || 'General';
   if (!acc[section]) acc[section] = [];
   acc[section].push(doc);
@@ -21,7 +24,7 @@ const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]
 }, {});
 ---
 
-<BaseLayout title="Documentation" description="Technical documentation and reference materials">
+<PageLayout title="Documentation" description="Technical documentation and reference materials">
   <!-- Page Header -->
   <section class="region">
     <div class="wrapper wrapper--full">
@@ -38,28 +41,33 @@ const docsBySection = docs.reduce((acc: Record<string, CollectionEntry<'docs'>[]
   <section class="region" style="background-color: var(--color-surface-muted);">
     <div class="wrapper wrapper--full">
       <div class="stack-12">
-        {(Object.entries(docsBySection) as [string, CollectionEntry<'docs'>[]][]).map(([section, sectionDocs]) => (
-          <div class="stack-6">
-            <h2>{section}</h2>
-            <div class="grid grid--auto-fit">
-              {sectionDocs.map((doc) => (
-                <article class="card" data-variant="interactive">
-                  <div class="card__header">
-                    <h3 class="card__title">
-                      <a href={`/docs/${doc.slug}`} style="text-decoration: none; color: inherit;">
-                        {doc.data.title}
-                      </a>
-                    </h3>
-                    {doc.data.description && (
-                      <p class="card__description">{doc.data.description}</p>
-                    )}
-                  </div>
-                </article>
-              ))}
+        {
+          (Object.entries(docsBySection) as [string, Doc[]][]).map(([section, sectionDocs]) => (
+            <div class="stack-6">
+              <h2>{section}</h2>
+              <div class="grid grid--auto-fit">
+                {sectionDocs.map((doc) => (
+                  <article class="card" data-variant="interactive">
+                    <div class="card__header">
+                      <h3 class="card__title">
+                        <a
+                          href={`/docs/${doc.slug}`}
+                          style="text-decoration: none; color: inherit;"
+                        >
+                          {doc.data.title}
+                        </a>
+                      </h3>
+                      {doc.data.description && (
+                        <p class="card__description">{doc.data.description}</p>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        }
       </div>
     </div>
   </section>
-</BaseLayout>
+</PageLayout>

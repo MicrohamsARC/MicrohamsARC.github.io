@@ -1,0 +1,276 @@
+---
+/**
+ * Contributing: Tags Reference
+ *
+ * Guidelines for consistent tagging across content.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/tags';
+
+const headings = [
+  { text: 'Why tags matter', slug: 'why-tags-matter' },
+  { text: 'Tag format', slug: 'tag-format' },
+  { text: 'Choosing tags', slug: 'choosing-tags' },
+  { text: 'Tag categories', slug: 'tag-categories' },
+  { text: 'Current tags', slug: 'current-tags' },
+];
+---
+
+<DocsLayout
+  title="Tags Reference"
+  description="Guidelines for consistent tagging across articles, events, and documentation"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Tags Reference</h1>
+
+  <p>
+    Tags connect related content across the site. When used consistently, they help readers discover
+    articles, events, and documentation on topics they care about.
+  </p>
+
+  <h2 id="why-tags-matter">Why tags matter</h2>
+
+  <p>Tags serve three purposes:</p>
+
+  <ul>
+    <li><strong>Discovery</strong> — Readers clicking a tag find all related content</li>
+    <li>
+      <strong>Navigation</strong> — The <a href="/tags">tags page</a> provides a topic-based view of
+      the site
+    </li>
+    <li><strong>SEO</strong> — Search engines use tags to understand content relationships</li>
+  </ul>
+
+  <p>
+    Inconsistent tagging—using "FT8" in one article and "ft8" in another—breaks these connections.
+    That's why we need conventions.
+  </p>
+
+  <h2 id="tag-format">Tag format</h2>
+
+  <h3>Standard format</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rule</th>
+        <th>Example</th>
+        <th>Not this</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lowercase</td>
+        <td><code>digital-modes</code></td>
+        <td><code>Digital-Modes</code></td>
+      </tr>
+      <tr>
+        <td>Hyphens for spaces</td>
+        <td><code>field-day</code></td>
+        <td><code>field day</code>, <code>field_day</code></td>
+      </tr>
+      <tr>
+        <td>No special characters</td>
+        <td><code>aprs</code></td>
+        <td><code>APRS!</code>, <code>aprs?</code></td>
+      </tr>
+      <tr>
+        <td>Singular form (usually)</td>
+        <td><code>antenna</code></td>
+        <td><code>antennas</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Exceptions</h3>
+
+  <p>Proper nouns and official names keep their capitalization:</p>
+
+  <ul>
+    <li><code>FT8</code> — Mode name (uppercase)</li>
+    <li><code>ARRL</code> — Organization acronym</li>
+    <li><code>POTA</code> — Parks on the Air program</li>
+  </ul>
+
+  <p>
+    When in doubt, check what's already in use on the <a href="/tags">tags page</a>.
+  </p>
+
+  <h2 id="choosing-tags">Choosing tags</h2>
+
+  <h3>How many tags?</h3>
+
+  <p>
+    Use <strong>2 to 5 tags</strong> per piece of content. Fewer than 2 misses connections; more than
+    5 dilutes the signal.
+  </p>
+
+  <h3>Be specific enough to be useful</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Too broad</th>
+        <th>Better</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>radio</code></td>
+        <td><code>hf</code>, <code>vhf</code>, <code>sdr</code></td>
+        <td>Everything is about radio—not helpful</td>
+      </tr>
+      <tr>
+        <td><code>antenna</code></td>
+        <td><code>dipole</code>, <code>vertical</code>, <code>portable-antenna</code></td>
+        <td>Readers want specific types</td>
+      </tr>
+      <tr>
+        <td><code>digital</code></td>
+        <td><code>ft8</code>, <code>aprs</code>, <code>winlink</code></td>
+        <td>Mode-specific is more actionable</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Reuse existing tags</h3>
+
+  <p>
+    Before creating a new tag, check the <a href="#current-tags">current tags</a> below. If a similar
+    tag exists, use it instead of creating a near-duplicate.
+  </p>
+
+  <div class="callout">
+    <p>
+      <strong>Example:</strong> If <code>field-day</code> exists, don't create
+      <code>fieldday</code> or <code>arrl-field-day</code>. Use the established tag.
+    </p>
+  </div>
+
+  <h3>Tag relationships</h3>
+
+  <p>Consider tagging at multiple levels when appropriate:</p>
+
+  <pre><code>tags: ["ft8", "digital-modes", "hf"]</code></pre>
+
+  <p>
+    This article appears in searches for FT8 specifically, digital modes generally, and HF content
+    overall.
+  </p>
+
+  <h2 id="tag-categories">Tag categories</h2>
+
+  <p>
+    Tags generally fall into these categories. Use tags from multiple categories to make content
+    findable from different angles.
+  </p>
+
+  <h3>Operating modes</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Use for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>cw</code></td><td>Morse code content</td></tr>
+      <tr><td><code>ssb</code></td><td>Single sideband voice</td></tr>
+      <tr><td><code>fm</code></td><td>FM voice, repeaters</td></tr>
+      <tr><td><code>ft8</code></td><td>FT8 digital mode</td></tr>
+      <tr><td><code>ft4</code></td><td>FT4 digital mode</td></tr>
+      <tr><td><code>digital-modes</code></td><td>General digital mode content</td></tr>
+      <tr><td><code>aprs</code></td><td>APRS network, trackers</td></tr>
+      <tr><td><code>winlink</code></td><td>Winlink email</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Bands and frequencies</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Use for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>hf</code></td><td>High frequency (3–30 MHz)</td></tr>
+      <tr><td><code>vhf</code></td><td>Very high frequency (30–300 MHz)</td></tr>
+      <tr><td><code>uhf</code></td><td>Ultra high frequency (300 MHz–3 GHz)</td></tr>
+      <tr><td><code>microwave</code></td><td>Above 1 GHz</td></tr>
+      <tr><td><code>20-meters</code></td><td>Specific band content</td></tr>
+      <tr><td><code>2-meters</code></td><td>2-meter band content</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Activities</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Use for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>field-day</code></td><td>ARRL Field Day, Winter Field Day</td></tr>
+      <tr><td><code>contesting</code></td><td>Contest operating</td></tr>
+      <tr><td><code>dx</code></td><td>DX chasing, propagation</td></tr>
+      <tr><td><code>dxpedition</code></td><td>DXpedition announcements</td></tr>
+      <tr><td><code>pota</code></td><td>Parks on the Air</td></tr>
+      <tr><td><code>sota</code></td><td>Summits on the Air</td></tr>
+      <tr><td><code>emergency-comms</code></td><td>Emergency communications, ARES, RACES</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Equipment and technology</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Use for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>sdr</code></td><td>Software-defined radio</td></tr>
+      <tr><td><code>antenna</code></td><td>Antenna building, theory</td></tr>
+      <tr><td><code>portable-antenna</code></td><td>Portable/field antennas</td></tr>
+      <tr><td><code>diy</code></td><td>Build projects, homebrew</td></tr>
+      <tr><td><code>hardware</code></td><td>Equipment reviews, modifications</td></tr>
+      <tr><td><code>raspberry-pi</code></td><td>Raspberry Pi projects</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Content type</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Use for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>beginner</code></td><td>New ham friendly content</td></tr>
+      <tr><td><code>tutorial</code></td><td>Step-by-step guides</td></tr>
+      <tr><td><code>review</code></td><td>Equipment reviews</td></tr>
+      <tr><td><code>monthly-meeting</code></td><td>Regular club meetings</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="current-tags">Current tags</h2>
+
+  <p>
+    See the <a href="/tags">Tags page</a> for the complete list of tags currently in use across the site.
+    Before creating a new tag, check if an existing one fits.
+  </p>
+</DocsLayout>

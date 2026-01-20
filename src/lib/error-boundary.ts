@@ -1,16 +1,11 @@
 /**
  * Error Boundary Component
- * 
+ *
  * Catches runtime errors and reports them to Vite dev server
  * Provides detailed error information with source maps
  */
 
 /// <reference types="astro/client" />
-
-interface ErrorBoundaryProps {
-  fallback?: (error: Error, errorInfo: ErrorInfo) => any;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
 
 interface ErrorInfo {
   componentStack: string;
@@ -23,19 +18,19 @@ class ErrorBoundary {
   private static instance: ErrorBoundary;
   private errors: Array<{ error: Error; info: ErrorInfo }> = [];
   private wsConnection: WebSocket | null = null;
-  
+
   private constructor() {
     this.setupGlobalErrorHandlers();
     this.connectToViteHMR();
   }
-  
+
   static getInstance(): ErrorBoundary {
     if (!ErrorBoundary.instance) {
       ErrorBoundary.instance = new ErrorBoundary();
     }
     return ErrorBoundary.instance;
   }
-  
+
   /**
    * Setup global error handlers
    */
@@ -49,7 +44,7 @@ class ErrorBoundary {
         location: window.location.href,
       });
     });
-    
+
     // Handle unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
       this.handleError(new Error(event.reason), {
@@ -59,10 +54,10 @@ class ErrorBoundary {
         location: window.location.href,
       });
     });
-    
+
     // Handle console errors
     const originalConsoleError = console.error;
-    console.error = (...args) => {
+    console.error = (...args: unknown[]) => {
       const error = new Error(args.join(' '));
       this.handleError(error, {
         componentStack: 'Console error',
@@ -73,7 +68,7 @@ class ErrorBoundary {
       originalConsoleError.apply(console, args);
     };
   }
-  
+
   /**
    * Connect to Vite HMR WebSocket for error reporting
    */
@@ -83,18 +78,18 @@ class ErrorBoundary {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
       const wsUrl = `${protocol}//${host}`;
-      
+
       try {
         this.wsConnection = new WebSocket(wsUrl, 'vite-hmr');
-        
+
         this.wsConnection.addEventListener('open', () => {
           console.log('[ErrorBoundary] Connected to Vite HMR');
         });
-        
+
         this.wsConnection.addEventListener('error', (error) => {
           console.warn('[ErrorBoundary] WebSocket error:', error);
         });
-        
+
         this.wsConnection.addEventListener('close', () => {
           console.log('[ErrorBoundary] Disconnected from Vite HMR');
           // Attempt to reconnect after 1 second
@@ -105,14 +100,14 @@ class ErrorBoundary {
       }
     }
   }
-  
+
   /**
    * Handle an error
    */
   private handleError(error: Error, info: ErrorInfo): void {
     // Store error
     this.errors.push({ error, info });
-    
+
     // Log to console in development
     if (import.meta.env.DEV) {
       console.group('🚨 Error Boundary Caught Error');
@@ -120,53 +115,57 @@ class ErrorBoundary {
       console.info('Info:', info);
       console.groupEnd();
     }
-    
+
     // Send to Vite dev server
     this.reportToVite(error, info);
-    
+
     // Display error overlay in development
     if (import.meta.env.DEV) {
       this.showErrorOverlay(error, info);
     }
   }
-  
+
   /**
    * Report error to Vite dev server
    */
   private reportToVite(error: Error, info: ErrorInfo): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
       try {
-        this.wsConnection.send(JSON.stringify({
-          type: 'custom',
-          event: 'error-boundary',
-          data: {
-            message: error.message,
-            stack: error.stack,
-            info,
-            // Include source location if available
-            source: this.extractSourceLocation(error),
-          },
-        }));
+        this.wsConnection.send(
+          JSON.stringify({
+            type: 'custom',
+            event: 'error-boundary',
+            data: {
+              message: error.message,
+              stack: error.stack,
+              info,
+              // Include source location if available
+              source: this.extractSourceLocation(error),
+            },
+          })
+        );
       } catch (err) {
         console.warn('[ErrorBoundary] Failed to send error to Vite:', err);
       }
     }
   }
-  
+
   /**
    * Extract source location from error stack
    */
-  private extractSourceLocation(error: Error): { file: string; line: number; column: number } | null {
+  private extractSourceLocation(
+    error: Error
+  ): { file: string; line: number; column: number } | null {
     if (!error.stack) return null;
-    
+
     // Parse stack trace
     const stackLines = error.stack.split('\n');
-    const relevantLine = stackLines.find(line => 
-      line.includes('.ts') || line.includes('.js') || line.includes('.astro')
+    const relevantLine = stackLines.find(
+      (line) => line.includes('.ts') || line.includes('.js') || line.includes('.astro')
     );
-    
+
     if (!relevantLine) return null;
-    
+
     // Extract file, line, and column
     const match = relevantLine.match(/\((.+):(\d+):(\d+)\)/);
     if (match) {
@@ -176,10 +175,10 @@ class ErrorBoundary {
         column: parseInt(match[3], 10),
       };
     }
-    
+
     return null;
   }
-  
+
   /**
    * Show error overlay in development
    */
@@ -202,7 +201,7 @@ class ErrorBoundary {
       font-size: 14px;
       line-height: 1.5;
     `;
-    
+
     // Create content
     const content = `
       <div style="max-width: 800px; margin: 0 auto;">
@@ -219,12 +218,16 @@ class ErrorBoundary {
           <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${this.escapeHtml(error.message)}</pre>
         </div>
         
-        ${error.stack ? `
+        ${
+          error.stack
+            ? `
           <div style="background: #1e1e1e; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
             <h2 style="color: #50fa7b; margin-top: 0;">Stack Trace</h2>
             <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word; font-size: 12px;">${this.escapeHtml(error.stack)}</pre>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
         
         <div style="background: #1e1e1e; padding: 1.5rem; border-radius: 8px;">
           <h2 style="color: #8be9fd; margin-top: 0;">Context</h2>
@@ -254,18 +257,18 @@ class ErrorBoundary {
         </div>
       </div>
     `;
-    
+
     overlay.innerHTML = content;
-    
+
     // Remove existing overlay if present
     const existing = document.getElementById('error-boundary-overlay');
     if (existing) {
       existing.remove();
     }
-    
+
     // Add to document
     document.body.appendChild(overlay);
-    
+
     // Close on Escape key
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -275,7 +278,7 @@ class ErrorBoundary {
     };
     document.addEventListener('keydown', handleEscape);
   }
-  
+
   /**
    * Escape HTML to prevent XSS
    */
@@ -284,14 +287,14 @@ class ErrorBoundary {
     div.textContent = text;
     return div.innerHTML;
   }
-  
+
   /**
    * Get all captured errors
    */
   getErrors(): Array<{ error: Error; info: ErrorInfo }> {
     return [...this.errors];
   }
-  
+
   /**
    * Clear all errors
    */

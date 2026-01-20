@@ -11,13 +11,14 @@
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-loose);  /* 1.777 - more readable */
+  line-height: var(--leading-loose); /* 1.777 - more readable */
   font-weight: var(--font-weight-normal);
-  letter-spacing: 0.01em;  /* Slight positive tracking for Geist - more open feel */
+  letter-spacing: 0.01em; /* Slight positive tracking for Geist - more open feel */
 }
 
 /* Heading Scale - Golden Ratio (φ = 1.618) with fluid sizing */
-h1, .h1 {
+h1,
+.h1 {
   font-family: var(--font-sans);
   font-size: clamp(1.75rem, 5vw + 1rem, var(--text-4xl));
   line-height: var(--leading-snug);
@@ -26,7 +27,8 @@ h1, .h1 {
   margin-block-end: var(--baseline);
 }
 
-h2, .h2 {
+h2,
+.h2 {
   font-family: var(--font-sans);
   font-size: clamp(1.5rem, 3vw + 0.75rem, var(--text-3xl));
   line-height: var(--leading-snug);
@@ -34,9 +36,11 @@ h2, .h2 {
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 2);
   margin-block-end: var(--baseline-half);
+  scroll-margin-top: var(--space-4);
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-family: var(--font-sans);
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
@@ -44,9 +48,11 @@ h3, .h3 {
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 1.5);
   margin-block-end: var(--baseline-half);
+  scroll-margin-top: var(--space-4);
 }
 
-h4, .h4 {
+h4,
+.h4 {
   font-family: var(--font-sans);
   font-size: var(--text-xl);
   line-height: var(--leading-snug);
@@ -55,7 +61,8 @@ h4, .h4 {
   margin-block-end: var(--baseline-half);
 }
 
-h5, .h5 {
+h5,
+.h5 {
   font-family: var(--font-sans);
   font-size: var(--text-lg);
   line-height: var(--leading-normal);
@@ -64,7 +71,8 @@ h5, .h5 {
   margin-block-end: var(--baseline-quarter);
 }
 
-h6, .h6 {
+h6,
+.h6 {
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   line-height: var(--leading-normal);
@@ -82,7 +90,7 @@ h6, .h6 {
 
 /* Body Text - Optimal measure for readability */
 p {
-  margin-block-end: var(--space-4);  /* 16px - tighter rhythm */
+  margin-block-end: var(--space-4); /* 16px - tighter rhythm */
   max-inline-size: var(--measure-wide);
   hyphens: auto;
 }
@@ -102,7 +110,8 @@ p {
 }
 
 /* Small text - captions, metadata */
-small, .text-sm {
+small,
+.text-sm {
   font-size: var(--text-sm);
   line-height: var(--leading-normal);
 }
@@ -145,9 +154,10 @@ a:focus-visible {
 }
 
 /* Lists */
-ul, ol {
-  margin-block-end: var(--space-3);  /* 12px - tighter rhythm */
-  padding-inline-start: 1.25em;  /* Align bullets with text edge */
+ul,
+ol {
+  margin-block-end: var(--space-3); /* 12px - tighter rhythm */
+  padding-inline-start: 1.25em; /* Align bullets with text edge */
 }
 
 /* Lists after headings - tighter coupling */
@@ -157,7 +167,7 @@ ul, ol {
 }
 
 li {
-  margin-block-end: var(--space-2);  /* 8px - tighter rhythm */
+  margin-block-end: var(--space-2); /* 8px - tighter rhythm */
 }
 
 li:last-child {
@@ -197,6 +207,8 @@ code {
   background-color: var(--color-surface-muted);
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border-muted);
+  margin-inline: 0.1em;
+  white-space: nowrap;
 }
 
 pre {
@@ -214,6 +226,8 @@ pre code {
   background-color: transparent;
   border: none;
   border-radius: 0;
+  white-space: pre;
+  margin-inline: 0;
 }
 
 /* Horizontal rule - Swiss grid line */
@@ -243,8 +257,8 @@ img {
 }
 
 /* SVG images - scale to container width, override Astro's width/height attributes */
-img[src*="f=svg"],
-img[src$=".svg"] {
+img[src*='f=svg'],
+img[src$='.svg'] {
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -252,14 +266,14 @@ img[src$=".svg"] {
 
 /* SVG images with currentColor need inversion in dark mode since <img> doesn't inherit CSS color */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) img[src*="f=svg"],
-  :root:not([data-theme="light"]) img[src$=".svg"] {
+  :root:not([data-theme='light']) img[src*='f=svg'],
+  :root:not([data-theme='light']) img[src$='.svg'] {
     filter: invert(1);
   }
 }
 
-:root[data-theme="dark"] img[src*="f=svg"],
-:root[data-theme="dark"] img[src$=".svg"] {
+:root[data-theme='dark'] img[src*='f=svg'],
+:root[data-theme='dark'] img[src$='.svg'] {
   filter: invert(1);
 }
 

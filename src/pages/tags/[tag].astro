@@ -1,31 +1,38 @@
 ---
 /**
  * Dynamic Tag Pages
- * 
+ *
  * Filters and displays articles by tag
  */
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles', publishedFilter);
-  
+  type Article = (typeof articles)[number];
+
   // Get all unique tags
-  const allTags = [...new Set(articles.flatMap(article => {
-return article.data.tags;
-}))];
-  
+  const allTags = [
+    ...new Set(
+      articles.flatMap((article: Article) => {
+        return article.data.tags;
+      })
+    ),
+  ];
+
   // Create a path for each tag
-  return allTags.map(tag => {
-    const filteredArticles = articles.filter(article => 
-      article.data.tags.includes(tag)
-    ).sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
-    
+  return allTags.map((tag) => {
+    const filteredArticles = articles
+      .filter((article: Article) => article.data.tags.includes(tag))
+      .sort(
+        (a: Article, b: Article) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
+      );
+
     return {
       params: { tag },
-      props: { articles: filteredArticles, tag }
+      props: { articles: filteredArticles, tag },
     };
   });
 }
@@ -33,20 +40,23 @@ return article.data.tags;
 const { articles, tag } = Astro.props;
 ---
 
-<BaseLayout 
-  title={`Articles tagged "${tag}"`} 
-  description={`Browse articles about ${tag}`}
->
+<PageLayout title={`Articles tagged "${tag}"`} description={`Browse articles about ${tag}`}>
   <div class="region">
     <div class="wrapper">
       <div class="stack-8">
         <!-- Page Header -->
         <header class="center text-center">
           <div class="stack-4">
-            <p class="text-sm text-muted" style="text-transform: uppercase; letter-spacing: var(--tracking-wide);">Tag</p>
+            <p
+              class="text-sm text-muted"
+              style="text-transform: uppercase; letter-spacing: var(--tracking-wide);"
+            >
+              Tag
+            </p>
             <h1>{tag}</h1>
             <p class="lead mx-auto">
-              {articles.length} {articles.length === 1 ? 'article' : 'articles'} tagged with "{tag}"
+              {articles.length}
+              {articles.length === 1 ? 'article' : 'articles'} tagged with "{tag}"
             </p>
             <a href="/articles" class="text-sm">← Back to all articles</a>
           </div>
@@ -55,67 +65,70 @@ const { articles, tag } = Astro.props;
         <!-- Articles List -->
         <div class="center">
           <div class="stack-8">
-            {articles.map((article: typeof articles[number]) => (
-              <article class="card" data-variant="interactive">
-                <div class="card__header">
-                  <h2 class="card__title">
-                    <a href={`/articles/${article.slug}`} style="text-decoration: none; color: inherit;">
-                      {article.data.title}
-                    </a>
-                  </h2>
-                  {article.data.description && (
-                    <p class="card__description">{article.data.description}</p>
+            {
+              articles.map((article: (typeof articles)[number]) => (
+                <article class="card" data-variant="interactive">
+                  <div class="card__header">
+                    <h2 class="card__title">
+                      <a
+                        href={`/articles/${article.slug}`}
+                        style="text-decoration: none; color: inherit;"
+                      >
+                        {article.data.title}
+                      </a>
+                    </h2>
+                    {article.data.description && (
+                      <p class="card__description">{article.data.description}</p>
+                    )}
+                  </div>
+
+                  <div class="card__content">
+                    <div class="cluster">
+                      {article.data.date && (
+                        <time class="text-sm text-muted" datetime={article.data.date.toISOString()}>
+                          {article.data.date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </time>
+                      )}
+                      {article.data.author && (
+                        <span class="text-sm text-muted">By {article.data.author}</span>
+                      )}
+                      {article.data.category && <span class="badge">{article.data.category}</span>}
+                    </div>
+                  </div>
+
+                  {article.data.tags?.length > 0 && (
+                    <div class="card__footer">
+                      <ul class="tag-list">
+                        {article.data.tags.map((articleTag: string) => (
+                          <li>
+                            <a
+                              href={`/tags/${encodeURIComponent(articleTag)}`}
+                              class="tag"
+                              data-active={articleTag === tag}
+                            >
+                              {articleTag}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </div>
-
-                <div class="card__content">
-                  <div class="cluster">
-                    {article.data.date && (
-                      <time class="text-sm text-muted" datetime={article.data.date.toISOString()}>
-                        {article.data.date.toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </time>
-                    )}
-                    {article.data.author && (
-                      <span class="text-sm text-muted">By {article.data.author}</span>
-                    )}
-                    {article.data.category && (
-                      <span class="badge">{article.data.category}</span>
-                    )}
-                  </div>
-                </div>
-
-                {article.data.tags?.length > 0 && (
-                  <div class="card__footer">
-                    <ul class="tag-list">
-                      {article.data.tags.map((articleTag: string) => (
-                        <li>
-                          <a 
-                            href={`/tags/${encodeURIComponent(articleTag)}`} 
-                            class="tag"
-                            data-active={articleTag === tag}
-                          >
-                            {articleTag}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </article>
-            ))}
+                </article>
+              ))
+            }
           </div>
         </div>
       </div>
     </div>
   </div>
-</BaseLayout>
+</PageLayout>
 
 <style>
-  .tag[data-active="true"] {
+  .tag[data-active='true'] {
     background-color: var(--color-accent);
     color: var(--color-white);
     border-color: var(--color-accent);

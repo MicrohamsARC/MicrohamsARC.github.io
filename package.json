@@ -2,25 +2,24 @@
   "name": "microhams",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest",
-    "test:unit": "vitest run",
-    "test:ui": "vitest --ui",
-    "test:e2e": "playwright test --grep-invert @visual",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "test:visual": "playwright test --grep @visual",
-    "test:visual:update": "playwright test --grep @visual --update-snapshots",
-    "test:all": "npm run test:unit && npm run test:e2e",
+    "test:run": "vitest run",
+    "test:e2e": "node scripts/test-e2e.js",
+    "test:e2e:ui": "node scripts/test-e2e.js --ui",
+    "test:e2e:update": "node scripts/test-e2e.js --update-snapshots",
     "lint": "eslint . --ext .js,.ts,.astro",
     "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
     "type-check": "astro check && tsc --noEmit",
     "validate": "npx tsx scripts/ai-validate.ts",
     "verify": "node scripts/verify-versions.js",
-    "ci": "npm run lint && npm run type-check && npm run test:all && npm run build",
+    "ci": "npm run verify && npm run lint && npm run type-check && npm run test:run && npm run build",
     "pre-push": "npx tsx scripts/pre-push.ts",
     "pre-push:fast": "npx tsx scripts/pre-push.ts --fast",
     "pre-push:fix": "npx tsx scripts/pre-push.ts --fix",
@@ -35,29 +34,33 @@
   "dependencies": {
     "@types/leaflet": "^1.9.21",
     "astro": "^5.14.8",
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "zod-to-json-schema": "^3.25.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
-    "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.9.1",
-    "@types/node": "^22.8.7",
+    "@types/node": "^25.0.9",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^4.0.17",
     "eslint": "^9.38.0",
     "eslint-plugin-astro": "^1.2.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "globals": "^16.4.0",
+    "globals": "^17.0.0",
     "husky": "^9.1.6",
     "jsdom": "^27.4.0",
-    "lint-staged": "^15.2.10",
-    "playwright-core": "^1.56.1",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.11",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.17"
+  },
+  "optionalDependencies": {
+    "@playwright/test": "^1.56.1",
+    "playwright-core": "^1.56.1"
   },
   "lint-staged": {
     "*.{js,ts,astro}": [

@@ -1,0 +1,41 @@
+---
+/**
+ * Site Header - Global Navigation
+ *
+ * The main site header with logo, tagline, and navigation.
+ * Extracted as a component for composition in different layouts.
+ */
+---
+
+<header class="site-header">
+  <div class="wrapper">
+    <div class="site-header__inner">
+      <div class="site-header__brand">
+        <a href="/" class="site-header__logo"> MicroHAMS </a>
+        <p class="site-header__tagline">
+          A community-driven resource for amateur radio enthusiasts
+        </p>
+      </div>
+
+      <nav class="nav" id="active-nav">
+        <ul class="nav__list">
+          <li><a href="/events" class="nav__link" data-path="/events">Events</a></li>
+          <li><a href="/articles" class="nav__link" data-path="/articles">Articles</a></li>
+          <li><a href="/docs" class="nav__link" data-path="/docs">Docs</a></li>
+          <li><a href="/about" class="nav__link" data-path="/about">About</a></li>
+          <li>
+            <button
+              id="theme-toggle"
+              class="theme-toggle"
+              aria-label="Toggle dark mode"
+              type="button"
+            >
+              <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">☀</span>
+              <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">☾</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>

@@ -18,10 +18,10 @@ export default [
       '**/*.d.ts',
     ],
   },
-  
+
   // Base config for all files
   eslint.configs.recommended,
-  
+
   // TypeScript and JavaScript files
   {
     files: ['**/*.{js,mjs,cjs,ts}'],
@@ -44,22 +44,25 @@ export default [
     rules: {
       // TypeScript specific
       'no-unused-vars': 'off', // Use TypeScript rule instead
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_|^ErrorBoundaryProps$',
-        caughtErrorsIgnorePattern: '^_|^error$'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_|^ErrorBoundaryProps$',
+          caughtErrorsIgnorePattern: '^_|^error$',
+        },
+      ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
-      
+
       // General
       'no-undef': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'error',
       'no-var': 'error',
       'no-useless-escape': 'warn',
-      
+
       // Accessibility
       'jsx-a11y/alt-text': 'error',
       'jsx-a11y/anchor-has-content': 'error',
@@ -67,11 +70,14 @@ export default [
       'jsx-a11y/aria-role': 'error',
     },
   },
-  
+
   // Astro files
   ...astroPlugin.configs.recommended,
   {
     files: ['**/*.astro'],
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -80,9 +86,10 @@ export default [
     },
     rules: {
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
-  
+
   // Node scripts
   {
     files: ['scripts/**/*.{js,ts}', '*.config.{js,ts}'],
@@ -95,14 +102,17 @@ export default [
       'no-console': 'off', // Allow console in scripts
       'no-unused-vars': 'off', // Use TypeScript rule instead
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_|^fs$|^readFileSync$|^id$',
-        caughtErrorsIgnorePattern: '^_|^error$'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_|^fs$|^readFileSync$|^id$',
+          caughtErrorsIgnorePattern: '^_|^error$',
+        },
+      ],
     },
   },
-  
+
   // Test files
   {
     files: [
@@ -110,7 +120,7 @@ export default [
       '**/playwright/**/*.ts',
       'src/test/**/*.ts',
       'vitest.config.ts',
-      'playwright.config.ts'
+      'playwright.config.ts',
     ],
     languageOptions: {
       globals: {
@@ -122,17 +132,20 @@ export default [
       'no-console': 'off',
       'no-undef': 'off', // Playwright/Vitest provide global types
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_|^error'
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_|^error',
+        },
+      ],
     },
   },
-  
+
   // Client-side scripts (browser only)
   {
-    files: ['src/lib/error-boundary-client.ts', 'src/components/**/*.ts'],
+    files: ['src/lib/error-boundary*.ts', 'src/components/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.browser,

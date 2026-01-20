@@ -2,18 +2,18 @@
 
 /**
  * Pre-Push Validation Script
- * 
+ *
  * Comprehensive validation that mirrors full CI but runs locally.
  * Use this before `git push` to catch issues early, especially when
  * GitHub free plan limits CI minutes.
- * 
+ *
  * Stages:
  * 1. Static Analysis - lint, type-check
  * 2. Unit Tests - fast, no external dependencies
  * 3. Build - ensures site compiles
  * 4. E2E Tests - browser tests against built site
  * 5. Content Validation - accessibility, design system checks
- * 
+ *
  * Usage:
  *   npm run pre-push             # Full validation
  *   npm run pre-push -- --fast   # Skip e2e tests
@@ -22,7 +22,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
 import { resolve } from 'path';
 
 // ANSI colors
@@ -112,11 +112,11 @@ async function stage(
     const success = await fn();
     const duration = Date.now() - startTime;
     results.push({ name, status: success ? 'pass' : 'fail', duration });
-    
+
     if (success) {
-      console.log(`${c('✓', 'green')} ${name} ${c(`(${(duration/1000).toFixed(1)}s)`, 'gray')}`);
+      console.log(`${c('✓', 'green')} ${name} ${c(`(${(duration / 1000).toFixed(1)}s)`, 'gray')}`);
     } else {
-      console.log(`${c('✗', 'red')} ${name} ${c(`(${(duration/1000).toFixed(1)}s)`, 'gray')}`);
+      console.log(`${c('✗', 'red')} ${name} ${c(`(${(duration / 1000).toFixed(1)}s)`, 'gray')}`);
     }
     return success;
   } catch (error: any) {
@@ -144,9 +144,7 @@ async function checkGitStatus(): Promise<boolean> {
 }
 
 async function runLint(): Promise<boolean> {
-  const command = shouldFix 
-    ? 'npm run lint:fix'
-    : 'npm run lint';
+  const command = shouldFix ? 'npm run lint:fix' : 'npm run lint';
   return run(command);
 }
 
@@ -155,7 +153,7 @@ async function runTypeCheck(): Promise<boolean> {
 }
 
 async function runUnitTests(): Promise<boolean> {
-  return run('npm run test:unit');
+  return run('npm run test:run');
 }
 
 async function runBuild(): Promise<boolean> {
@@ -164,20 +162,9 @@ async function runBuild(): Promise<boolean> {
 
 async function runE2ETests(): Promise<boolean> {
   if (isDocker) {
-    // Run E2E tests in Docker container (Playwright browsers pre-installed)
     return run('npm run docker:e2e');
   }
-  // Start preview server and run e2e tests locally
   return run('npm run test:e2e');
-}
-
-async function runVisualTests(): Promise<boolean> {
-  if (isDocker) {
-    // Visual tests are slow in Docker (~5min) - skip in pre-push, run in CI
-    console.log('Skipping visual tests in Docker mode (run in CI instead)');
-    return true;
-  }
-  return run('npm run test:visual');
 }
 
 async function runContentValidation(): Promise<boolean> {
@@ -200,13 +187,13 @@ async function runVersionCheck(): Promise<boolean> {
 
 async function main() {
   const startTime = Date.now();
-  
+
   header('Pre-Push Validation');
-  
+
   console.log(`Mode: ${isFast ? c('FAST', 'yellow') : c('FULL', 'green')}`);
   console.log(`Auto-fix: ${shouldFix ? c('YES', 'green') : c('NO', 'gray')}`);
   console.log(`Docker: ${isDocker ? c('YES', 'cyan') : c('NO', 'gray')}`);
-  
+
   const stages = [
     { name: 'Git Status Check', fn: checkGitStatus, skip: false },
     { name: 'Package Versions', fn: runVersionCheck, skip: false },
@@ -216,20 +203,19 @@ async function main() {
     { name: 'Unit Tests', fn: runUnitTests, skip: false },
     { name: 'Build', fn: runBuild, skip: false },
     { name: 'E2E Tests', fn: runE2ETests, skip: isFast },
-    { name: 'Visual Tests', fn: runVisualTests, skip: isFast },
   ];
-  
+
   let allPassed = true;
   let stageNum = 1;
-  const totalStages = stages.filter(s => !s.skip).length;
-  
+  const totalStages = stages.filter((s) => !s.skip).length;
+
   for (const { name, fn, skip } of stages) {
     if (!skip) {
       stageHeader(stageNum++, totalStages, name);
     }
-    
+
     const passed = await stage(name, fn, skip);
-    
+
     if (!passed && !skip) {
       allPassed = false;
       // Continue running other stages to collect all failures
@@ -238,39 +224,42 @@ async function main() {
       }
     }
   }
-  
+
   // Summary
   const duration = Date.now() - startTime;
   header('Summary');
-  
+
   console.log(`\n${c('Results:', 'bold')}\n`);
-  
+
   for (const result of results) {
-    const icon = result.status === 'pass' ? c('✓', 'green') 
-      : result.status === 'fail' ? c('✗', 'red')
-      : c('○', 'yellow');
-    const time = result.duration > 0 ? c(`${(result.duration/1000).toFixed(1)}s`, 'gray') : '';
+    const icon =
+      result.status === 'pass'
+        ? c('✓', 'green')
+        : result.status === 'fail'
+          ? c('✗', 'red')
+          : c('○', 'yellow');
+    const time = result.duration > 0 ? c(`${(result.duration / 1000).toFixed(1)}s`, 'gray') : '';
     console.log(`  ${icon} ${result.name.padEnd(25)} ${time}`);
   }
-  
-  const passed = results.filter(r => r.status === 'pass').length;
-  const failed = results.filter(r => r.status === 'fail').length;
-  const skipped = results.filter(r => r.status === 'skip').length;
-  
+
+  const passed = results.filter((r) => r.status === 'pass').length;
+  const failed = results.filter((r) => r.status === 'fail').length;
+  const skipped = results.filter((r) => r.status === 'skip').length;
+
   console.log(`\n${c('─'.repeat(50), 'gray')}`);
   console.log(`Total: ${passed} passed, ${failed} failed, ${skipped} skipped`);
   console.log(`Duration: ${(duration / 1000).toFixed(1)}s`);
-  
+
   if (allPassed) {
     console.log(`\n${c('✅ All checks passed! Safe to push.', 'green')}\n`);
     process.exit(0);
   } else {
     console.log(`\n${c('❌ Some checks failed. Fix issues before pushing.', 'red')}\n`);
-    
+
     // Suggest commands
-    const failedStages = results.filter(r => r.status === 'fail').map(r => r.name);
+    const failedStages = results.filter((r) => r.status === 'fail').map((r) => r.name);
     console.log(c('To debug:', 'yellow'));
-    
+
     if (failedStages.includes('Lint')) {
       console.log(`  npm run lint:fix     # Auto-fix lint issues`);
     }
@@ -283,13 +272,13 @@ async function main() {
     if (failedStages.includes('E2E Tests')) {
       console.log(`  npm run test:e2e:ui  # Interactive Playwright`);
     }
-    
+
     console.log('');
     process.exit(1);
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(c(`Fatal error: ${error.message}`, 'red'));
   process.exit(1);
 });

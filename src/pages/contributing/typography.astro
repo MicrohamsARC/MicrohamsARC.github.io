@@ -1,0 +1,356 @@
+---
+/**
+ * Contributing: Typography Reference
+ *
+ * The site's typographic system: Golden Ratio scale, baseline grid, and font choices.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/typography';
+
+const headings = [
+  { text: 'The Golden Ratio', slug: 'the-golden-ratio' },
+  { text: 'Type scale', slug: 'type-scale' },
+  { text: 'Baseline grid', slug: 'baseline-grid' },
+  { text: 'Line height', slug: 'line-height' },
+  { text: 'Line length (measure)', slug: 'line-length-measure' },
+  { text: 'Font families', slug: 'font-families' },
+  { text: 'Letter spacing (tracking)', slug: 'letter-spacing-tracking' },
+  { text: 'Influences', slug: 'influences' },
+  { text: 'For content authors', slug: 'for-content-authors' },
+];
+---
+
+<DocsLayout
+  title="Typography Reference"
+  description="The site's typographic system: Golden Ratio scale, baseline grid, and font choices"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Typography Reference</h1>
+
+  <p>
+    Good typography is invisible—it makes content effortless to read. This site uses a systematic
+    approach to type, based on classical proportions that have been proven effective for centuries.
+  </p>
+
+  <h2 id="the-golden-ratio">The Golden Ratio</h2>
+
+  <p>
+    The type scale is built on the <strong>Golden Ratio</strong> (φ = 1.618), a mathematical proportion
+    found throughout nature and used in art and architecture for millennia. Each size in our scale is
+    related to the others by this ratio, creating natural visual harmony.
+  </p>
+
+  <p>
+    When you look at well-designed typography, it feels "right" without you being able to say why.
+    That's the Golden Ratio at work. The relationships between sizes are inherently pleasing to the
+    human eye.
+  </p>
+
+  <h3>Why it matters</h3>
+
+  <p>Using a mathematical scale instead of arbitrary sizes means:</p>
+
+  <ul>
+    <li><strong>Consistency</strong> — Every size relates to every other size</li>
+    <li><strong>Hierarchy</strong> — Clear visual differentiation between elements</li>
+    <li><strong>Harmony</strong> — Text at any size looks balanced with surrounding content</li>
+    <li><strong>Maintainability</strong> — No "magic numbers" or ad-hoc adjustments</li>
+  </ul>
+
+  <h2 id="type-scale">Type scale</h2>
+
+  <p>
+    Every text size on the site comes from this scale. The base size (16px) is the minimum for
+    accessible reading, and everything else derives from it.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Size</th>
+        <th>Ratio</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--text-2xs</code></td>
+        <td>11.1px (0.694rem)</td>
+        <td>φ⁻²</td>
+        <td>Smallest readable—footnotes, legal text</td>
+      </tr>
+      <tr>
+        <td><code>--text-xs</code></td>
+        <td>13.3px (0.833rem)</td>
+        <td>φ⁻¹·⁵</td>
+        <td>Captions, labels</td>
+      </tr>
+      <tr>
+        <td><code>--text-sm</code></td>
+        <td>14px (0.875rem)</td>
+        <td>—</td>
+        <td>Secondary text, UI elements</td>
+      </tr>
+      <tr>
+        <td><code>--text-base</code></td>
+        <td><strong>16px (1rem)</strong></td>
+        <td>φ⁰</td>
+        <td><strong>Body text</strong> — Sacred minimum</td>
+      </tr>
+      <tr>
+        <td><code>--text-md</code></td>
+        <td>18px (1.125rem)</td>
+        <td>—</td>
+        <td>Enhanced body, lead paragraphs</td>
+      </tr>
+      <tr>
+        <td><code>--text-lg</code></td>
+        <td>20px (1.25rem)</td>
+        <td>Major Third</td>
+        <td>Large body, introductions</td>
+      </tr>
+      <tr>
+        <td><code>--text-xl</code></td>
+        <td>21.3px (1.333rem)</td>
+        <td>Perfect Fourth</td>
+        <td>H4 headings</td>
+      </tr>
+      <tr>
+        <td><code>--text-2xl</code></td>
+        <td>25.9px (1.618rem)</td>
+        <td>φ¹ — Golden!</td>
+        <td>H3 headings</td>
+      </tr>
+      <tr>
+        <td><code>--text-3xl</code></td>
+        <td>32.4px (2.027rem)</td>
+        <td>φ¹·²⁵</td>
+        <td>H2 headings</td>
+      </tr>
+      <tr>
+        <td><code>--text-4xl</code></td>
+        <td>41.9px (2.618rem)</td>
+        <td>φ¹·⁶¹⁸</td>
+        <td>H1 headings, page titles</td>
+      </tr>
+      <tr>
+        <td><code>--text-5xl</code></td>
+        <td>51.8px (3.236rem)</td>
+        <td>φ²</td>
+        <td>Display text, hero headlines</td>
+      </tr>
+      <tr>
+        <td><code>--text-6xl</code></td>
+        <td>67.8px (4.236rem)</td>
+        <td>φ²·⁵</td>
+        <td>Large display, landing pages</td>
+      </tr>
+      <tr>
+        <td><code>--text-7xl</code></td>
+        <td>83.8px (5.236rem)</td>
+        <td>φ³</td>
+        <td>Massive display, rare use</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="baseline-grid">Baseline grid</h2>
+
+  <p>
+    Vertical spacing follows a <strong>24px baseline grid</strong>. This means the line height of
+    body text (24px at 16px font size, giving 1.5 line height) creates the fundamental unit of
+    vertical rhythm.
+  </p>
+
+  <p>
+    When spacing elements, margins and padding use multiples of this unit. This creates a visual
+    rhythm that makes scanning content effortless.
+  </p>
+
+  <h2 id="line-height">Line height</h2>
+
+  <p>
+    Line height (leading) controls vertical space between lines of text. Different types of content
+    need different amounts of space.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Value</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--leading-none</code></td>
+        <td>1</td>
+        <td>Display text only—single lines</td>
+      </tr>
+      <tr>
+        <td><code>--leading-tight</code></td>
+        <td>1.25</td>
+        <td>Headlines, large text</td>
+      </tr>
+      <tr>
+        <td><code>--leading-snug</code></td>
+        <td>1.333</td>
+        <td>Subheadings</td>
+      </tr>
+      <tr>
+        <td><code>--leading-normal</code></td>
+        <td>1.5</td>
+        <td>Body text (optimal for reading)</td>
+      </tr>
+      <tr>
+        <td><code>--leading-relaxed</code></td>
+        <td>1.618</td>
+        <td>Airy body text, Golden Ratio</td>
+      </tr>
+      <tr>
+        <td><code>--leading-loose</code></td>
+        <td>1.777</td>
+        <td>Maximum readability, rare</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="line-length-measure">Line length (measure)</h2>
+
+  <p>
+    The optimal line length for comfortable reading is <strong>45–75 characters</strong>. Too short
+    and the eye jerks back and forth; too long and readers lose their place.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Value</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--measure-compact</code></td>
+        <td>45ch</td>
+        <td>Narrow columns, sidebars</td>
+      </tr>
+      <tr>
+        <td><code>--measure-optimal</code></td>
+        <td>66ch</td>
+        <td>Primary body text</td>
+      </tr>
+      <tr>
+        <td><code>--measure-comfortable</code></td>
+        <td>72ch</td>
+        <td>Comfortable sustained reading</td>
+      </tr>
+      <tr>
+        <td><code>--measure-wide</code></td>
+        <td>80ch</td>
+        <td>Wide layouts, max recommended</td>
+      </tr>
+      <tr>
+        <td><code>--measure-full</code></td>
+        <td>90ch</td>
+        <td>Technical content, tables, code</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="font-families">Font families</h2>
+
+  <p>The site uses three carefully chosen typefaces:</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Geist Sans</h4>
+      <p>
+        The primary typeface for body text and most UI elements. A modern sans-serif designed by
+        Vercel for screens—clean, highly legible, with excellent character differentiation.
+      </p>
+      <p><code>--font-sans</code></p>
+    </div>
+    <div class="card">
+      <h4>Noto Serif JP</h4>
+      <p>
+        An accent serif for special emphasis or editorial content. Pairs beautifully with Geist for
+        contrast. Includes Japanese character support.
+      </p>
+      <p><code>--font-serif</code></p>
+    </div>
+    <div class="card">
+      <h4>Geist Mono</h4>
+      <p>
+        For code, terminal output, and technical content. Matches the personality of Geist Sans
+        while providing clear distinction between similar characters (0/O, 1/l/I).
+      </p>
+      <p><code>--font-mono</code></p>
+    </div>
+  </div>
+
+  <h2 id="letter-spacing-tracking">Letter spacing (tracking)</h2>
+
+  <p>Tracking adjusts the space between all letters in a block of text. The rules are simple:</p>
+
+  <ul>
+    <li>
+      <strong>Large text:</strong> Tighten slightly (<code>--tracking-tight</code>) — Large letters
+      have more natural whitespace
+    </li>
+    <li>
+      <strong>Body text:</strong> Never touch (<code>--tracking-normal: 0</code>) — The font
+      designer optimized it
+    </li>
+    <li>
+      <strong>Small text:</strong> Loosen slightly (<code>--tracking-wide</code>) — Improves
+      legibility
+    </li>
+    <li>
+      <strong>All caps:</strong> Always loosen (<code>--tracking-wide</code>) — Capital letters need
+      breathing room
+    </li>
+  </ul>
+
+  <h2 id="influences">Influences</h2>
+
+  <p>This typographic system draws from several traditions:</p>
+
+  <ul>
+    <li>
+      <strong>Robert Bringhurst</strong> — <em>The Elements of Typographic Style</em>, the bible of
+      typography
+    </li>
+    <li>
+      <strong>Edward Tufte</strong> — Information design principles, especially regarding whitespace
+      and data density
+    </li>
+    <li>
+      <strong>Swiss/International Style</strong> — Grid systems, systematic thinking, restraint
+    </li>
+    <li>
+      <strong>Massimo Vignelli</strong> — "Systematic, not rigid" — rules that enable rather than constrain
+    </li>
+  </ul>
+
+  <h2 id="for-content-authors">For content authors</h2>
+
+  <p>
+    You don't need to think about any of this when writing content. The system handles typography
+    automatically. Just use standard Markdown headings (<code>##</code>, <code>###</code>) and the
+    correct sizes are applied.
+  </p>
+
+  <p>
+    If you're building a new component or page layout and need to set explicit type sizes, use the
+    design tokens listed above rather than arbitrary pixel values.
+  </p>
+</DocsLayout>

@@ -1,0 +1,186 @@
+---
+/**
+ * Contributing: Pull Request Guide
+ *
+ * How to submit changes via pull requests.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+
+const currentPath = '/contributing/pull-requests';
+
+const headings = [
+  { text: 'Creating a Pull Request', slug: 'creating-a-pull-request' },
+  { text: 'PR Description Template', slug: 'pr-description-template' },
+  { text: 'Automated Checks', slug: 'automated-checks' },
+  { text: 'Review Process', slug: 'review-process' },
+  { text: 'After Merging', slug: 'after-merging' },
+  { text: 'Quick Edits via GitHub', slug: 'quick-edits-via-github' },
+];
+---
+
+<DocsLayout
+  title="Pull Requests"
+  description="How to submit and review pull requests"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Pull Requests</h1>
+
+  <p>
+    All changes to the site go through pull requests. This ensures quality and keeps the main branch
+    deployable.
+  </p>
+
+  <div class="callout">
+    <p>
+      <strong>First time?</strong> Complete <a href="/contributing/setup">Local Setup</a>
+      before submitting a PR. You'll need to run the test suite locally to ensure your changes pass all
+      checks.
+    </p>
+  </div>
+
+  <h2 id="creating-a-pull-request">Creating a Pull Request</h2>
+
+  <h3>1. Create a Branch</h3>
+
+  <p>Branch from <code>main</code> with a descriptive name:</p>
+
+  <pre><code>git checkout main
+git pull
+git checkout -b add-march-meeting</code></pre>
+
+  <p>Naming conventions:</p>
+  <ul>
+    <li><code>add-*</code> — Adding new content</li>
+    <li><code>fix-*</code> — Bug fixes</li>
+    <li><code>update-*</code> — Updating existing content</li>
+  </ul>
+
+  <h3>2. Make Your Changes</h3>
+
+  <p>Edit files, preview with <code>npm run dev</code>, then commit:</p>
+
+  <pre><code>git add .
+git commit -m "Add March 2026 meeting event"</code></pre>
+
+  <p>Write clear commit messages that explain <em>what</em> changed.</p>
+
+  <h3>3. Run Tests Locally</h3>
+
+  <p>Before pushing, verify your changes pass all checks:</p>
+
+  <pre><code>npm run build      # Ensure site builds
+npm run test       # Run unit tests
+npm run lint       # Check for code issues</code></pre>
+
+  <p>
+    Automated checks will run these same commands on your PR. Running them locally first saves time
+    and catches issues early.
+  </p>
+
+  <h3>4. Push and Open PR</h3>
+
+  <pre><code>git push -u origin add-march-meeting</code></pre>
+
+  <p>GitHub will show a link to create a pull request. Click it, add a description, and submit.</p>
+
+  <h2 id="pr-description-template">PR Description Template</h2>
+
+  <pre><code>## What
+
+Brief description of changes.
+
+## Why
+
+Why is this change needed?
+
+## Testing
+
+- [ ] Previewed locally with `npm run dev`
+- [ ] No TypeScript errors
+- [ ] Content renders correctly</code></pre>
+
+  <h2 id="automated-checks">Automated Checks</h2>
+
+  <p>Pull requests run these checks automatically:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Check</th>
+        <th>What it does</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Build</strong></td>
+        <td>Verifies the site builds without errors</td>
+      </tr>
+      <tr>
+        <td><strong>TypeScript</strong></td>
+        <td>Type-checks all code</td>
+      </tr>
+      <tr>
+        <td><strong>ESLint</strong></td>
+        <td>Checks for code quality issues</td>
+      </tr>
+      <tr>
+        <td><strong>Tests</strong></td>
+        <td>Runs unit and E2E tests</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    All checks must pass before merging. Fix any failures by pushing additional commits to your
+    branch.
+  </p>
+
+  <h2 id="review-process">Review Process</h2>
+
+  <ol>
+    <li>A maintainer will review your PR</li>
+    <li>They may request changes or ask questions</li>
+    <li>Address feedback with additional commits</li>
+    <li>Once approved, a maintainer will merge</li>
+  </ol>
+
+  <div class="callout">
+    <p>
+      <strong>Tip:</strong> Keep PRs focused. One event, one article, or one bug fix per PR. Large PRs
+      are harder to review.
+    </p>
+  </div>
+
+  <h2 id="after-merging">After Merging</h2>
+
+  <p>
+    After your PR merges, the site automatically rebuilds and deploys. Changes are live within
+    minutes.
+  </p>
+
+  <p>Clean up your local branch:</p>
+
+  <pre><code>git checkout main
+git pull
+git branch -d add-march-meeting</code></pre>
+
+  <h2 id="quick-edits-via-github">Quick Edits via GitHub</h2>
+
+  <p>For simple text fixes, you can edit directly on GitHub:</p>
+
+  <ol>
+    <li>Navigate to the file on GitHub</li>
+    <li>Click the pencil icon (Edit)</li>
+    <li>Make changes</li>
+    <li>Choose "Create a new branch and start a pull request"</li>
+  </ol>
+
+  <p>
+    This works well for typos and small content updates. For anything more complex, use the local
+    workflow.
+  </p>
+</DocsLayout>

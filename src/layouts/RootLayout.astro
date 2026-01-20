@@ -1,0 +1,101 @@
+---
+/**
+ * Root Layout - HTML Document Foundation
+ *
+ * The minimal HTML document structure:
+ * - DOCTYPE, html, head (meta, fonts, title)
+ * - Body wrapper with theme initialization
+ * - Client scripts (theme toggle, active nav)
+ *
+ * Does NOT include header, footer, or any visible chrome.
+ * Other layouts compose on top of this.
+ */
+
+import { ClientRouter } from 'astro:transitions';
+import '../styles/main.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  author?: string;
+}
+
+const { title, description = 'MicroHAMS - Amateur Radio Community', author } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    {author && <meta name="author" content={author} />}
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <ClientRouter />
+
+    <title>{title} | MicroHAMS</title>
+
+    <!-- Theme initialization (blocking to prevent flash) -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <slot />
+
+    <!-- Global Scripts -->
+    <script>
+      // Theme Toggle
+      function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      }
+
+      // Active Nav State
+      function setActiveNav() {
+        const currentPath = window.location.pathname;
+        const links = document.querySelectorAll('#active-nav .nav__link');
+
+        links.forEach((link) => {
+          const linkPath = link.getAttribute('data-path');
+          if (linkPath && (currentPath === linkPath || currentPath.startsWith(linkPath + '/'))) {
+            link.setAttribute('data-active', 'true');
+          } else {
+            link.removeAttribute('data-active');
+          }
+        });
+      }
+
+      function initPage() {
+        const themeButton = document.getElementById('theme-toggle');
+        if (themeButton) {
+          themeButton.addEventListener('click', toggleTheme);
+        }
+        setActiveNav();
+      }
+
+      // Run on initial load and after View Transitions navigation
+      initPage();
+      document.addEventListener('astro:page-load', initPage);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,469 @@
+---
+/**
+ * Schema Reference - Auto-Generated
+ *
+ * Generated at build time from actual Zod schemas in config.ts.
+ * Inspired by Stripe/MDN documentation patterns.
+ *
+ * Note: This file uses `any` types extensively because zod-to-json-schema
+ * returns dynamic JSON Schema structures that can't be statically typed.
+ */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { siteConfig, getGitHubUrl } from '../../site.config';
+import { z } from 'astro:content';
+import { collections } from '../../content/config';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+
+const currentPath = '/contributing/schemas';
+
+const headings = [
+  { text: 'Articles', slug: 'articles' },
+  { text: 'Documentation', slug: 'docs' },
+  { text: 'Events', slug: 'events' },
+  { text: 'Pages', slug: 'pages' },
+  { text: 'Images', slug: 'images' },
+];
+
+// Mock the Astro image() helper for schema generation
+const mockImage = () => z.string().describe('Image file path (relative, e.g., ./cover.jpg)');
+
+// Helper to safely call schema (handles both function and object forms)
+function getSchema(collection: any) {
+  const schema = collection.schema;
+  if (typeof schema === 'function') {
+    return schema({ image: mockImage });
+  }
+  return schema;
+}
+
+// Field groupings for events (makes the long schema scannable)
+const eventFieldGroups = {
+  Core: ['title', 'description', 'author', 'draft', 'featured', 'tags'],
+  'Date & Time': ['eventDate', 'endDate', 'startTime', 'endTime', 'timezone'],
+  Location: ['venue', 'location', 'latitude', 'longitude', 'coordFrequency'],
+  Online: ['onlineMeeting', 'teams', 'virtualLink'],
+  Metadata: [
+    'eventType',
+    'registrationRequired',
+    'registrationLink',
+    'contactPerson',
+    'contactEmail',
+    'showDisclaimer',
+  ],
+  Images: ['cover', 'coverAlt'],
+  Publishing: ['updated', 'publishDate'],
+};
+
+// Schema definitions
+const schemaInfo = {
+  articles: {
+    name: 'Articles',
+    description: 'Technical guides, tutorials, and blog posts',
+    location: 'src/content/articles/*.md',
+    githubPath: '/src/content/articles',
+    schema: getSchema(collections.articles),
+    example: `---
+title: "Getting Started with FT8"
+description: "A beginner's guide to digital modes"
+author: "Jane Smith, W1ABC"
+date: 2026-01-15
+tags: ["digital-modes", "ft8", "beginner"]
+featured: true
+---`,
+  },
+  docs: {
+    name: 'Documentation',
+    description: 'Reference documentation and technical specs',
+    location: 'src/content/docs/*.md',
+    githubPath: '/src/content/docs',
+    schema: getSchema(collections.docs),
+    example: `---
+title: "Antenna Theory Basics"
+description: "Understanding antenna fundamentals"
+author: "John Doe, K2XYZ"
+date: 2026-01-10
+section: "antennas"
+order: 1
+---`,
+  },
+  events: {
+    name: 'Events',
+    description: 'Meetings, field days, contests, and activities',
+    location: 'src/content/events/{date}-{slug}/index.md',
+    githubPath: '/src/content/events',
+    schema: getSchema(collections.events),
+    fieldGroups: eventFieldGroups,
+    example: `---
+title: "January Meeting"
+description: "Monthly club meeting"
+author: "Club Secretary"
+eventDate: 2026-01-20
+startTime: "6:00 PM"
+endTime: "8:30 PM"
+venue: "building-31"
+onlineMeeting: "microhams-teams"
+eventType: "meeting"
+---`,
+  },
+  pages: {
+    name: 'Pages',
+    description: 'General site pages',
+    location: 'src/content/pages/*.md',
+    githubPath: '/src/content/pages',
+    schema: getSchema(collections.pages),
+    example: `---
+title: "About Us"
+description: "Learn about our club"
+layout: "default"
+---`,
+  },
+};
+
+// Convert schemas to JSON Schema
+const schemasDocs: Array<{
+  key: string;
+  name: string;
+  description: string;
+  location: string;
+  githubPath: string;
+  schema: unknown;
+  jsonSchema: { properties?: Record<string, any>; required?: string[] };
+  fieldGroups?: Record<string, string[]>;
+  example: string;
+}> = Object.entries(schemaInfo).map(([key, info]) => {
+  const raw = zodToJsonSchema(info.schema, { name: key, $refStrategy: 'none' });
+  const jsonSchema = (raw.definitions as any)?.[key] || raw;
+  return { key, ...info, jsonSchema } as any;
+});
+
+// Helpers
+function formatType(prop: any): string {
+  if (prop.type === 'array') return `${prop.items?.type || 'any'}[]`;
+  if (prop.enum) return prop.enum.map((e: string) => `"${e}"`).join(' | ');
+  if (prop.anyOf) return prop.anyOf.map((a: any) => a.type || '?').join(' | ');
+  return prop.type || 'unknown';
+}
+
+function isRequired(jsonSchema: any, propName: string): boolean {
+  return jsonSchema.required?.includes(propName) ?? false;
+}
+
+function getFieldsByGroup(
+  properties: Record<string, any>,
+  groups: Record<string, string[]>,
+  required: string[]
+) {
+  const grouped: Record<string, Array<{ name: string; prop: any; required: boolean }>> = {};
+  const used = new Set<string>();
+
+  for (const [groupName, fieldNames] of Object.entries(groups)) {
+    grouped[groupName] = fieldNames
+      .filter((name) => properties[name])
+      .map((name) => {
+        used.add(name);
+        return { name, prop: properties[name], required: required.includes(name) };
+      });
+  }
+
+  // Catch any ungrouped fields
+  const other = Object.entries(properties)
+    .filter(([name]) => !used.has(name))
+    .map(([name, prop]) => ({ name, prop, required: required.includes(name) }));
+  if (other.length) grouped['Other'] = other;
+
+  return grouped;
+}
+---
+
+<DocsLayout
+  title="Schema Reference"
+  description={`Auto-generated schema reference for ${siteConfig.name}`}
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Content Schemas</h1>
+  <p class="lead">
+    This reference documents the structure and validation rules for all content types in the site.
+    These schemas define what fields are required, what types they accept, and what validation rules
+    apply. The documentation below is auto-generated directly from the Zod schemas in <code
+      >src/content/config.ts</code
+    >, so it's always in sync with the actual code—no manual updates needed.
+  </p>
+  <p class="lead">
+    Use this reference when creating or editing content to understand what fields are available,
+    which ones are required, and what format they expect. Each schema includes an example to help
+    you get started quickly.
+  </p>
+
+  <!-- Schema Documentation -->
+  {
+    schemasDocs.map(
+      ({ key, name, description, location, githubPath, jsonSchema, fieldGroups, example }) => (
+        <section class="stack-6">
+          <h2 id={key}>{name}</h2>
+          <p style="color: var(--color-text-muted);">{description}</p>
+          <p class="text-sm">
+            <code>{location}</code>
+            {githubPath && (
+              <>
+                {' '}
+                ·{' '}
+                <a href={getGitHubUrl(githubPath)} target="_blank" rel="noopener noreferrer">
+                  Browse on GitHub ↗
+                </a>
+              </>
+            )}
+          </p>
+
+          {/* Example first */}
+          {example && (
+            <div>
+              <p style="font-size: var(--step--1); font-weight: 500; color: var(--color-text-muted); margin-bottom: var(--space-2);">
+                Example
+              </p>
+              <pre style="background: var(--color-surface-muted); padding: var(--space-4); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--step--1); margin: 0; border: 1px solid var(--color-border);">
+                <code>{example}</code>
+              </pre>
+            </div>
+          )}
+
+          {/* Fields */}
+          <div class="stack-6">
+            <h3 style="font-size: var(--step-0); color: var(--color-text-muted); margin: 0;">
+              Fields
+            </h3>
+            {fieldGroups ? (
+              // Grouped fields (for events)
+              Object.entries(
+                getFieldsByGroup(
+                  jsonSchema.properties || {},
+                  fieldGroups,
+                  jsonSchema.required || []
+                )
+              ).map(
+                ([groupName, fields]) =>
+                  fields.length > 0 && (
+                    <div class="stack-3">
+                      <h4
+                        class="text-sm"
+                        style="color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2); margin: 0;"
+                      >
+                        {groupName}
+                      </h4>
+                      <dl class="stack-4" style="margin: 0;">
+                        {fields.map(({ name: propName, prop, required }) => (
+                          <div class="stack-1">
+                            <dt style="display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap;">
+                              <code style="font-size: var(--step-0); font-weight: 600;">
+                                {propName}
+                              </code>
+                              <span style="font-size: var(--step--1); color: var(--color-text-subtle);">
+                                {formatType(prop)}
+                              </span>
+                              {required && (
+                                <span style="font-size: var(--step--2); color: var(--color-accent); font-weight: 500;">
+                                  required
+                                </span>
+                              )}
+                              {prop.default !== undefined && (
+                                <span style="font-size: var(--step--2); color: var(--color-text-subtle);">
+                                  = <code>{JSON.stringify(prop.default)}</code>
+                                </span>
+                              )}
+                            </dt>
+                            <dd style="margin: 0; padding-left: 0; color: var(--color-text-muted); font-size: var(--step--1);">
+                              {prop.description || '—'}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )
+              )
+            ) : (
+              // Flat fields (for articles, docs, pages)
+              <dl class="stack-4" style="margin: 0;">
+                {Object.entries(jsonSchema.properties || {}).map(
+                  ([propName, prop]: [string, any]) => (
+                    <div class="stack-1">
+                      <dt style="display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap;">
+                        <code style="font-size: var(--step-0); font-weight: 600;">{propName}</code>
+                        <span style="font-size: var(--step--1); color: var(--color-text-subtle);">
+                          {formatType(prop)}
+                        </span>
+                        {isRequired(jsonSchema, propName) && (
+                          <span style="font-size: var(--step--2); color: var(--color-accent); font-weight: 500;">
+                            required
+                          </span>
+                        )}
+                        {prop.default !== undefined && (
+                          <span style="font-size: var(--step--2); color: var(--color-text-subtle);">
+                            = <code>{JSON.stringify(prop.default)}</code>
+                          </span>
+                        )}
+                      </dt>
+                      <dd style="margin: 0; padding-left: 0; color: var(--color-text-muted); font-size: var(--step--1);">
+                        {prop.description || '—'}
+                      </dd>
+                    </div>
+                  )
+                )}
+              </dl>
+            )}
+          </div>
+        </section>
+      )
+    )
+  }
+
+  <!-- Images Section -->
+  <section class="stack-6">
+    <h2 id="images">Images</h2>
+    <p style="color: var(--color-text-muted);">
+      Technical requirements for images in content. For editorial guidance (rights, composition, alt
+      text), see the <a href="/contributing/editorial#images">Editorial Guidelines</a>.
+    </p>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      Hosting requirements
+    </h3>
+    <p>
+      <strong>All images must be hosted in this repository.</strong> Never link to images on external
+      websites—they can change, disappear, or create legal issues. The only exception is linking to official
+      sources (e.g., ARRL logos from arrl.org) when specifically required by licensing terms.
+    </p>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      File location
+    </h3>
+    <p>
+      Place images in the same folder as your content file, then reference them with a relative
+      path:
+    </p>
+    <pre
+      style="background: var(--color-surface-muted); padding: var(--space-4); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--step--1); margin: 0; border: 1px solid var(--color-border);"><code>{`src/content/events/2026-01-january-meeting/
+├── index.md
+├── cover.jpg        # Referenced as ./cover.jpg
+└── diagram.png      # Referenced as ./diagram.png`}</code></pre>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      Size requirements
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Constraint</th>
+          <th>Requirement</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Minimum width</td>
+          <td>800px</td>
+          <td>Ensures clarity on high-DPI displays</td>
+        </tr>
+        <tr>
+          <td>Maximum width</td>
+          <td>2400px</td>
+          <td>Larger provides no benefit, wastes bandwidth</td>
+        </tr>
+        <tr>
+          <td>Maximum file size</td>
+          <td>500 KB (photos), 100 KB (diagrams)</td>
+          <td>Fast page loads on mobile connections</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <p>
+        <strong>Optimization:</strong> Astro automatically generates responsive sizes and converts to
+        WebP format at build time. Provide a high-quality source image and let the build process handle
+        optimization.
+      </p>
+    </div>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      Supported formats
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Format</th>
+          <th>Use for</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>.jpg</code> / <code>.jpeg</code></td>
+          <td>Photos</td>
+          <td>Best compression for photographic images</td>
+        </tr>
+        <tr>
+          <td><code>.png</code></td>
+          <td>Screenshots, diagrams with text</td>
+          <td>Lossless, supports transparency</td>
+        </tr>
+        <tr>
+          <td><code>.svg</code></td>
+          <td>Icons, logos, simple diagrams</td>
+          <td>Vector format, scales perfectly</td>
+        </tr>
+        <tr>
+          <td><code>.webp</code></td>
+          <td>Any (if already optimized)</td>
+          <td>Modern format, excellent compression</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      SVG and dark mode
+    </h3>
+    <p>
+      SVG files should work in both light and dark modes. Avoid hard-coded colors like
+      <code>fill="#000000"</code> that become invisible on dark backgrounds.
+    </p>
+    <p>Options for dark mode compatibility:</p>
+    <ul>
+      <li><strong>Use <code>currentColor</code></strong> — inherits text color automatically</li>
+      <li>
+        <strong>Provide two versions</strong> — <code>diagram.svg</code> and <code
+          >diagram-dark.svg</code
+        >
+      </li>
+      <li>
+        <strong>Use CSS variables</strong> — reference <code>var(--color-text)</code> in inline SVG
+      </li>
+    </ul>
+
+    <h3
+      style="font-size: var(--step-0); color: var(--color-text-muted); margin-top: var(--space-6);"
+    >
+      Cover images
+    </h3>
+    <p>
+      Articles and events can have a <code>cover</code> image that appears in cards and at the top of
+      the page. Always provide <code>coverAlt</code> with descriptive alt text.
+    </p>
+    <pre
+      style="background: var(--color-surface-muted); padding: var(--space-4); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--step--1); margin: 0; border: 1px solid var(--color-border);"><code>{`cover: "./cover.jpg"
+coverAlt: "Members setting up antennas at the Winter Field Day site"`}</code></pre>
+  </section>
+</DocsLayout>

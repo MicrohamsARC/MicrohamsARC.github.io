@@ -1,0 +1,608 @@
+---
+/**
+ * Contributing: Articles Guide
+ *
+ * Comprehensive guide for adding articles to the site.
+ * Explains concepts first, then mechanics.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { getCollection } from 'astro:content';
+import { getGitHubContentUrl } from '../../site.config';
+
+const currentPath = '/contributing/articles';
+
+const headings = [
+  { text: 'Articles vs Documentation', slug: 'articles-vs-documentation' },
+  { text: 'Before you start writing', slug: 'before-you-start-writing' },
+  { text: 'Creating your article', slug: 'creating-your-article' },
+  { text: 'Frontmatter reference', slug: 'frontmatter-reference' },
+  { text: 'Adding images', slug: 'adding-images' },
+  { text: 'Choosing tags', slug: 'choosing-tags' },
+  { text: 'Complete Example', slug: 'complete-example' },
+  { text: 'Publishing workflow', slug: 'publishing-workflow' },
+  { text: 'Current Articles', slug: 'current-articles' },
+];
+
+// Get real examples from the site
+const articles = await getCollection('articles');
+type Article = (typeof articles)[number];
+
+const recentArticles = articles
+  .filter((a: Article) => a.data.date)
+  .sort((a: Article, b: Article) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0))
+  .slice(0, 3);
+
+// Dynamic paths from config
+const contentPath = 'src/content/articles';
+---
+
+<DocsLayout
+  title="Adding Articles"
+  description="Learn how to contribute articles, write-ups, and discussions to the MicroHAMS site"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Adding Articles</h1>
+
+  <p>
+    Articles capture your voice, experience, and perspective. They're the stories behind the
+    hobby—what you built, what you discovered, what you think about the latest gear. Unlike
+    documentation, articles are personal and timely.
+  </p>
+
+  <h2 id="articles-vs-documentation">Articles vs Documentation</h2>
+
+  <p>
+    The site separates content into <strong>articles</strong> and <strong>documentation</strong> for
+    good reason. Understanding the difference helps you choose the right format and helps readers find
+    what they need.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Articles</h4>
+      <p>
+        Personal, dated, authored. Your experience, your perspective, your story. Multiple articles
+        can cover the same topic from different angles.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Documentation</h4>
+      <p>
+        Authoritative, evergreen, maintained. The canonical guide. One definitive source that gets
+        updated over time. No byline or date.
+      </p>
+    </div>
+  </div>
+
+  <p>
+    <strong>Example:</strong> There's one documentation page for "Setting Up FT8"—the canonical guide
+    that stays current. But there could be many articles about FT8: "My First 1,000 FT8 Contacts," "FT8
+    vs JS8Call: When to Use Each," "Working DX on FT8 with 5 Watts," or "Why I Switched Back to CW."
+  </p>
+
+  <p>
+    If you're writing step-by-step instructions that should be the definitive reference, that's <a
+      href="/contributing/docs">documentation</a
+    >. If you're sharing your experience, opinion, or a snapshot of something timely, that's an
+    article.
+  </p>
+
+  <h3>What makes a good article?</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Tutorials & How-Tos</h4>
+      <p>
+        Your approach to solving a problem. Not the canonical guide, but your guide—with your tips,
+        gotchas, and workarounds.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Project Write-Ups</h4>
+      <p>
+        Share what you built, the challenges you faced, and what you learned. Your antenna build,
+        kit assembly, or station upgrade—told as a story.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Experience Reports</h4>
+      <p>
+        Your first Field Day, activating a summit, working a rare DXpedition. The personal narrative
+        that guides don't capture.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Reviews & Comparisons</h4>
+      <p>
+        Your hands-on experience with gear. What works, what doesn't, and who it's for. Opinions
+        welcome.
+      </p>
+    </div>
+    <div class="card">
+      <h4>Technical Explorations</h4>
+      <p>
+        Deep-dives into specific problems. Propagation analysis, interference hunting, filter
+        design. Your investigation, your findings.
+      </p>
+    </div>
+    <div class="card">
+      <h4>News & Commentary</h4>
+      <p>
+        Band openings, regulatory changes, club achievements. Timely content that documents a
+        moment.
+      </p>
+    </div>
+  </div>
+
+  <h2 id="before-you-start-writing">Before you start writing</h2>
+
+  <p>
+    You don't need to be an expert. Some of the most valuable articles come from people documenting
+    their learning process. "How I Finally Got FT8 Working" is often more useful than "FT8 Setup
+    Guide" because it includes the mistakes, confusion, and breakthroughs.
+  </p>
+
+  <p>Ask yourself:</p>
+
+  <ul>
+    <li>
+      <strong>Is this my story or the story?</strong> Your experience → article. The definitive guide
+      → documentation.
+    </li>
+    <li>
+      <strong>Will this age?</strong> Dated content → article. Timeless reference → documentation.
+    </li>
+    <li>
+      <strong>Should there be one or many?</strong> Multiple perspectives welcome → article. One source
+      of truth → documentation.
+    </li>
+  </ul>
+
+  <h2 id="creating-your-article">Creating your article</h2>
+
+  <p>
+    Each article lives in its own folder, which keeps all related files together—the text, images,
+    diagrams, and any attachments. This organization makes articles self-contained and easy to
+    manage.
+  </p>
+
+  <h3>Step 1: Create the folder</h3>
+
+  <p>
+    Create a new folder in <code>{contentPath}/</code> with a URL-friendly name. This name becomes part
+    of your article's web address, so choose something descriptive and permanent.
+  </p>
+
+  <pre><code>{contentPath}/your-article-name/</code></pre>
+
+  <p>Folder naming conventions:</p>
+
+  <ul>
+    <li>Use lowercase letters, numbers, and hyphens only</li>
+    <li>Replace spaces with hyphens: "Getting Started" → <code>getting-started</code></li>
+    <li>Keep it concise but descriptive</li>
+    <li>Avoid dates in folder names (the article has a date field)</li>
+  </ul>
+
+  <div class="callout">
+    <p>
+      <strong>The folder name is permanent.</strong> Once your article is published and linked, changing
+      the folder name breaks those links. Choose a name you'll be happy with long-term.
+    </p>
+  </div>
+
+  <h3>Step 2: Create the content file</h3>
+
+  <p>
+    Inside your folder, create a file named <code>index.md</code>. This is where your article
+    content goes.
+  </p>
+
+  <pre><code>{contentPath}/your-article-name/index.md</code></pre>
+
+  <h3>Step 3: Add frontmatter</h3>
+
+  <p>
+    Every article begins with a <em>frontmatter</em> block—metadata about the article enclosed in triple
+    dashes. This information controls how your article appears in listings, search results, and social
+    media shares.
+  </p>
+
+  <pre><code>---
+title: "Your Article Title"
+description: "A one or two sentence summary of what readers will learn."
+author: "Your Name, CALLSIGN"
+date: {new Date().toISOString().split('T')[0]}
+tags: ["relevant", "topics"]
+---
+
+Your article content starts here...</code></pre>
+
+  <h3>Step 4: Write your content</h3>
+
+  <p>
+    Below the frontmatter, write your article using Markdown. If you're new to Markdown, it's a
+    simple way to format text that's easy to read and write.
+  </p>
+
+  <pre><code>## Use headings to organize sections
+
+Regular paragraphs flow naturally. Add **bold** for emphasis
+or *italics* for technical terms.
+
+### Subheadings break up long sections
+
+- Bullet lists for unordered items
+- Keep list items concise
+
+1. Numbered lists for sequences
+2. Steps, rankings, or ordered information
+
+Include `inline code` for commands, file names, or technical terms.
+
+```
+Code blocks for longer examples
+spanning multiple lines
+```</code></pre>
+
+  <h2 id="frontmatter-reference">Frontmatter reference</h2>
+
+  <p>
+    The frontmatter block controls how your article appears throughout the site. Only <code
+      >title</code
+    > is required, but complete frontmatter helps readers find and understand your content.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>title</code></td>
+        <td>Yes</td>
+        <td
+          >The article headline. Appears in listings, browser tabs, and social shares. Keep under 60
+          characters.</td
+        >
+      </tr>
+      <tr>
+        <td><code>description</code></td>
+        <td>No</td>
+        <td
+          >A summary for search results and article cards. Write it as the answer to "What will I
+          learn?" One or two sentences.</td
+        >
+      </tr>
+      <tr>
+        <td><code>author</code></td>
+        <td>No</td>
+        <td>Your name and callsign. Format: <code>"Jane Smith, W1ABC"</code></td>
+      </tr>
+      <tr>
+        <td><code>date</code></td>
+        <td>No</td>
+        <td
+          >Publication date as <code>YYYY-MM-DD</code>. Used for sorting and display. Use today's
+          date for new articles.</td
+        >
+      </tr>
+      <tr>
+        <td><code>tags</code></td>
+        <td>No</td>
+        <td
+          >Keywords for categorization. Array format: <code>["tag-one", "tag-two"]</code>. Use 2-5
+          relevant tags.</td
+        >
+      </tr>
+      <tr>
+        <td><code>category</code></td>
+        <td>No</td>
+        <td
+          >Primary grouping: <code>"guides"</code>, <code>"projects"</code>, <code>"news"</code>, <code
+            >"reviews"</code
+          ></td
+        >
+      </tr>
+      <tr>
+        <td><code>featured</code></td>
+        <td>No</td>
+        <td
+          >Set to <code>true</code> to highlight on homepage. Use sparingly—coordinate with other contributors.</td
+        >
+      </tr>
+      <tr>
+        <td><code>draft</code></td>
+        <td>No</td>
+        <td
+          >Set to <code>true</code> to hide from the published site. Article will still appear in local
+          development builds and in the public code repository for review.</td
+        >
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="adding-images">Adding images</h2>
+
+  <p>
+    Images make articles more engaging and easier to follow. Store them in the same folder as your
+    article to keep everything together.
+  </p>
+
+  <pre><code>{contentPath}/my-antenna-build/
+├── index.md
+├── cover.jpg
+├── parts-layout.jpg
+├── assembly-step-1.jpg
+├── assembly-step-2.jpg
+└── finished-antenna.jpg</code></pre>
+
+  <h3>Cover images</h3>
+
+  <p>
+    A cover image appears at the top of your article and in listing cards. Add it to your
+    frontmatter:
+  </p>
+
+  <pre><code>---
+title: "Building a Portable Dipole"
+cover: "./cover.jpg"
+coverAlt: "Completed portable dipole antenna deployed at a POTA site"
+---</code></pre>
+
+  <div class="callout">
+    <p>
+      <strong>Accessibility:</strong> Always include <code>coverAlt</code> with a description of the
+      image. This text helps screen reader users and appears when images don't load.
+    </p>
+  </div>
+
+  <h3>Images in your content</h3>
+
+  <p>
+    Reference images using Markdown syntax with relative paths (starting with <code>./</code>):
+  </p>
+
+  <pre><code>Here's the parts layout before assembly:
+
+![All antenna parts laid out on a workbench](./parts-layout.jpg)
+
+Start by connecting the center insulator to the feedline:
+
+![Center insulator attached to coax feedline](./assembly-step-1.jpg)</code></pre>
+
+  <p>
+    The text in brackets is the <em>alt text</em>—a description of what the image shows. Write it as
+    if describing the image to someone who can't see it.
+  </p>
+
+  <h2 id="choosing-tags">Choosing tags</h2>
+
+  <p>
+    Tags connect related content across the site. When someone clicks a tag, they see all articles
+    with that tag—it's a powerful discovery tool when used consistently.
+  </p>
+
+  <p>
+    Before creating new tags, browse the <a href="/tags">existing tags</a> to use established ones. This
+    prevents duplicates like <code>ft8</code> and <code>FT8</code> or <code>antenna</code> and <code
+      >antennas</code
+    >.
+  </p>
+
+  <p>Tag guidelines:</p>
+
+  <ul>
+    <li>Use lowercase with hyphens: <code>digital-modes</code>, not <code>Digital Modes</code></li>
+    <li>
+      Be specific enough to be useful: <code>portable-antennas</code> vs just <code>antennas</code>
+    </li>
+    <li>Don't over-tag—2 to 5 tags is usually right</li>
+    <li>Include the mode, band, or activity when relevant</li>
+  </ul>
+
+  {
+    recentArticles.length > 0 && (
+      <>
+        <h2>Recently published</h2>
+        <p>See how other contributors have structured their articles:</p>
+        <div class="card-grid">
+          {recentArticles.map((article: Article) => (
+            <a href={`/articles/${article.id}`} class="card">
+              <h4>{article.data.title}</h4>
+              <p>{article.data.description || `By ${article.data.author}`}</p>
+            </a>
+          ))}
+        </div>
+      </>
+    )
+  }
+
+  <h2 id="complete-example">Complete Example</h2>
+
+  <p>
+    Below is a fully annotated article showing how all the pieces fit together. Comments explain the
+    purpose of each section.
+  </p>
+
+  <pre><code>{`---
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# REQUIRED: Title and metadata
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+title: "Building a Helical Resonator Filter for Field Day"
+  # Keep under 60 characters for search results
+description: "A step-by-step guide to building a 2-meter helical resonator filter that reduced our intermod from S9 to nothing."
+  # One or two sentences answering "What will I learn?"
+author: "Jane Smith, W1ABC"
+  # Your name and callsign
+date: 2026-01-15
+  # Publication date in YYYY-MM-DD format
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CATEGORIZATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+tags: ["filters", "field-day", "vhf", "diy"]
+  # 2-5 relevant keywords, lowercase with hyphens
+category: "projects"
+  # Primary grouping: guides, projects, news, reviews
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# OPTIONAL: Cover image
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cover: "./cover.jpg"
+  # Relative path to image in same folder
+coverAlt: "Completed helical resonator filter in aluminum enclosure"
+  # Required if cover is specified—describe what's in the image
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# OPTIONAL: Publishing controls
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+featured: true
+  # Show on homepage—coordinate with other contributors
+# draft: true
+  # Uncomment to hide from production while you're working
+---
+
+Every Field Day, our club fights the same battle: intermod from 
+nearby commercial transmitters. Last year, the 2-meter station 
+was nearly unusable. This year, I built a fix.
+
+## The Problem
+
+Our Field Day site sits within line-of-sight of several commercial 
+broadcast towers on Tiger Mountain. The 2-meter receiver was 
+overwhelmed with intermod products—S9 noise floor, even with 
+the antenna disconnected from the main feedline.
+
+![Spectrum analyzer showing intermod products](./intermod-before.png)
+
+## The Solution: Helical Resonators
+
+Helical resonator filters use quarter-wave helical elements in 
+shielded cavities. They're compact, have excellent selectivity, 
+and can handle high power—perfect for Field Day.
+
+### Design Parameters
+
+For 146 MHz with a 4 MHz bandwidth:
+
+- **Q factor:** ~600 (determines selectivity)
+- **Insertion loss:** < 1 dB (critical for weak signal work)
+- **Cavity diameter:** 2 inches
+- **Helix turns:** 4.5
+
+## Construction
+
+### Materials
+
+- 2" aluminum tubing (hobby shop)
+- 14 AWG solid copper wire
+- BNC connectors
+- Coupling loops from RG-58
+
+![All parts laid out before assembly](./parts-layout.jpg)
+
+### Assembly Steps
+
+1. Cut the aluminum tubing to 4.5" lengths
+2. Wind the helical elements...
+
+[Content continues...]
+
+## Results
+
+The filter reduced our noise floor from S9 to S1. We made 
+247 contacts on 2 meters—a club record.
+
+![Spectrum analyzer after filter installation](./intermod-after.png)
+
+## Resources
+
+- [ARRL Handbook helical filter chapter](https://arrl.org)
+- [W1GHZ helical filter calculator](http://w1ghz.org)
+- [Our club's filter schematic (PDF)](./schematic.pdf)`}</code></pre>
+
+  <h2 id="publishing-workflow">Publishing workflow</h2>
+
+  <p>
+    When your article is ready, submit it through a pull request. The review process ensures quality
+    and catches any issues before publication.
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>1. Write locally</h4>
+      <p>
+        Create your article folder, add content and images, preview with <code>npm run dev</code>
+      </p>
+    </div>
+    <div class="card">
+      <h4>2. Submit for review</h4>
+      <p>Push to a branch and open a pull request. Describe what your article covers.</p>
+    </div>
+    <div class="card">
+      <h4>3. Address feedback</h4>
+      <p>
+        Reviewers may suggest edits for clarity, accuracy, or formatting. Collaborate on
+        improvements.
+      </p>
+    </div>
+    <div class="card">
+      <h4>4. Merge and publish</h4>
+      <p>Once approved, your article merges and automatically deploys to the live site.</p>
+    </div>
+  </div>
+
+  <p>
+    See the <a href="/contributing/pull-requests">Pull Requests guide</a> for detailed instructions on
+    the submission process.
+  </p>
+
+  <h2 id="current-articles">Current Articles</h2>
+
+  <p>Existing articles for reference:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Published</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        articles
+          .sort(
+            (a: Article, b: Article) =>
+              (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
+          )
+          .map((article: Article) => (
+            <tr>
+              <td>{article.data.title}</td>
+              <td>
+                <a href={`/articles/${article.id}`}>View page</a>
+              </td>
+              <td>
+                <a
+                  href={getGitHubContentUrl('articles', article.id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Edit on GitHub ↗
+                </a>
+              </td>
+            </tr>
+          ))
+      }
+    </tbody>
+  </table>
+</DocsLayout>

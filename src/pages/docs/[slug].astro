@@ -9,8 +9,9 @@ import { publishedFilter } from '../../utils/content';
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs', publishedFilter);
-  
-  return docs.map((doc) => ({
+  type Doc = (typeof docs)[number];
+
+  return docs.map((doc: Doc) => ({
     params: { slug: doc.slug },
     props: { doc },
   }));

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Get files changed since last push
+CHANGED=$(git diff --name-only @{push}.. 2>/dev/null || git diff --name-only HEAD~1)
+
+# Check if only content files changed
+CONTENT_ONLY=true
+for file in $CHANGED; do
+  case "$file" in
+    src/content/*.md|src/content/**/*.md) ;;
+    *) CONTENT_ONLY=false; break ;;
+  esac
+done
+
+if [ "$CONTENT_ONLY" = true ] && [ -n "$CHANGED" ]; then
+  echo "📝 Content-only changes - running lightweight validation"
+  npm run verify
+  npx astro check
+  npm run build
+else
+  echo "🔧 Code changes detected - running full pre-push"
+  npm run pre-push:fast
+fi

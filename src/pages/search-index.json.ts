@@ -5,20 +5,20 @@
  */
 
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 export const GET: APIRoute = async () => {
   const articles = await getCollection('articles');
   const docs = await getCollection('docs');
 
   const searchIndex = [
-    ...articles.map(article => ({
+    ...articles.map((article: CollectionEntry<'articles'>) => ({
       title: article.data.title,
       slug: article.slug,
       description: article.data.description || '',
       type: 'article' as const,
     })),
-    ...docs.map(doc => ({
+    ...docs.map((doc: CollectionEntry<'docs'>) => ({
       title: doc.data.title,
       slug: doc.slug,
       description: doc.data.description || '',

@@ -18,8 +18,8 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
   <div class="event-map__loading">
     <p>Loading map...</p>
   </div>
-  <div 
-    id="map-container" 
+  <div
+    id="map-container"
     class="event-map__container"
     data-lat={latitude}
     data-lng={longitude}
@@ -28,8 +28,9 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
   </div>
   <div class="event-map__fallback">
     <p>
-      <strong>Location:</strong> {location}<br/>
-      <a 
+      <strong>Location:</strong>
+      {location}<br />
+      <a
         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
         target="_blank"
         rel="noopener noreferrer"
@@ -41,7 +42,12 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
 </div>
 
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
 
 <style>
   .event-map {
@@ -96,12 +102,12 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
    * Vignelli: "Appropriate technology"
    * Uses OpenStreetMap via Leaflet (lightweight, no API key required)
    */
-  
+
   async function initMap() {
     const container = document.getElementById('map-container');
     const loading = document.querySelector('.event-map__loading') as HTMLElement;
     const fallback = document.querySelector('.event-map__fallback') as HTMLElement;
-    
+
     if (!container) return;
 
     const lat = parseFloat(container.getAttribute('data-lat') || '47.6749');
@@ -124,21 +130,21 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
       }
 
       const L = window.L;
-      
+
       // Hide loading
       if (loading) loading.style.display = 'none';
       if (fallback) fallback.style.display = 'none';
 
       // Initialize map - disable scroll wheel zoom to prevent hijacking page scroll
       const map = L.map('map-container', {
-        scrollWheelZoom: false  // User must click map first to enable scroll zoom
+        scrollWheelZoom: false, // User must click map first to enable scroll zoom
       }).setView([lat, lng], 13);
-      
+
       // Enable scroll zoom only after user clicks on the map
       map.on('click', () => {
         map.scrollWheelZoom.enable();
       });
-      
+
       // Disable scroll zoom when mouse leaves the map
       map.on('mouseout', () => {
         map.scrollWheelZoom.disable();
@@ -147,17 +153,14 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
       // Add OpenStreetMap tiles (free, no API key)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
+        maxZoom: 19,
       }).addTo(map);
 
       // Add marker
-      L.marker([lat, lng]).addTo(map)
-        .bindPopup(`<strong>${location}</strong>`)
-        .openPopup();
-
+      L.marker([lat, lng]).addTo(map).bindPopup(`<strong>${location}</strong>`).openPopup();
     } catch (error) {
       console.warn('Map failed to load:', error);
-      
+
       // Show fallback
       if (loading) loading.style.display = 'none';
       if (fallback) fallback.style.display = 'block';
@@ -165,18 +168,33 @@ const { location, latitude = 47.6749, longitude = -122.1202 } = Astro.props;
     }
   }
 
-  // Initialize when component is visible
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        initMap();
-        observer.disconnect();
-      }
-    });
-  });
+  // Setup map initialization for current page
+  function setupMapListeners() {
+    const mapElement = document.querySelector('.event-map');
+    if (!mapElement || mapElement.hasAttribute('data-initialized')) return;
 
-  const mapElement = document.querySelector('.event-map');
-  if (mapElement) {
-    observer.observe(mapElement);
+    const details = mapElement.closest('details');
+
+    function tryInit() {
+      if (!mapElement || mapElement.hasAttribute('data-initialized')) return;
+      if (details && !details.open) return;
+
+      mapElement.setAttribute('data-initialized', 'true');
+      initMap();
+    }
+
+    // Listen for details toggle
+    if (details) {
+      details.addEventListener('toggle', () => {
+        if (details.open) tryInit();
+      });
+    }
+
+    // Check on load in case already open (or no details wrapper)
+    setTimeout(tryInit, 50);
   }
+
+  // Run on initial load and after View Transitions navigation
+  setupMapListeners();
+  document.addEventListener('astro:page-load', setupMapListeners);
 </script>

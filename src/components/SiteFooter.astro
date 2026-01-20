@@ -1,0 +1,60 @@
+---
+/**
+ * Site Footer - Global Footer
+ *
+ * The main site footer with navigation and copyright.
+ * Extracted as a component for composition in different layouts.
+ */
+---
+
+<footer class="site-footer">
+  <div class="wrapper">
+    <div class="site-footer__inner">
+      <div class="stack-2">
+        <p class="font-semibold">MicroHAMS</p>
+        <p class="text-sm">Amateur Radio Community</p>
+      </div>
+
+      <div class="stack-2">
+        <p class="text-sm font-semibold">Navigation</p>
+        <nav>
+          <ul class="footer-links" role="list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/articles">Articles</a></li>
+            <li><a href="/docs">Docs</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="stack-2">
+        <p class="text-sm font-semibold">Connect</p>
+        <ul class="footer-links" role="list">
+          <li><a href="https://github.com/microhams">GitHub</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-block-start: var(--space-8);">
+      <p class="text-xs">
+        © {new Date().getFullYear()} MicroHAMS. Built with <a href="https://astro.build">Astro</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-links a {
+    font-size: var(--text-sm);
+  }
+</style>

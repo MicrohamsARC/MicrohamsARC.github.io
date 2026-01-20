@@ -1,0 +1,296 @@
+---
+/**
+ * Contributing: Venues Guide
+ *
+ * How to configure and use physical venues for events.
+ * Dynamically pulls all fields from actual venue configurations.
+ */
+
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { contributingNav } from '../../config/contributing-nav';
+import { venues as venueConfig } from '../../site.config';
+
+const currentPath = '/contributing/venues';
+
+const headings = [
+  { text: 'Using Venues', slug: 'using-venues' },
+  { text: 'Available Venues', slug: 'available-venues' },
+  { text: 'Venue Example', slug: 'venue-example' },
+  { text: 'Custom Venues', slug: 'custom-venues' },
+  { text: 'Adding New Venues', slug: 'adding-new-venues' },
+];
+
+const venues = Object.entries(venueConfig);
+
+// Get a sample venue to show structure
+const sampleVenueKey = 'building-31';
+const sampleVenue = venueConfig[sampleVenueKey];
+
+// Code examples
+const basicExample = `---
+title: "January Meeting"
+venue: "building-31"
+---`;
+
+const customVenueExample = `---
+title: "Field Day 2026"
+customVenue:
+  name: "Marymoor Park"
+  address: "6046 W Lake Sammamish Pkwy NE, Redmond, WA 98052"
+  latitude: 47.6622
+  longitude: -122.1207
+---`;
+---
+
+<DocsLayout
+  title="Venues"
+  description="How to add physical locations to events"
+  nav={contributingNav}
+  currentPath={currentPath}
+  headings={headings}
+>
+  <h1>Venues</h1>
+
+  <p>
+    Venue configurations are defined in <code>src/site.config.ts</code>. Reference them by key in
+    event frontmatter to keep addresses consistent and automatically generate map links, directions,
+    and arrival instructions.
+  </p>
+
+  <h2 id="using-venues">Using Venues</h2>
+
+  <p>
+    Add the <code>venue</code> field to your event frontmatter with the key of a configured venue:
+  </p>
+
+  <pre><code>{basicExample}</code></pre>
+
+  <p>The event page will automatically display:</p>
+
+  <ul>
+    <li>The venue name</li>
+    <li>The full address with embedded map</li>
+    <li>Coordination frequency for mobile arrivals (if specified)</li>
+    <li>Arrival instructions and escort information</li>
+    <li>Driving directions from major routes</li>
+  </ul>
+
+  <h2 id="available-venues">Available Venues</h2>
+
+  <p>These venues are configured and ready to use:</p>
+
+  {
+    venues.map(([key, venue]) => (
+      <div class="venue-card">
+        <h3>
+          <code>{key}</code>
+        </h3>
+        <dl>
+          <dt>Name</dt>
+          <dd>{venue.name}</dd>
+          <dt>Address</dt>
+          <dd>{venue.address}</dd>
+          {venue.latitude && venue.longitude && (
+            <>
+              <dt>Coordinates</dt>
+              <dd>
+                {venue.latitude}, {venue.longitude}
+              </dd>
+            </>
+          )}
+          {venue.timezone && (
+            <>
+              <dt>Timezone</dt>
+              <dd>{venue.timezone}</dd>
+            </>
+          )}
+          {venue.coordFrequency && (
+            <>
+              <dt>Coordination</dt>
+              <dd>{venue.coordFrequency} MHz simplex</dd>
+            </>
+          )}
+          {venue.arrival && (
+            <>
+              <dt>Arrival info</dt>
+              <dd>{Object.keys(venue.arrival).length} sections configured</dd>
+            </>
+          )}
+          {venue.directions && (
+            <>
+              <dt>Directions</dt>
+              <dd>{Object.keys(venue.directions).length} routes configured</dd>
+            </>
+          )}
+        </dl>
+      </div>
+    ))
+  }
+
+  <h2 id="venue-example">Venue Example</h2>
+
+  <p>
+    Here's the complete configuration for <code>{sampleVenueKey}</code>, showing all available
+    fields:
+  </p>
+
+  <pre><code>{`'${sampleVenueKey}': {
+  name: '${sampleVenue.name}',
+  address: '${sampleVenue.address}',
+  latitude: ${sampleVenue.latitude},
+  longitude: ${sampleVenue.longitude},
+  timezone: '${sampleVenue.timezone}',
+  coordFrequency: '${sampleVenue.coordFrequency}',
+  arrival: {
+    intro: \`...\`,      // Welcome message for attendees
+    escort: \`...\`,     // How to get help entering
+    noRadio: \`...\`,    // Instructions for those without radios
+  },
+  directions: {
+    sr520: \`...\`,      // From SR-520
+    belred: \`...\`,     // From Bel-Red Road
+    parking: \`...\`,    // Parking instructions
+  },
+}`}</code></pre>
+
+  <h3>Available venue fields</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td>string</td>
+        <td>Display name of the venue</td>
+      </tr>
+      <tr>
+        <td><code>address</code></td>
+        <td>string</td>
+        <td>Full street address</td>
+      </tr>
+      <tr>
+        <td><code>latitude</code></td>
+        <td>number</td>
+        <td>GPS latitude for map embedding</td>
+      </tr>
+      <tr>
+        <td><code>longitude</code></td>
+        <td>number</td>
+        <td>GPS longitude for map embedding</td>
+      </tr>
+      <tr>
+        <td><code>timezone</code></td>
+        <td>string</td>
+        <td>IANA timezone (e.g., "America/Los_Angeles")</td>
+      </tr>
+      <tr>
+        <td><code>coordFrequency</code></td>
+        <td>string</td>
+        <td>Simplex frequency for coordination (e.g., "146.580")</td>
+      </tr>
+      <tr>
+        <td><code>arrival</code></td>
+        <td>object</td>
+        <td
+          >Arrival instructions with <code>intro</code>, <code>escort</code>, <code>noRadio</code> keys</td
+        >
+      </tr>
+      <tr>
+        <td><code>directions</code></td>
+        <td>object</td>
+        <td
+          >Driving directions keyed by route name (e.g., <code>sr520</code>, <code>parking</code
+          >)</td
+        >
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="custom-venues">Custom Venues</h2>
+
+  <p>
+    For one-off locations not worth adding to the config (Field Day sites, POTA activations, special
+    events), use <code>customVenue</code>:
+  </p>
+
+  <pre><code>{customVenueExample}</code></pre>
+
+  <div class="callout">
+    <p>
+      <strong>Tip:</strong> If a custom venue will be used for multiple events, add it to the site config
+      instead. This keeps addresses consistent and makes future updates easier.
+    </p>
+  </div>
+
+  <h2 id="adding-new-venues">Adding New Venues</h2>
+
+  <p>
+    To add a venue that will be used repeatedly, add it to
+    <code>src/site.config.ts</code> in the <code>venues</code> object.
+  </p>
+
+  <h3>Choosing a key</h3>
+
+  <p>
+    The venue key should be short, lowercase, and use hyphens. It becomes part of your content
+    files, so make it memorable:
+  </p>
+
+  <ul>
+    <li><code>building-31</code> — Clear and specific</li>
+    <li><code>puyallup-fairgrounds-pavilion</code> — Location + specific building</li>
+    <li><code>marymoor-park</code> — Well-known name</li>
+  </ul>
+
+  <h3>Minimum required fields</h3>
+
+  <p>At minimum, every venue needs:</p>
+
+  <ul>
+    <li><code>name</code> — For display</li>
+    <li><code>address</code> — For the map link</li>
+  </ul>
+
+  <p>
+    Add <code>latitude</code>/<code>longitude</code> for embedded maps, and <code
+      >coordFrequency</code
+    > if radio coordination is relevant for the venue.
+  </p>
+</DocsLayout>
+
+<style>
+  .venue-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-4) 0;
+    background: var(--color-surface-muted);
+  }
+
+  .venue-card h3 {
+    margin: 0 0 var(--space-3) 0;
+    font-size: var(--step-0);
+  }
+
+  .venue-card dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    font-size: var(--step--1);
+  }
+
+  .venue-card dt {
+    color: var(--color-text-muted);
+  }
+
+  .venue-card dd {
+    margin: 0;
+  }
+</style>
