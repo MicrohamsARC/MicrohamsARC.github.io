@@ -9,7 +9,7 @@ eventType: "external"
 eventLink: "http://www.n7cfo.com/amradio/hf/n7yrc.pdf"
 registrationRequired: false
 featured: false
-coordFrequency: "146.82 MHz (PL 103.5)"
+coordFrequency: "146.520 (Simplex)"
 tags: ["swapmeet", "flea market", "hamfest"]
 ---
 No entry fee, just come have a good time and sell, buy or trade some Amateur Radio equipment.
