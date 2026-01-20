@@ -125,6 +125,21 @@ Your radio won't be heard from inside the garage.`,
       parking: `**Parking:** Free parking available.`,
     },
   },
+  'yakima-office-of-emergency-management-parking-lot': {
+    name: 'Yakima Office of Emergency Management parking lot',
+    address: '12403 South 18th Street, Union Gap, WA 98903',
+    latitude: 46.5676,
+    longitude: -120.4771,
+    timezone: 'America/Los_Angeles',
+    coordFrequency: '146.520 (Simplex), 444.750 Rpt (131.8 tone)',
+    arrival: {
+      intro: ``,
+      noRadio: ``,
+    },
+    directions: {
+      parking: `**Parking:** Free parking available.`,
+    },
+  },
   // Add other venues as needed
 } as const;
 

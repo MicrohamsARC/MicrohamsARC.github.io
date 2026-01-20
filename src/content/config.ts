@@ -110,7 +110,7 @@ const events = defineCollection({
     
     // --- Physical Location (optional) ---
     // Venue key from site.config.ts (pulls address, coords, directions, timezone)
-    venue: z.enum(['building-31', 'puyallup-fairgrounds-pavilion', 'custom']).optional(),
+    venue: z.enum(['building-31', 'puyallup-fairgrounds-pavilion', 'yakima-office-of-emergency-management-parking-lot', 'custom']).optional(),
     // Custom location string (used if no venue, or to override venue display)
     location: z.string().optional(),
     // Map coordinates (override venue config if needed)
