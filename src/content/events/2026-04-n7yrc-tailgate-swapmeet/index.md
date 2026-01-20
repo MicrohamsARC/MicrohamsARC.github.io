@@ -1,6 +1,6 @@
 ---
 title: "7th Annual N7YRC Tailgate Swap Meet"
-description: "A Western Washington HAM swap meet held in Union Gap, WA."
+description: "An Eastern Washington HAM swap meet held in Union Gap, WA."
 eventDate: 2026-04-11
 startTime: "9:00 AM"
 endTime: "2:00 PM"
