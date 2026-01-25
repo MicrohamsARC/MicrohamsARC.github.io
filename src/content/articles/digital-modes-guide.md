@@ -43,5 +43,3 @@ To begin with digital modes, you'll need:
 - Monitor before transmitting
 - Use appropriate power levels
 - Follow band plans for digital operation
-
-For hardware recommendations, see our [projects section](/projects).
