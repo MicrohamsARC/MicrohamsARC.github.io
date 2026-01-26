@@ -165,7 +165,7 @@ const events = defineCollection({
 
       // --- Physical Location ---
       venue: z
-        .enum(['building-31', 'puyallup-fairgrounds-pavilion', 'custom'])
+        .enum(['building-31', 'puyallup-fairgrounds-pavilion', 'yakima-office-of-emergency-management-parking-lot', 'custom'])
         .optional()
         .describe('Venue key from site.config.ts (provides address, coords, directions)'),
       customVenue: customVenueSchema
