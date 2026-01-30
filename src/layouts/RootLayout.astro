@@ -45,16 +45,6 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
     <ClientRouter />
 
     <title>{title} | MicroHAMS</title>
-
-    <!-- Theme initialization (blocking to prevent flash) -->
-    <script is:inline>
-      (function () {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
   </head>
 
   <body>
@@ -62,6 +52,14 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     <!-- Global Scripts -->
     <script>
+      // Theme Initialization
+      function applyTheme() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+
       // Theme Toggle
       function toggleTheme() {
         const current = document.documentElement.getAttribute('data-theme');
@@ -86,6 +84,9 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
       }
 
       function initPage() {
+        // Ensure persisted theme (if any) is applied
+        applyTheme();
+
         const themeButton = document.getElementById('theme-toggle');
         if (themeButton) {
           themeButton.addEventListener('click', toggleTheme);
