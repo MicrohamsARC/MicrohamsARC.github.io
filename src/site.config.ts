@@ -151,6 +151,7 @@ Your radio won't be heard from inside the garage.`,
     coordFrequency: '146.520 (Simplex), 444.750 Rpt (131.8 tone)',
     arrival: {
       intro: ``,
+      escort: ``,
       noRadio: ``,
     },
     directions: {
