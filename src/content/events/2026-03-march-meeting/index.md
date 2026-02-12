@@ -1,15 +1,14 @@
 ---
-title: "February Meeting"
+title: "March Meeting"
 description: "Monthly MicroHAMS meeting"
-eventDate: 2026-02-17
+eventDate: 2026-03-16
 startTime: "6:00 PM"
 endTime: "8:30 PM"
 venue: "building-31"
 onlineMeeting: "microhams-teams"
 eventType: "meeting"
 registrationRequired: false
-draft: false
-featured: true
+draft: true
 tags: []
 ---
 
@@ -23,4 +22,4 @@ tags: []
 
 **6:30 PM - Presentation:**
 
-- We are still finalizing the presentation for this month's meeting. Keep an eye out for updates soon!
+- TBD
