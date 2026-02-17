@@ -1,13 +1,14 @@
 /**
  * Event Time Utilities Tests
- * 
+ *
  * Tests for timezone-aware date/time formatting
- * 
+ *
  * Critical test scenarios:
  * - Events in different timezones (Pacific, Eastern, UTC, international)
  * - DST transitions (spring forward, fall back)
  * - Edge times (midnight, noon, day boundaries)
  * - Calendar date preservation across timezone conversions
+ * - Event past/future comparisons (issue #12)
  */
 
 import { describe, it, expect, vi } from 'vitest';
@@ -18,6 +19,8 @@ import {
   formatEventTime,
   formatEventDateTime,
   formatEventDateTimeLine,
+  getEventTimestampInTimezone,
+  isEventPast,
 } from './event-time';
 
 // Mock site.config with test venues in different timezones
@@ -67,11 +70,11 @@ vi.mock('../site.config', () => ({
   },
   getVenueTimezone: (venue?: string) => {
     const venueTimezones: Record<string, string> = {
-      'building-31': 'America/Los_Angeles',      // Pacific
-      'nyc-venue': 'America/New_York',           // Eastern  
-      'london-venue': 'Europe/London',           // GMT/BST
-      'tokyo-venue': 'Asia/Tokyo',               // JST (no DST)
-      'sydney-venue': 'Australia/Sydney',        // AEDT/AEST (southern hemisphere DST)
+      'building-31': 'America/Los_Angeles', // Pacific
+      'nyc-venue': 'America/New_York', // Eastern
+      'london-venue': 'Europe/London', // GMT/BST
+      'tokyo-venue': 'Asia/Tokyo', // JST (no DST)
+      'sydney-venue': 'Australia/Sydney', // AEDT/AEST (southern hemisphere DST)
       'utc-venue': 'UTC',
     };
     return venueTimezones[venue || ''] || 'America/Los_Angeles';
@@ -118,8 +121,8 @@ describe('getTimezoneAbbreviation', () => {
     it('handles spring DST transition correctly', () => {
       // 2026: DST starts March 8 at 2:00 AM local
       const beforeDST = new Date('2026-03-08T09:00:00Z'); // 1 AM PST
-      const afterDST = new Date('2026-03-08T11:00:00Z');  // 4 AM PDT
-      
+      const afterDST = new Date('2026-03-08T11:00:00Z'); // 4 AM PDT
+
       expect(getTimezoneAbbreviation(beforeDST, 'America/Los_Angeles')).toBe('PST');
       expect(getTimezoneAbbreviation(afterDST, 'America/Los_Angeles')).toBe('PDT');
     });
@@ -127,8 +130,8 @@ describe('getTimezoneAbbreviation', () => {
     it('handles fall DST transition correctly', () => {
       // 2026: DST ends November 1 at 2:00 AM local
       const beforeFallback = new Date('2026-11-01T08:00:00Z'); // 1 AM PDT
-      const afterFallback = new Date('2026-11-01T10:00:00Z');  // 2 AM PST
-      
+      const afterFallback = new Date('2026-11-01T10:00:00Z'); // 2 AM PST
+
       expect(getTimezoneAbbreviation(beforeFallback, 'America/Los_Angeles')).toBe('PDT');
       expect(getTimezoneAbbreviation(afterFallback, 'America/Los_Angeles')).toBe('PST');
     });
@@ -157,10 +160,10 @@ describe('getTimezoneAbbreviation', () => {
       // ICU may return 'JST' or 'GMT+9' depending on ICU data
       const winter = new Date('2026-01-15T12:00:00Z');
       const summer = new Date('2026-07-15T12:00:00Z');
-      
+
       const winterAbbr = getTimezoneAbbreviation(winter, 'Asia/Tokyo');
       const summerAbbr = getTimezoneAbbreviation(summer, 'Asia/Tokyo');
-      
+
       expect(winterAbbr === 'JST' || winterAbbr === 'GMT+9').toBe(true);
       expect(summerAbbr === 'JST' || summerAbbr === 'GMT+9').toBe(true);
       // Both should be same (no DST)
@@ -171,10 +174,10 @@ describe('getTimezoneAbbreviation', () => {
       // ICU may return named abbreviations or GMT offset
       const winter = new Date('2026-01-15T12:00:00Z');
       const summer = new Date('2026-07-15T12:00:00Z');
-      
+
       const winterAbbr = getTimezoneAbbreviation(winter, 'Europe/London');
       const summerAbbr = getTimezoneAbbreviation(summer, 'Europe/London');
-      
+
       // Winter: GMT (UTC+0)
       expect(winterAbbr === 'GMT' || winterAbbr === 'UTC').toBe(true);
       // Summer: BST (UTC+1)
@@ -188,10 +191,10 @@ describe('getTimezoneAbbreviation', () => {
       // ICU may return AEDT/AEST or GMT+11/GMT+10
       const janDate = new Date('2026-01-15T12:00:00Z'); // Australian summer
       const julDate = new Date('2026-07-15T12:00:00Z'); // Australian winter
-      
+
       const summerAbbr = getTimezoneAbbreviation(janDate, 'Australia/Sydney');
       const winterAbbr = getTimezoneAbbreviation(julDate, 'Australia/Sydney');
-      
+
       // Summer (Jan): AEDT = UTC+11
       expect(summerAbbr === 'AEDT' || summerAbbr === 'GMT+11').toBe(true);
       // Winter (Jul): AEST = UTC+10
@@ -213,7 +216,7 @@ describe('formatEventDate', () => {
       // Event on Jan 20 stored as UTC midnight
       const date = new Date('2026-01-20T00:00:00Z');
       const result = formatEventDate(date, { timezone: 'America/Los_Angeles' });
-      
+
       expect(result).toContain('January');
       expect(result).toContain('20');
       expect(result).toContain('2026');
@@ -223,7 +226,7 @@ describe('formatEventDate', () => {
     it('preserves calendar date for Eastern timezone event', () => {
       const date = new Date('2026-01-20T00:00:00Z');
       const result = formatEventDate(date, { timezone: 'America/New_York' });
-      
+
       // Should still show Jan 20, not Jan 19
       expect(result).toContain('20');
     });
@@ -231,7 +234,7 @@ describe('formatEventDate', () => {
     it('preserves calendar date for Tokyo event', () => {
       const date = new Date('2026-01-20T00:00:00Z');
       const result = formatEventDate(date, { timezone: 'Asia/Tokyo' });
-      
+
       // Should still show Jan 20, even though Tokyo is +9
       expect(result).toContain('20');
     });
@@ -258,7 +261,7 @@ describe('formatEventDate', () => {
     it('formats date in long format by default', () => {
       const date = new Date('2026-01-20T00:00:00Z');
       const result = formatEventDate(date);
-      
+
       expect(result).toContain('January'); // Full month name
       expect(result).toContain('Tuesday'); // Full weekday
     });
@@ -266,9 +269,9 @@ describe('formatEventDate', () => {
     it('formats date in short format', () => {
       const date = new Date('2026-01-20T00:00:00Z');
       const result = formatEventDate(date, { format: 'short' });
-      
+
       expect(result).toContain('Jan'); // Abbreviated month
-      expect(result).toContain('20');  // Day
+      expect(result).toContain('20'); // Day
       expect(result).toContain('2026'); // Year
       // Short format doesn't include weekday (by design)
     });
@@ -278,11 +281,11 @@ describe('formatEventDate', () => {
     it('handles New Year boundary correctly', () => {
       const dec31 = new Date('2025-12-31T00:00:00Z');
       const jan1 = new Date('2026-01-01T00:00:00Z');
-      
+
       expect(formatEventDate(dec31)).toContain('December');
       expect(formatEventDate(dec31)).toContain('31');
       expect(formatEventDate(dec31)).toContain('2025');
-      
+
       expect(formatEventDate(jan1)).toContain('January');
       expect(formatEventDate(jan1)).toContain('1');
       expect(formatEventDate(jan1)).toContain('2026');
@@ -292,7 +295,7 @@ describe('formatEventDate', () => {
       // 2028 is a leap year
       const leapDay = new Date('2028-02-29T00:00:00Z');
       const result = formatEventDate(leapDay);
-      
+
       expect(result).toContain('February');
       expect(result).toContain('29');
     });
@@ -308,22 +311,22 @@ describe('formatEventTime', () => {
 
     it('formats single time with timezone abbreviation', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
-      const result = formatEventTime('6:00 PM', undefined, { 
+      const result = formatEventTime('6:00 PM', undefined, {
         eventDate,
         timezone: 'America/Los_Angeles',
       });
-      
+
       expect(result).toContain('6:00 PM');
       expect(result).toContain('PST');
     });
 
     it('formats time range with en-dash', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
-      const result = formatEventTime('6:00 PM', '8:30 PM', { 
+      const result = formatEventTime('6:00 PM', '8:30 PM', {
         eventDate,
         timezone: 'America/Los_Angeles',
       });
-      
+
       expect(result).toBe('6:00 PM–8:30 PM PST');
     });
   });
@@ -331,45 +334,47 @@ describe('formatEventTime', () => {
   describe('timezone-specific formatting', () => {
     it('shows PST for Pacific winter event', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
-      const result = formatEventTime('6:00 PM', undefined, { 
+      const result = formatEventTime('6:00 PM', undefined, {
         eventDate,
         venue: 'building-31',
       });
-      
+
       expect(result).toContain('PST');
     });
 
     it('shows PDT for Pacific summer event', () => {
       const eventDate = new Date('2026-07-20T00:00:00Z');
-      const result = formatEventTime('6:00 PM', undefined, { 
+      const result = formatEventTime('6:00 PM', undefined, {
         eventDate,
         venue: 'building-31',
       });
-      
+
       expect(result).toContain('PDT');
     });
 
     it('shows EST for Eastern winter event', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
-      const result = formatEventTime('7:00 PM', undefined, { 
+      const result = formatEventTime('7:00 PM', undefined, {
         eventDate,
         venue: 'nyc-venue',
       });
-      
+
       expect(result).toContain('EST');
     });
 
     it('shows consistent timezone for Tokyo event (no DST variation)', () => {
       const winter = new Date('2026-01-20T00:00:00Z');
       const summer = new Date('2026-07-20T00:00:00Z');
-      
-      const winterResult = formatEventTime('19:00', undefined, { 
-        eventDate: winter, venue: 'tokyo-venue' 
+
+      const winterResult = formatEventTime('19:00', undefined, {
+        eventDate: winter,
+        venue: 'tokyo-venue',
       });
-      const summerResult = formatEventTime('19:00', undefined, { 
-        eventDate: summer, venue: 'tokyo-venue' 
+      const summerResult = formatEventTime('19:00', undefined, {
+        eventDate: summer,
+        venue: 'tokyo-venue',
       });
-      
+
       // ICU may return JST or GMT+9
       expect(winterResult).toMatch(/JST|GMT\+9/);
       expect(summerResult).toMatch(/JST|GMT\+9/);
@@ -382,21 +387,21 @@ describe('formatEventTime', () => {
     it('handles midnight correctly', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
       const result = formatEventTime('12:00 AM', undefined, { eventDate });
-      
+
       expect(result).toContain('12:00 AM');
     });
 
     it('handles noon correctly', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
       const result = formatEventTime('12:00 PM', undefined, { eventDate });
-      
+
       expect(result).toContain('12:00 PM');
     });
 
     it('handles events spanning midnight', () => {
       const eventDate = new Date('2026-01-20T00:00:00Z');
       const result = formatEventTime('10:00 PM', '2:00 AM', { eventDate });
-      
+
       expect(result).toContain('10:00 PM');
       expect(result).toContain('2:00 AM');
     });
@@ -430,13 +435,12 @@ describe('formatEventDateTime', () => {
 
   it('uses correct timezone for different venues', () => {
     const date = new Date('2026-01-20T00:00:00Z');
-    
-    expect(formatEventDateTime(date, { venue: 'building-31' }).timezone)
-      .toBe('America/Los_Angeles');
-    expect(formatEventDateTime(date, { venue: 'nyc-venue' }).timezone)
-      .toBe('America/New_York');
-    expect(formatEventDateTime(date, { venue: 'tokyo-venue' }).timezone)
-      .toBe('Asia/Tokyo');
+
+    expect(formatEventDateTime(date, { venue: 'building-31' }).timezone).toBe(
+      'America/Los_Angeles'
+    );
+    expect(formatEventDateTime(date, { venue: 'nyc-venue' }).timezone).toBe('America/New_York');
+    expect(formatEventDateTime(date, { venue: 'tokyo-venue' }).timezone).toBe('Asia/Tokyo');
   });
 });
 
@@ -468,16 +472,20 @@ describe('formatEventDateTimeLine', () => {
   it('shows correct DST abbreviation by date', () => {
     const winterDate = new Date('2026-01-20T00:00:00Z');
     const summerDate = new Date('2026-07-20T00:00:00Z');
-    
-    expect(formatEventDateTimeLine(winterDate, {
-      startTime: '6:00 PM',
-      venue: 'building-31',
-    })).toContain('PST');
-    
-    expect(formatEventDateTimeLine(summerDate, {
-      startTime: '6:00 PM',
-      venue: 'building-31',
-    })).toContain('PDT');
+
+    expect(
+      formatEventDateTimeLine(winterDate, {
+        startTime: '6:00 PM',
+        venue: 'building-31',
+      })
+    ).toContain('PST');
+
+    expect(
+      formatEventDateTimeLine(summerDate, {
+        startTime: '6:00 PM',
+        venue: 'building-31',
+      })
+    ).toContain('PDT');
   });
 });
 
@@ -522,7 +530,7 @@ describe('Real-world scenarios', () => {
 
   it('International event shows correct local timezone', () => {
     const date = new Date('2026-04-15T00:00:00Z');
-    
+
     const tokyoResult = formatEventDateTime(date, {
       startTime: '19:00',
       venue: 'tokyo-venue',
@@ -539,3 +547,133 @@ describe('Real-world scenarios', () => {
   });
 });
 
+/**
+ * Issue #12: Event shown as "Past Event" on same day before it happens
+ *
+ * This test suite replicates the EXACT logic from src/pages/events/index.astro
+ * and asserts what the CORRECT behavior should be.
+ *
+ * Bug report scenario:
+ * - Event: Jan 20, 2026 at 6:00 PM Pacific (Building 31)
+ * - User checks at: Jan 20, 2026 at 2:18 PM Pacific
+ * - Expected: Event is UPCOMING (starts in ~4 hours)
+ * - Actual bug: Event shown as PAST
+ *
+ * Root cause: Date-only YAML strings parse as UTC midnight, then setHours()
+ * applies time in local timezone, causing the calendar date to shift.
+ *
+ * Fix: Use Temporal API to correctly interpret calendar dates in the event's timezone.
+ */
+describe('Issue #12: Event past/future calculation', () => {
+  it('event at 6 PM should NOT be past when current time is 2:18 PM same day', () => {
+    // Simulate YAML frontmatter: eventDate: 2026-01-20
+    // YAML parses date-only strings as UTC midnight
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+
+    // Get event timestamp using the FIXED implementation
+    const eventTimestamp = getEventTimestampInTimezone(eventDate, '6:00 PM', 'America/Los_Angeles');
+
+    // The CORRECT timestamp for "Jan 20, 2026 6:00 PM Pacific" is:
+    // Jan 21, 2026 02:00:00 UTC (Pacific is UTC-8 in January/PST)
+    const correctTimestamp = new Date('2026-01-21T02:00:00.000Z').getTime();
+
+    expect(eventTimestamp).toBe(correctTimestamp);
+  });
+
+  it('calendar date should be preserved regardless of server timezone', () => {
+    // An event on "January 20" should ALWAYS be January 20 in Pacific time
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    const eventTimestamp = getEventTimestampInTimezone(eventDate, '6:00 PM', 'America/Los_Angeles');
+    const resultDate = new Date(eventTimestamp);
+
+    // Format in Pacific timezone to verify the calendar date
+    const pacificDate = resultDate.toLocaleDateString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+
+    // The event should be on January 20, NOT January 19
+    expect(pacificDate).toBe('1/20/2026');
+  });
+
+  it('event timestamp should represent 6 PM in Pacific timezone', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    const eventTimestamp = getEventTimestampInTimezone(eventDate, '6:00 PM', 'America/Los_Angeles');
+    const resultDate = new Date(eventTimestamp);
+
+    // Format the time in Pacific timezone
+    const pacificTime = resultDate.toLocaleTimeString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    // Should be 6:00 PM, not some other time
+    expect(pacificTime).toBe('6:00 PM');
+  });
+
+  it('morning event (9 AM) on same day should not appear as past at 8 AM', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+
+    // Event at 9 AM Pacific
+    const eventTimestamp = getEventTimestampInTimezone(eventDate, '9:00 AM', 'America/Los_Angeles');
+
+    // Current time: 8 AM Pacific = 4 PM UTC on Jan 20
+    const now = new Date('2026-01-20T16:00:00.000Z');
+
+    // Event should be in the FUTURE (1 hour away)
+    const isUpcoming = eventTimestamp > now.getTime();
+    expect(isUpcoming).toBe(true);
+  });
+
+  it('isEventPast returns false for upcoming event', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    // "Now" is 2:18 PM Pacific
+    const now = new Date('2026-01-20T22:18:00.000Z');
+
+    const isPast = isEventPast(eventDate, '6:00 PM', 'America/Los_Angeles', now);
+
+    // Event at 6 PM is 4 hours in the future - NOT past!
+    expect(isPast).toBe(false);
+  });
+
+  it('isEventPast returns true for past event', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    // "Now" is 7 PM Pacific = 3 AM UTC on Jan 21
+    const now = new Date('2026-01-21T03:00:00.000Z');
+
+    const isPast = isEventPast(eventDate, '6:00 PM', 'America/Los_Angeles', now);
+
+    expect(isPast).toBe(true);
+  });
+
+  it('handles events in Eastern timezone correctly', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    const timestamp = getEventTimestampInTimezone(eventDate, '6:00 PM', 'America/New_York');
+
+    // 6 PM Eastern on Jan 20 (EST, UTC-5) = Jan 20, 23:00:00 UTC
+    const expectedUtc = new Date('2026-01-20T23:00:00.000Z');
+    expect(timestamp).toBe(expectedUtc.getTime());
+  });
+
+  it('handles 24-hour time format', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    const timestamp = getEventTimestampInTimezone(eventDate, '18:00', 'America/Los_Angeles');
+
+    // 18:00 (6 PM) Pacific on Jan 20 (PST) = Jan 21, 02:00:00 UTC
+    const expectedUtc = new Date('2026-01-21T02:00:00.000Z');
+    expect(timestamp).toBe(expectedUtc.getTime());
+  });
+
+  it('handles events without time (defaults to midnight)', () => {
+    const eventDate = new Date('2026-01-20T00:00:00.000Z');
+    const timestamp = getEventTimestampInTimezone(eventDate, undefined, 'America/Los_Angeles');
+
+    // Midnight Pacific on Jan 20 (PST, UTC-8) = Jan 20, 08:00:00 UTC
+    const expectedUtc = new Date('2026-01-20T08:00:00.000Z');
+    expect(timestamp).toBe(expectedUtc.getTime());
+  });
+});
