@@ -9,6 +9,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import EventCard from '../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../utils/content';
+import { getEventStartMs, getEventEndMs } from '../utils/event-time';
 
 // Get all published articles, sorted by date (newest first)
 const allArticles = await getCollection('articles', publishedFilter);
@@ -24,42 +25,36 @@ const allEvents = await getCollection('events', publishedFilter);
 const now = new Date();
 const nowMs = now.getTime();
 
-// Helper to get event end timestamp (end of endDate day, or end of eventDate day)
-function getEventEndMs(event: (typeof allEvents)[number]): number {
-  const endDateValue = event.data.endDate || event.data.eventDate;
-  const date = new Date(endDateValue);
-  date.setHours(23, 59, 59, 999);
-  return date.getTime();
-}
-
 // Current: started but not ended
+// Sort by end time ascending so short-lived events (tonight's meeting) outrank
+// long-running background events (month-long DXpedition). Featured still wins.
 const currentEvents = allEvents
   .filter((event: Event) => {
-    const start = event.data.eventDate.getTime();
+    const start = getEventStartMs(event);
     const end = getEventEndMs(event);
     return start <= nowMs && end >= nowMs;
   })
   .sort((a: Event, b: Event) => {
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return a.data.eventDate.getTime() - b.data.eventDate.getTime();
+    return getEventEndMs(a) - getEventEndMs(b);
   });
 
 // Upcoming: not started yet
 const upcomingEvents = allEvents
-  .filter((event: Event) => event.data.eventDate.getTime() > nowMs)
+  .filter((event: Event) => getEventStartMs(event) > nowMs)
   .sort((a: Event, b: Event) => {
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return a.data.eventDate.getTime() - b.data.eventDate.getTime();
+    return getEventStartMs(a) - getEventStartMs(b);
   });
 
 // Combined for hero selection and grid
 const currentAndUpcoming = [...currentEvents, ...upcomingEvents];
 
-// Hero event: prioritize featured upcoming (soonest), then featured current, then soonest overall
-// This ensures the "next thing to prepare for" gets hero treatment
-const featuredUpcoming = upcomingEvents.find((e: Event) => e.data.featured);
+// Hero event: prioritize featured current (happening now), then featured upcoming, then soonest overall
+// Something happening right now should always outrank a future event
 const featuredCurrent = currentEvents.find((e: Event) => e.data.featured);
-const heroEvent = featuredUpcoming || featuredCurrent || currentAndUpcoming[0];
+const featuredUpcoming = upcomingEvents.find((e: Event) => e.data.featured);
+const heroEvent = featuredCurrent || featuredUpcoming || currentAndUpcoming[0];
 
 // Next 3 events after the hero
 const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slice(0, 3);

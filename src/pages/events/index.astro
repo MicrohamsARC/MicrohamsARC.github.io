@@ -10,46 +10,14 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import EventCard from '../../components/event/EventCard.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
-import { getEventTimestampInTimezone, getEventTimezone } from '../../utils/event-time';
-
-// Helper to combine eventDate + startTime into a single timestamp
-// Uses Temporal API for correct timezone handling (Issue #12 fix)
-function getEventTimestamp(event: {
-  data: { eventDate: Date; startTime?: string; venue?: string; timezone?: string };
-}): number {
-  const tz = getEventTimezone(event.data.venue, event.data.timezone);
-  return getEventTimestampInTimezone(event.data.eventDate, event.data.startTime, tz);
-}
-
-// Get end timestamp for multi-day events (end of day on endDate, or same as start for single-day)
-function getEventEndTimestamp(event: {
-  data: { eventDate: Date; endDate?: Date; endTime?: string; venue?: string; timezone?: string };
-}): number {
-  const tz = getEventTimezone(event.data.venue, event.data.timezone);
-  const endDateValue = event.data.endDate || event.data.eventDate;
-
-  if (event.data.endTime) {
-    const timeStr = event.data.endTime;
-    // Check if it's a date string like "2026-02-11" vs time string like "8:00 PM"
-    if (timeStr.match(/^\d{4}-\d{2}-\d{2}/)) {
-      // It's a date string - use end of that day
-      const endDate = new Date(timeStr);
-      return getEventTimestampInTimezone(endDate, '11:59 PM', tz);
-    }
-    // It's a time string
-    return getEventTimestampInTimezone(endDateValue, timeStr, tz);
-  }
-
-  // Default to end of day (11:59 PM)
-  return getEventTimestampInTimezone(endDateValue, '11:59 PM', tz);
-}
+import { getEventStartMs, getEventEndMs } from '../../utils/event-time';
 
 // Get all events sorted by date (we'll split client-side)
 const allEvents = await getCollection('events', publishedFilter);
 type Event = (typeof allEvents)[number];
 
 const sortedEvents = allEvents.sort(
-  (a: Event, b: Event) => getEventTimestamp(a) - getEventTimestamp(b)
+  (a: Event, b: Event) => getEventStartMs(a) - getEventStartMs(b)
 );
 
 // Build time split (will be corrected client-side)
@@ -57,40 +25,39 @@ const now = new Date();
 const nowMs = now.getTime();
 
 // Current: started but not ended
+// Sort by end time ascending — events ending soonest are most immediate
+// (tonight's meeting outranks a month-long DXpedition)
 const currentEvents = sortedEvents
   .filter((event: Event) => {
-    const start = getEventTimestamp(event);
-    const end = getEventEndTimestamp(event);
+    const start = getEventStartMs(event);
+    const end = getEventEndMs(event);
     return start <= nowMs && end >= nowMs;
   })
   .sort((a: Event, b: Event) => {
-    // Featured first, then by date
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return getEventTimestamp(a) - getEventTimestamp(b);
+    return getEventEndMs(a) - getEventEndMs(b);
   });
 
 // Upcoming: not started yet
 const upcomingEvents = sortedEvents
   .filter((event: Event) => {
-    const start = getEventTimestamp(event);
+    const start = getEventStartMs(event);
     return start > nowMs;
   })
   .sort((a: Event, b: Event) => {
-    // Featured first, then by date
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return getEventTimestamp(a) - getEventTimestamp(b);
+    return getEventStartMs(a) - getEventStartMs(b);
   });
 
 // Past: ended
 const pastEvents = sortedEvents
   .filter((event: Event) => {
-    const end = getEventEndTimestamp(event);
+    const end = getEventEndMs(event);
     return end < nowMs;
   })
   .sort((a: Event, b: Event) => {
-    // Featured first, then by date (most recent first for past)
     if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return getEventTimestamp(b) - getEventTimestamp(a);
+    return getEventStartMs(b) - getEventStartMs(a);
   });
 ---
 
@@ -125,8 +92,8 @@ const pastEvents = sortedEvents
           {
             currentEvents.map((event: Event) => (
               <div
-                data-event-timestamp={getEventTimestamp(event)}
-                data-event-end={getEventEndTimestamp(event)}
+                data-event-timestamp={getEventStartMs(event)}
+                data-event-end={getEventEndMs(event)}
               >
                 <EventCard event={event} variant="horizontal" showJoinButtons />
               </div>
@@ -150,8 +117,8 @@ const pastEvents = sortedEvents
           {
             upcomingEvents.map((event: Event) => (
               <div
-                data-event-timestamp={getEventTimestamp(event)}
-                data-event-end={getEventEndTimestamp(event)}
+                data-event-timestamp={getEventStartMs(event)}
+                data-event-end={getEventEndMs(event)}
               >
                 <EventCard event={event} variant="horizontal" showJoinButtons />
               </div>
@@ -174,8 +141,8 @@ const pastEvents = sortedEvents
           {
             pastEvents.map((event: Event) => (
               <div
-                data-event-timestamp={getEventTimestamp(event)}
-                data-event-end={getEventEndTimestamp(event)}
+                data-event-timestamp={getEventStartMs(event)}
+                data-event-end={getEventEndMs(event)}
               >
                 <EventCard event={event} variant="default" />
               </div>
@@ -227,11 +194,9 @@ const pastEvents = sortedEvents
       }
     });
 
-    // Sort: current and upcoming by soonest first, past by most recent first
+    // Sort: current by ending soonest (most immediate first), upcoming by soonest start, past by most recent
     current.sort(
-      (a, b) =>
-        parseInt(a.dataset.eventTimestamp || '0', 10) -
-        parseInt(b.dataset.eventTimestamp || '0', 10)
+      (a, b) => parseInt(a.dataset.eventEnd || '0', 10) - parseInt(b.dataset.eventEnd || '0', 10)
     );
     upcoming.sort(
       (a, b) =>

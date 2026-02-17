@@ -121,6 +121,53 @@ export function formatEventDateTime(
   };
 }
 
+// =============================================================================
+// Event-level timestamp helpers (for sorting / bucketing)
+// =============================================================================
+
+/** Minimal event shape for timestamp computation */
+interface EventTimestampData {
+  data: {
+    eventDate: Date;
+    endDate?: Date;
+    startTime?: string;
+    endTime?: string;
+    venue?: string;
+    timezone?: string;
+  };
+}
+
+/**
+ * Get the UTC start timestamp (ms) for an event.
+ * Combines eventDate + startTime in the event's resolved timezone.
+ * If no startTime, returns start-of-day in the event's timezone.
+ */
+export function getEventStartMs(event: EventTimestampData): number {
+  const tz = getEventTimezone(event.data.venue, event.data.timezone);
+  return getEventTimestampInTimezone(event.data.eventDate, event.data.startTime, tz);
+}
+
+/**
+ * Get the UTC end timestamp (ms) for an event.
+ * Uses endDate (or eventDate) + endTime in the event's resolved timezone.
+ * If no endTime, defaults to 11:59 PM (end of event day).
+ */
+export function getEventEndMs(event: EventTimestampData): number {
+  const tz = getEventTimezone(event.data.venue, event.data.timezone);
+  const endDateValue = event.data.endDate || event.data.eventDate;
+
+  if (event.data.endTime) {
+    return getEventTimestampInTimezone(endDateValue, event.data.endTime, tz);
+  }
+
+  // Default: end of event day in the event's timezone
+  return getEventTimestampInTimezone(endDateValue, '11:59 PM', tz);
+}
+
+// =============================================================================
+// Display formatting
+// =============================================================================
+
 /**
  * Format a compact date/time line for cards and summaries
  * Returns: "Jan 20 · 6:00 PM–8:30 PM PST" or "Jan 20" if no time
