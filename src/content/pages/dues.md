@@ -1,9 +1,9 @@
 ---
-title: 'Club Membership Dues'
-description: 'Club membership dues direct landing page with paypal form'
-author: 'MicroHAMS Team'
+title: "Club Membership Dues"
+description: ""
+author: "MicroHAMS Team"
 date: 2026-03-14
-hideHeader: true
+hideHeader: false
 ---
 
 ## Payments via PayPal
@@ -23,7 +23,7 @@ The following dues schedule applies to all members:
 - Three Years – $10.00
 - Three Years (including spouse) - $15.00
 
-We ask that current club members preferably pay dues via our paypal payment page. Note that you do NOT need a paypal account to make your payment, your credit card will work even without account. Dues are payable no later than thirty days after signing up as a member.
+We ask that current club members preferably pay dues via our PayPal payment page. Note that you do NOT need a paypal account to make your payment, your credit card will work even without account. Dues are payable no later than thirty days after signing up as a member.
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">
@@ -48,5 +48,5 @@ If PayPal is not an option for you, please send your dues checks to:
 ```text
 MicroHAMS
 PO Box 6925
-Bellevue, WA 98008-6925
+Bellevue, WA 98008
 ```

@@ -1,7 +1,7 @@
 ---
-title: 'About'
-description: 'Learn about the MicroHAMS Amateur Radio Club - a dynamic organization of amateur radio enthusiasts in the Puget Sound area focused on digital communications and technical innovation.'
-author: 'MicroHAMS Team'
+title: "About"
+description: "Learn about the MicroHAMS Amateur Radio Club - a dynamic organization of amateur radio enthusiasts in the Puget Sound area focused on digital communications and technical innovation."
+author: "MicroHAMS Team"
 date: 2025-12-02
 hideHeader: true
 ---
@@ -89,7 +89,7 @@ The Board meets regularly and works as a team to plan activities, manage club re
 **Mailing Address**  
 MicroHAMS
 PO Box 6925
-Bellevue, WA 98008-0925
+Bellevue, WA 98008
 
 **Meetings**  
 General membership meetings are held online and in person on the third Tuesday of each month. August and December meetings are typically held at the Black Raven brewery in Redmond, WA. Meetings start at 6pm Pacific with introductions, general announcements, show and tell, and help a ham Q&A. Our technical presentation typically starts at 6:30pm or shortly thereafter.
