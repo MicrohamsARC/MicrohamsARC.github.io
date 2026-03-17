@@ -1,28 +1,24 @@
 ---
 /**
  * About Page - MicroHAMS
- * 
+ *
  * Direct route for the about page from pages collection
  */
 
 import MarkdownLayout from '../layouts/MarkdownLayout.astro';
-import { getEntry } from 'astro:content';
+import { loadRenderedPageEntry } from '../utils/page-entry';
 
-const entry = await getEntry('pages', 'about');
+const page = await loadRenderedPageEntry('about');
 
-if (!entry) {
+if (!page) {
   return new Response(null, {
     status: 404,
-    statusText: 'Not found'
+    statusText: 'Not found',
   });
 }
-
-const { Content, headings } = await entry.render();
+const { frontmatter, Content, headings } = page;
 ---
 
-<MarkdownLayout 
-  frontmatter={entry.data}
-  headings={headings}
->
+<MarkdownLayout frontmatter={frontmatter} headings={headings}>
   <Content />
 </MarkdownLayout>
