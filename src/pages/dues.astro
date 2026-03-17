@@ -1,0 +1,26 @@
+---
+/**
+ * Dues Page - MicroHAMS
+ *
+ * Direct route for the dues page from pages collection
+ */
+
+// TODO: needs refactor, as it's basically the same as about.astro, but with a different entry slug.
+import MarkdownLayout from '../layouts/MarkdownLayout.astro';
+import { getEntry } from 'astro:content';
+
+const entry = await getEntry('pages', 'dues');
+
+if (!entry) {
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not found',
+  });
+}
+
+const { Content, headings } = await entry.render();
+---
+
+<MarkdownLayout frontmatter={entry.data} headings={headings}>
+  <Content />
+</MarkdownLayout>
