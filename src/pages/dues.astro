@@ -1,14 +1,14 @@
 ---
 /**
- * About Page - MicroHAMS
+ * Dues Page - MicroHAMS
  *
- * Direct route for the about page from pages collection
+ * Direct route for the dues page from pages collection
  */
 
 import MarkdownLayout from '../layouts/MarkdownLayout.astro';
 import { loadRenderedPageEntry } from '../utils/page-entry';
 
-const page = await loadRenderedPageEntry('about');
+const page = await loadRenderedPageEntry('dues');
 
 if (!page) {
   return new Response(null, {
