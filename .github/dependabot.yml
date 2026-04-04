@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    groups:
+      # Batch all patch and minor updates into one PR per week
+      patch-and-minor:
+        update-types:
+          - "minor"
+          - "patch"
+    # Major version bumps get individual PRs so they can be reviewed carefully
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
