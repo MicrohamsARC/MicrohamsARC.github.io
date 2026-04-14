@@ -9,6 +9,7 @@ import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import EventLogistics from '../../components/event/EventLogistics.astro';
+import EventInviteText from '../../components/event/EventInviteText.astro';
 import EventDateTime from '../../components/event/EventDateTime.astro';
 import { publishedFilter } from '../../utils/content';
 import { formatEventDate } from '../../utils/event-time';
@@ -141,6 +142,16 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
               />
             )
           }
+
+          {/* Invite text for copy-paste into email */}
+          <EventInviteText
+            event={event}
+            slug={slug!}
+            venueConfig={venueConfig}
+            virtualUrl={virtualUrl}
+            hasInPerson={hasInPerson}
+            hasVirtual={hasVirtual}
+          />
         </div>
       </div>
     </section>
