@@ -1,10 +1,10 @@
 ---
-title: "Sporadic E Season 2026: What to Expect on 6m and 10m"
+title: 'Sporadic E Season 2026: What to Expect on 6m and 10m'
 description: "Sporadic E season runs May through August, bringing unexpected long-distance openings on 6m and 10m that are unrelated to the solar cycle. Here's how to be ready."
-author: "MicroHAMS"
+author: 'MicroHAMS'
 date: 2026-04-14
 featured: false
-tags: ["propagation", "6m", "10m", "sporadic E", "VHF"]
+tags: ['propagation', '6m', '10m']
 ---
 
 Every year from roughly May through August, a propagation mode unlike anything else in amateur radio comes alive: **Sporadic E (Es)**. It's unpredictable, it's brief, it can put you in contact with stations 500–2000 miles away on 6 meters—and then it vanishes as quickly as it appeared.
@@ -34,6 +34,7 @@ This is a high solar flux year, which means F2 propagation will still dominate 1
 On 6m, any transatlantic or transcontinental opening is almost certainly Es or meteor scatter. The band is too high for F2 except at the very peak of the solar cycle near the equator.
 
 **Peak months from the Pacific Northwest:**
+
 - **May:** Season opens; openings to Southwest and Midwest are common
 - **June–July:** Peak season; cross-country openings to the East Coast; potential for transatlantic if conditions align
 - **August:** Decline begins; shorter and less frequent openings

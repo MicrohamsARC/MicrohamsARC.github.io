@@ -2,7 +2,7 @@
 /**
  * Dynamic Tag Pages
  *
- * Filters and displays articles by tag
+ * Filters and displays articles, events, and docs by tag
  */
 
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -11,36 +11,52 @@ import { publishedFilter } from '../../utils/content';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles', publishedFilter);
-  type Article = (typeof articles)[number];
+  const events = await getCollection('events');
+  const docs = await getCollection('docs');
 
-  // Get all unique tags
+  type Article = (typeof articles)[number];
+  type Event = (typeof events)[number];
+  type Doc = (typeof docs)[number];
+
+  // Collect all unique tags across all content types
   const allTags = [
-    ...new Set(
-      articles.flatMap((article: Article) => {
-        return article.data.tags;
-      })
-    ),
+    ...new Set([
+      ...articles.flatMap((a: Article) => a.data.tags ?? []),
+      ...events.flatMap((e: Event) => e.data.tags ?? []),
+      ...docs.flatMap((d: Doc) => d.data.tags ?? []),
+    ]),
   ];
 
-  // Create a path for each tag
   return allTags.map((tag) => {
     const filteredArticles = articles
-      .filter((article: Article) => article.data.tags.includes(tag))
+      .filter((a: Article) => a.data.tags?.includes(tag))
       .sort(
         (a: Article, b: Article) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)
       );
 
+    const filteredEvents = events
+      .filter((e: Event) => e.data.tags?.includes(tag))
+      .sort(
+        (a: Event, b: Event) =>
+          (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0)
+      );
+
+    const filteredDocs = docs
+      .filter((d: Doc) => d.data.tags?.includes(tag))
+      .sort((a: Doc, b: Doc) => a.data.title.localeCompare(b.data.title));
+
     return {
       params: { tag },
-      props: { articles: filteredArticles, tag },
+      props: { articles: filteredArticles, events: filteredEvents, docs: filteredDocs, tag },
     };
   });
 }
 
-const { articles, tag } = Astro.props;
+const { articles, events, docs, tag } = Astro.props;
+const totalCount = articles.length + events.length + docs.length;
 ---
 
-<PageLayout title={`Articles tagged "${tag}"`} description={`Browse articles about ${tag}`}>
+<PageLayout title={`Tagged "${tag}"`} description={`Browse content about ${tag}`}>
   <div class="region">
     <div class="wrapper">
       <div class="stack-8">
@@ -55,79 +71,252 @@ const { articles, tag } = Astro.props;
             </p>
             <h1>{tag}</h1>
             <p class="lead mx-auto">
-              {articles.length}
-              {articles.length === 1 ? 'article' : 'articles'} tagged with "{tag}"
+              {totalCount}
+              {totalCount === 1 ? 'item' : 'items'} tagged with "{tag}"
             </p>
-            <a href="/articles" class="text-sm">← Back to all articles</a>
+            <a href="/tags" class="text-sm">← All tags</a>
           </div>
         </header>
 
-        <!-- Articles List -->
-        <div class="center">
-          <div class="stack-8">
-            {
-              articles.map((article: (typeof articles)[number]) => (
-                <article class="card" data-variant="interactive">
-                  <div class="card__header">
-                    <h2 class="card__title">
-                      <a
-                        href={`/articles/${article.slug}`}
-                        style="text-decoration: none; color: inherit;"
-                      >
-                        {article.data.title}
-                      </a>
-                    </h2>
-                    {article.data.description && (
-                      <p class="card__description">{article.data.description}</p>
+        <!-- Articles -->
+        {
+          articles.length > 0 && (
+            <section class="stack-4">
+              {(events.length > 0 || docs.length > 0) && <h2 class="text-xl">Articles</h2>}
+              <div class="stack-8">
+                {articles.map((article: (typeof articles)[number]) => (
+                  <article class="card" data-variant="interactive">
+                    <div class="card__header">
+                      <h2 class="card__title">
+                        <a
+                          href={`/articles/${article.id.replace(/\.md$/, '').replace(/\/index$/, '')}`}
+                          style="text-decoration: none; color: inherit;"
+                        >
+                          {article.data.title}
+                        </a>
+                      </h2>
+                      {article.data.description && (
+                        <p class="card__description">{article.data.description}</p>
+                      )}
+                    </div>
+                    <div class="card__content">
+                      <div class="cluster">
+                        {article.data.date && (
+                          <time
+                            class="text-sm text-muted"
+                            datetime={article.data.date.toISOString()}
+                          >
+                            {article.data.date.toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </time>
+                        )}
+                        <span class="type-badge" data-type="article">
+                          Article
+                        </span>
+                      </div>
+                    </div>
+                    {article.data.tags?.length > 0 && (
+                      <div class="card__footer">
+                        <ul class="tag-list">
+                          {article.data.tags.map((articleTag: string) => (
+                            <li>
+                              <a
+                                href={`/tags/${encodeURIComponent(articleTag)}`}
+                                class="tag"
+                                data-active={articleTag === tag}
+                              >
+                                {articleTag}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
-                  </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )
+        }
 
-                  <div class="card__content">
-                    <div class="cluster">
-                      {article.data.date && (
-                        <time class="text-sm text-muted" datetime={article.data.date.toISOString()}>
-                          {article.data.date.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </time>
+        <!-- Events -->
+        {
+          events.length > 0 && (
+            <section class="stack-4">
+              {(articles.length > 0 || docs.length > 0) && <h2 class="text-xl">Events</h2>}
+              <div class="stack-8">
+                {events.map((event: (typeof events)[number]) => (
+                  <article class="card" data-variant="interactive">
+                    <div class="card__header">
+                      <h2 class="card__title">
+                        <a
+                          href={`/events/${event.id.replace(/\.md$/, '').replace(/\/index$/, '')}`}
+                          style="text-decoration: none; color: inherit;"
+                        >
+                          {event.data.title}
+                        </a>
+                      </h2>
+                      {event.data.description && (
+                        <p class="card__description">{event.data.description}</p>
                       )}
-                      {article.data.author && (
-                        <span class="text-sm text-muted">By {article.data.author}</span>
-                      )}
-                      {article.data.category && <span class="badge">{article.data.category}</span>}
                     </div>
-                  </div>
+                    <div class="card__content">
+                      <div class="cluster">
+                        {event.data.startDate && (
+                          <time
+                            class="text-sm text-muted"
+                            datetime={event.data.startDate.toISOString()}
+                          >
+                            {event.data.startDate.toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </time>
+                        )}
+                        <span class="type-badge" data-type="event">
+                          Event
+                        </span>
+                      </div>
+                    </div>
+                    {event.data.tags?.length > 0 && (
+                      <div class="card__footer">
+                        <ul class="tag-list">
+                          {event.data.tags.map((eventTag: string) => (
+                            <li>
+                              <a
+                                href={`/tags/${encodeURIComponent(eventTag)}`}
+                                class="tag"
+                                data-active={eventTag === tag}
+                              >
+                                {eventTag}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </section>
+          )
+        }
 
-                  {article.data.tags?.length > 0 && (
-                    <div class="card__footer">
-                      <ul class="tag-list">
-                        {article.data.tags.map((articleTag: string) => (
-                          <li>
-                            <a
-                              href={`/tags/${encodeURIComponent(articleTag)}`}
-                              class="tag"
-                              data-active={articleTag === tag}
-                            >
-                              {articleTag}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+        <!-- Docs -->
+        {
+          docs.length > 0 && (
+            <section class="stack-4">
+              {(articles.length > 0 || events.length > 0) && <h2 class="text-xl">Documentation</h2>}
+              <div class="stack-8">
+                {docs.map((doc: (typeof docs)[number]) => (
+                  <article class="card" data-variant="interactive">
+                    <div class="card__header">
+                      <h2 class="card__title">
+                        <a
+                          href={`/docs/${doc.id.replace(/\.md$/, '').replace(/\/index$/, '')}`}
+                          style="text-decoration: none; color: inherit;"
+                        >
+                          {doc.data.title}
+                        </a>
+                      </h2>
+                      {doc.data.description && (
+                        <p class="card__description">{doc.data.description}</p>
+                      )}
                     </div>
-                  )}
-                </article>
-              ))
-            }
-          </div>
-        </div>
+                    <div class="card__content">
+                      <div class="cluster">
+                        <span class="type-badge" data-type="doc">
+                          Doc
+                        </span>
+                      </div>
+                    </div>
+                    {doc.data.tags?.length > 0 && (
+                      <div class="card__footer">
+                        <ul class="tag-list">
+                          {doc.data.tags.map((docTag: string) => (
+                            <li>
+                              <a
+                                href={`/tags/${encodeURIComponent(docTag)}`}
+                                class="tag"
+                                data-active={docTag === tag}
+                              >
+                                {docTag}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </section>
+          )
+        }
       </div>
     </div>
   </div>
 </PageLayout>
 
 <style>
+  .type-badge {
+    font-size: var(--text-xs);
+    padding: 0.25em 0.75em;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .type-badge[data-type='article'] {
+    background-color: oklch(90% 0.05 220);
+    color: oklch(30% 0.08 220);
+  }
+
+  .type-badge[data-type='event'] {
+    background-color: oklch(90% 0.05 300);
+    color: oklch(30% 0.08 300);
+  }
+
+  .type-badge[data-type='doc'] {
+    background-color: oklch(90% 0.05 150);
+    color: oklch(30% 0.08 150);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .type-badge[data-type='article'] {
+      background-color: oklch(25% 0.05 220);
+      color: oklch(80% 0.08 220);
+    }
+
+    :root:not([data-theme='light']) .type-badge[data-type='event'] {
+      background-color: oklch(25% 0.05 300);
+      color: oklch(80% 0.08 300);
+    }
+
+    :root:not([data-theme='light']) .type-badge[data-type='doc'] {
+      background-color: oklch(25% 0.05 150);
+      color: oklch(80% 0.08 150);
+    }
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='article'] {
+    background-color: oklch(25% 0.05 220);
+    color: oklch(80% 0.08 220);
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='event'] {
+    background-color: oklch(25% 0.05 300);
+    color: oklch(80% 0.08 300);
+  }
+
+  :root[data-theme='dark'] .type-badge[data-type='doc'] {
+    background-color: oklch(25% 0.05 150);
+    color: oklch(80% 0.08 150);
+  }
+
   .tag[data-active='true'] {
     background-color: var(--color-accent);
     color: var(--color-white);

@@ -1,10 +1,10 @@
 ---
-title: "Building Helical Resonator Filters for Field Day Isolation"
-description: "A summary of practical HF helical resonator filters that can help isolate multiple 20-meter stations during Field Day operations."
-author: "MicroHAMS"
+title: 'Building Helical Resonator Filters for Field Day Isolation'
+description: 'A summary of practical HF helical resonator filters that can help isolate multiple 20-meter stations during Field Day operations.'
+author: 'MicroHAMS'
 date: 2025-10-21
-heroImage: "/images/articles/helical-resonator-filter.jpg"
-tags: ["field-day", "filters", "interference", "hf", "20-meters", "diy"]
+heroImage: '/images/articles/helical-resonator-filter.jpg'
+tags: ['Field Day', 'HF']
 featured: true
 ---
 
@@ -13,6 +13,7 @@ featured: true
 Operating multiple stations on the same HF band during Field Day presents unique challenges. With CW and SSB stations separated by only 100-150 kHz on 20 meters, conventional filtering methods often fall short. This article summarizes an innovative solution developed by **Clint Turner, KA7OEI**, who documented his construction and testing of helical resonator filters built from readily available materials.
 
 **Original Articles by KA7OEI:**
+
 - [A Helical Resonator to Help Isolation (June 2014)](https://ka7oei.blogspot.com/2014/06/a-helical-resonator-to-help-isolation.html)
 - [Revisiting the 20 Meter Helical Resonator Filters (May 2019)](https://ka7oei.blogspot.com/2019/05/revisiting-20-meter-helical-resonator.html)
 
@@ -36,6 +37,7 @@ Traditional solutions like coaxial stubs and commercial bandpass filters designe
 KA7OEI developed two complementary filter types using 1-gallon metal paint cans (approximately $25 each):
 
 ### 1. Band-Pass Filter (for CW/Digital Station)
+
 - Tunable across the CW portion of 20 meters (14.02-14.08 MHz)
 - Approximately 1 dB insertion loss at center frequency
 - 6+ dB attenuation at 14.25 MHz
@@ -43,6 +45,7 @@ KA7OEI developed two complementary filter types using 1-gallon metal paint cans 
 - Handles 100 watts continuously
 
 ### 2. Band-Stop (Notch) Filter (for SSB Station)
+
 - Tuned to reject CW frequencies (14.05 MHz)
 - Minimal impact on SSB frequencies (14.15-14.35 MHz)
 - 10-20 dB notch depth (depending on stub configuration)
@@ -53,6 +56,7 @@ KA7OEI developed two complementary filter types using 1-gallon metal paint cans 
 ## Key Construction Details
 
 ### Materials
+
 - **Enclosure**: 1-gallon metal paint cans (slightly undersized but functional for 20m)
 - **Coil Former**: Glass peanut butter jar (~4" diameter, 7.5" tall)
 - **Conductor**: #6 solid copper wire (or equivalent copper tubing)
@@ -77,6 +81,7 @@ KA7OEI developed two complementary filter types using 1-gallon metal paint cans 
 Using a Vector Network Analyzer (VNA), KA7OEI characterized the filters in detail:
 
 ### Band-Pass Filter Response
+
 - **14.05 MHz**: 0.75 dB loss, VSWR < 1.2:1
 - **14.07 MHz**: 1.3 dB loss, VSWR < 1.5:1
 - **14.15 MHz**: 3 dB loss
@@ -84,11 +89,13 @@ Using a Vector Network Analyzer (VNA), KA7OEI characterized the filters in detai
 - **14.35 MHz**: 9 dB loss
 
 ### Band-Stop Filter with 0.15λ Stub
+
 - **Notch depth**: 10 dB at 14.05 MHz
 - **Passband**: Minimal impact above 14.2 MHz
 - **Asymmetry**: Less attenuation above the notch than below (favorable for SSB)
 
 ### Cascaded Notch Filters
+
 Using two notch elements in series increased notch depth to 20+ dB with only slight increase in passband insertion loss.
 
 ---
@@ -96,6 +103,7 @@ Using two notch elements in series increased notch depth to 20+ dB with only sli
 ## Practical Field Deployment
 
 ### Station Setup
+
 1. **CW Station**: Band-pass filter in series with transceiver
    - Operator tunes the filter by watching reflected power
    - Covers ±15 kHz easily, rarely needs retuning during operation
@@ -107,6 +115,7 @@ Using two notch elements in series increased notch depth to 20+ dB with only sli
    - Prevents CW station overload and reduces transmitter-generated noise at CW frequencies
 
 ### Real-World Results
+
 The Utah Amateur Radio Club (UARC) has used these filters successfully at Field Day operations. When inter-station interference occurs (which varies year-to-year for unclear reasons), these filters completely eliminate or significantly reduce the problem while easily handling 100-watt transmitter output.
 
 ---
@@ -127,15 +136,18 @@ KA7OEI identified several potential enhancements:
 ## Important Notes
 
 ### Radio Compatibility
+
 - Some radios produce significant "below-band" noise when transmitting. The TS-450's built-in antenna tuner, when enabled, provides an additional 15-40 dB attenuation of this noise.
 - Certain radios (notably the IC-706 series) were found to be particularly susceptible to interference and are banned from UARC Field Day operations.
 
 ### Tuning Tools Required
+
 - **Antenna analyzer**: To locate notch frequency
 - **VSWR/wattmeter**: To tune band-pass filter for minimum reflected power
 - **Optional VNA or NanoVNA**: For precise characterization and optimization
 
 ### Safety Considerations
+
 - Paint cans are fragile even after reinforcement
 - High RF voltages exist inside the resonator
 - Proper grounding and bonding is essential
@@ -160,4 +172,4 @@ For complete construction details, tuning procedures, and extensive measurement 
 
 ---
 
-*This article is a summary and appreciation of KA7OEI's excellent work. All technical content and images are credited to the original author. Visit the source articles for full construction details, measurements, and additional insights.*
+_This article is a summary and appreciation of KA7OEI's excellent work. All technical content and images are credited to the original author. Visit the source articles for full construction details, measurements, and additional insights._

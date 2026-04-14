@@ -1,10 +1,10 @@
 ---
-title: "Spring 2026 DXpeditions: April & May on the Air"
-description: "A roundup of notable DXpeditions active in April and May 2026, including TX9W to the Marquesas, C5B from the Gambia, and more—right in the peak of Cycle 25 propagation."
-author: "MicroHAMS"
+title: 'Spring 2026 DXpeditions: April & May on the Air'
+description: 'A roundup of notable DXpeditions active in April and May 2026, including TX9W to the Marquesas, C5B from the Gambia, and more—right in the peak of Cycle 25 propagation.'
+author: 'MicroHAMS'
 date: 2026-04-14
 featured: true
-tags: ["DXpedition", "DX", "HF", "rare DXCC", "propagation"]
+tags: ['DX', 'propagation', 'HF']
 ---
 
 Spring 2026 is delivering an exceptional run of DXpeditions, arriving just as Solar Cycle 25 conditions continue to favor 10m, 12m, and 15m. If you haven't been on HF lately, now is the time to dust off the radio.
@@ -14,6 +14,7 @@ Spring 2026 is delivering an exceptional run of DXpeditions, arriving just as So
 The **Marquesas Islands** are consistently in the top 30 most-wanted DXCC entities, and the TX9W team is bringing a full-scale expedition to the archipelago. Operations run **April 19–30**, covering all major HF bands with a focus on delivering contacts to operators in difficult propagation paths.
 
 **Key details:**
+
 - **Bands:** 160m–10m, including WARC bands
 - **Modes:** CW, SSB, FT8/FT4
 - **QSL:** via Club Log OQRS
@@ -29,6 +30,7 @@ The Marquesas sit far enough into the Pacific that long-path openings to Europe 
 The **3X3A** team is active from **Rouma Island** in Guinea through April 25. Guinea (3X) is a relatively rare entity with limited activation history, making this a priority for operators working toward DXCC Honor Roll.
 
 **Key details:**
+
 - **IOTA:** AF-051
 - **Modes:** CW, SSB, FT8
 - **Bands:** 160m–10m
@@ -44,6 +46,7 @@ West Africa is well-positioned for paths to both North America and Europe during
 **C5B** is operating from the **Bijol Islands** off the coast of Gambia, an IOTA group (AF-060) that doesn't see much activity. The operation runs through May 8, overlapping with the late spring propagation window.
 
 **Key details:**
+
 - **IOTA:** AF-060
 - **Modes:** CW, SSB, FT8
 - **Bands:** 40m–10m, with 80m attempts

@@ -1,15 +1,15 @@
 ---
-title: "Winter Field Day 2026"
-description: "Annual amateur radio event challenging operators to set up portable stations and make contacts in winter conditions. Participate solo or with your club!"
+title: 'Winter Field Day 2026'
+description: 'Annual amateur radio event challenging operators to set up portable stations and make contacts in winter conditions. Participate solo or with your club!'
 eventDate: 2026-01-24
 endDate: 2026-01-25
-startTime: "11:00 AM"
-endTime: "11:00 AM"
-timezone: "America/Los_Angeles"
-eventType: "contest"
-eventLink: "https://winterfieldday.org"
+startTime: '11:00 AM'
+endTime: '11:00 AM'
+timezone: 'America/Los_Angeles'
+eventType: 'contest'
+eventLink: 'https://winterfieldday.org'
 registrationRequired: false
-tags: ["field day", "contest", "portable", "emergency preparedness"]
+tags: ['Field Day', 'contest', 'portable', 'emergency preparedness']
 ---
 
 Winter Field Day is an annual amateur radio tradition taking place on the last full weekend of January (January 24-25, 2026). Now in its 19th year, WFD challenges operators to set up portable field stations and make contacts in winter conditions—rain, snow, ice, or shine.
@@ -19,8 +19,9 @@ Winter Field Day is an annual amateur radio tradition taking place on the last f
 The Winter Field Day Association passionately believes that emergency communications training shouldn't be limited to fair-weather scenarios. Natural disasters are unpredictable and can strike when you least expect them. Freezing temperatures, snow, ice, and other hazards present unique operational concerns that are valuable to practice before you need them for real.
 
 **Core principles:**
+
 - Natural disasters are unpredictable and can strike when you least expect them
-- Your training and operating skills should not be limited to fair-weather scenarios  
+- Your training and operating skills should not be limited to fair-weather scenarios
 - Preparedness is the key to a professional and timely response during any event
 
 ## Event Details

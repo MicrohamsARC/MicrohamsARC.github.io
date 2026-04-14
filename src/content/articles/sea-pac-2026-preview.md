@@ -1,10 +1,10 @@
 ---
 title: "SEA-PAC 2026: Amateur Radio's Pacific Northwest Convention"
 description: "SEA-PAC returns to Seaside, Oregon on June 5–7, 2026. Here's what to expect from the Pacific Northwest's premier amateur radio convention, including the vendor floor, forums, and license exam sessions."
-author: "MicroHAMS"
+author: 'MicroHAMS'
 date: 2026-04-14
 featured: false
-tags: ["SEA-PAC", "convention", "community", "Pacific Northwest"]
+tags: ['SEA-PAC', 'community']
 ---
 
 **SEA-PAC 2026** runs **June 5–7** at the Seaside Convention Center in Seaside, Oregon—the same venue that has hosted the Pacific Northwest's largest amateur radio convention for decades. If you've never made the trip down the coast, this is a good year to go.

@@ -1,10 +1,10 @@
 ---
-title: "ARRL Field Day 2026: June 27–28"
-description: "ARRL Field Day is the largest annual amateur radio event in North America. MicroHAMS has participated in recent years alongside BEARONS, and 2026 planning is getting underway."
-author: "MicroHAMS"
+title: 'ARRL Field Day 2026: June 27–28'
+description: 'ARRL Field Day is the largest annual amateur radio event in North America. MicroHAMS has participated in recent years alongside BEARONS, and 2026 planning is getting underway.'
+author: 'MicroHAMS'
 date: 2026-04-14
 featured: false
-tags: ["Field Day", "ARRL", "operating event", "community", "portable operations"]
+tags: ['Field Day', 'community']
 ---
 
 **ARRL Field Day 2026** runs the fourth full weekend of June: **June 27–28**, beginning at 1800 UTC on Saturday and ending at 2059 UTC on Sunday. It's the largest single amateur radio operating event in North America, with thousands of groups setting up portable stations in parks, fields, parking lots, and backyards across the continent.

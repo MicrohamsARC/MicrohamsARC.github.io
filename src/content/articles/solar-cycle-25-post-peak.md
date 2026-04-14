@@ -1,10 +1,10 @@
 ---
-title: "Solar Cycle 25: What to Expect on the Descent"
+title: 'Solar Cycle 25: What to Expect on the Descent'
 description: "Solar Cycle 25 peaked in late 2024, one of the strongest cycles in decades. Here's what the descending phase means for HF propagation and how to get the most out of the bands now."
-author: "MicroHAMS"
+author: 'MicroHAMS'
 date: 2026-04-14
 featured: false
-tags: ["propagation", "HF", "solar cycle", "10m", "15m"]
+tags: ['propagation', 'HF', '10m']
 ---
 
 Solar Cycle 25 peaked in October 2024 with a smoothed sunspot number well above predictions, making it the most active cycle since Cycle 22 in the early 1990s. We're now roughly 18 months into the descending phase—and conditions are still excellent for anyone who's been waiting for the right time to work HF.
@@ -34,6 +34,7 @@ The F2 layer that supports long-distance HF propagation is still dense enough to
 The descending phase of a solar cycle is not a cliff—it's a slope. Each month, average SFI drops slightly. The upper bands become less reliable, the daily openings get shorter, and eventually 10m stops opening except near the equinoxes.
 
 The pattern from previous cycles suggests:
+
 - **2026:** 10m and 12m still reliably open most days
 - **2027–2028:** 10m openings become more seasonal (equinox peaks, quiet summers)
 - **2029–2031:** Return toward minimum; 10m closes except for sporadic E and aurora openings; 15m becomes the new workhorse

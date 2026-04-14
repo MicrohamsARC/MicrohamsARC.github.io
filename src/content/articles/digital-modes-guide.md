@@ -1,11 +1,11 @@
 ---
-title: "Digital Modes Guide"
-description: "Comprehensive guide to digital communication modes in amateur radio"
-author: "MicroHAMS Team"
+title: 'Digital Modes Guide'
+description: 'Comprehensive guide to digital communication modes in amateur radio'
+author: 'MicroHAMS Team'
 date: 2024-10-10
 featured: true
-tags: ["digital-modes", "ft8", "psk31"]
-category: "guides"
+tags: ['digital modes', 'HF']
+category: 'guides'
 ---
 
 Digital modes have become increasingly popular in amateur radio, offering efficient communication even under poor propagation conditions.

@@ -1,11 +1,11 @@
 ---
-title: "Getting Started with Software Defined Radio"
-description: "An introduction to SDR technology for amateur radio operators, covering basic concepts and popular hardware options."
-author: "MicroHAMS Team"
+title: 'Getting Started with Software Defined Radio'
+description: 'An introduction to SDR technology for amateur radio operators, covering basic concepts and popular hardware options.'
+author: 'MicroHAMS Team'
 date: 2024-10-15
 featured: true
-tags: ["sdr", "beginner", "hardware"]
-category: "tutorials"
+tags: ['SDR']
+category: 'tutorials'
 ---
 
 Software Defined Radio (SDR) has revolutionized amateur radio operations by replacing traditional hardware components with software processing. This guide will help you understand the basics and get started with your first SDR setup.
@@ -25,6 +25,7 @@ SDR technology moves the traditional radio signal processing from hardware circu
 The RTL-SDR is the most affordable entry point into SDR. Originally designed as a TV tuner, it's been repurposed by the amateur radio community.
 
 **Specifications:**
+
 - Frequency range: 24 MHz - 1766 MHz
 - Sample rate: Up to 2.4 MSPS
 - Price: $25-40
@@ -34,6 +35,7 @@ The RTL-SDR is the most affordable entry point into SDR. Originally designed as 
 For those needing transmit capability, the HackRF One provides full-duplex operation.
 
 **Specifications:**
+
 - Frequency range: 1 MHz - 6 GHz
 - Half-duplex transceiver
 - Price: $300-350
