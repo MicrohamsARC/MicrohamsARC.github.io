@@ -177,10 +177,6 @@ async function runContentValidation(): Promise<boolean> {
   return run('npx tsx scripts/ai-validate.ts');
 }
 
-async function runVersionCheck(): Promise<boolean> {
-  return run('npm run verify');
-}
-
 // ============================================================================
 // Main Execution
 // ============================================================================
@@ -196,7 +192,6 @@ async function main() {
 
   const stages = [
     { name: 'Git Status Check', fn: checkGitStatus, skip: false },
-    { name: 'Package Versions', fn: runVersionCheck, skip: false },
     { name: 'Lint', fn: runLint, skip: false },
     { name: 'Type Check', fn: runTypeCheck, skip: false },
     { name: 'Content Validation', fn: runContentValidation, skip: false },

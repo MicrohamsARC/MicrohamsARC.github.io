@@ -1,0 +1,190 @@
+---
+/**
+ * EventInviteText
+ *
+ * Renders a small clipboard icon button that copies a pre-formatted
+ * plain-text meeting invite to the clipboard. Invite text is generated
+ * at build time and stored in a data attribute — no visible preview.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { stripMarkdown } from '../../utils/text';
+import { siteConfig, dateTimeFormats, getVenueTimezone } from '../../site.config';
+
+interface Props {
+  event: CollectionEntry<'events'>;
+  slug: string;
+  venueConfig?: { name: string; address: string };
+  virtualUrl?: string;
+  hasInPerson: boolean;
+  hasVirtual: boolean;
+}
+
+const { event, slug, venueConfig, virtualUrl, hasInPerson, hasVirtual } = Astro.props;
+const { title, eventDate, startTime, endTime, eventLink, venue, timezone } = event.data;
+
+// Resolve timezone: explicit → venue → site default
+const tz = timezone ?? getVenueTimezone(venue);
+
+// Format date as "Tuesday, April 21, 2026"
+const dateStr = new Intl.DateTimeFormat(siteConfig.locale, {
+  ...dateTimeFormats.dateLong,
+  timeZone: tz,
+}).format(eventDate);
+
+// Timezone abbreviation
+const tzAbbr =
+  new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: tz,
+    timeZoneName: 'short',
+  })
+    .formatToParts(eventDate)
+    .find((p) => p.type === 'timeZoneName')?.value ?? 'PT';
+
+const timeStr =
+  startTime && endTime
+    ? `${startTime} – ${endTime} ${tzAbbr}`
+    : startTime
+      ? `${startTime} ${tzAbbr}`
+      : '';
+
+// Build location lines
+const locationLines: string[] = [];
+if (hasInPerson && venueConfig) {
+  locationLines.push(`In person: ${venueConfig.name}, ${venueConfig.address}`);
+}
+if (hasVirtual && virtualUrl) {
+  locationLines.push(`Online: ${virtualUrl}`);
+}
+
+// Strip markdown from body
+const body = event.body ? stripMarkdown(event.body) : '';
+
+// Assemble invite text
+const pageUrl = `https://microhams.com/events/${slug}`;
+const sections: string[] = [title, '', timeStr ? `${dateStr} | ${timeStr}` : dateStr];
+
+if (locationLines.length > 0) {
+  sections.push('', ...locationLines);
+}
+
+if (body) {
+  sections.push('', '---', '', body, '', '---');
+}
+
+sections.push('', eventLink ? `More info: ${eventLink}` : `Full details: ${pageUrl}`);
+
+const inviteText = sections
+  .join('\n')
+  .replace(/\n{3,}/g, '\n\n')
+  .trim();
+---
+
+<button
+  class="invite-copy-btn"
+  type="button"
+  title="Copy invite text"
+  aria-label="Copy invite text to clipboard"
+  data-invite-text={inviteText}
+>
+  <!-- Copy icon (stacked rectangles) -->
+  <svg
+    class="invite-copy-btn__icon invite-copy-btn__icon--clipboard"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+  </svg>
+  <!-- Checkmark icon (shown briefly after copy) -->
+  <svg
+    class="invite-copy-btn__icon invite-copy-btn__icon--check"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+</button>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.invite-copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.inviteText ?? '';
+
+      async function doCopy() {
+        if (navigator.clipboard) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch {
+            // fall through
+          }
+        }
+        // execCommand fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      const ok = await doCopy();
+      if (ok) {
+        btn.classList.add('invite-copy-btn--copied');
+        setTimeout(() => btn.classList.remove('invite-copy-btn--copied'), 2000);
+      }
+    });
+  });
+</script>
+
+<style>
+  .invite-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm, 2px);
+    vertical-align: middle;
+    transition: color 0.15s;
+  }
+
+  .invite-copy-btn:hover {
+    color: var(--color-text);
+  }
+
+  .invite-copy-btn__icon--check {
+    display: none;
+    color: var(--color-success, currentColor);
+  }
+
+  .invite-copy-btn--copied .invite-copy-btn__icon--clipboard {
+    display: none;
+  }
+
+  .invite-copy-btn--copied .invite-copy-btn__icon--check {
+    display: inline;
+  }
+</style>
