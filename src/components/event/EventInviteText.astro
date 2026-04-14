@@ -2,8 +2,9 @@
 /**
  * EventInviteText
  *
- * Renders a collapsible plain-text meeting invite suitable for
- * copy-pasting into an email client. Generated at build time.
+ * Renders a small clipboard icon button that copies a pre-formatted
+ * plain-text meeting invite to the clipboard. Invite text is generated
+ * at build time and stored in a data attribute — no visible preview.
  */
 import type { CollectionEntry } from 'astro:content';
 import { stripMarkdown } from '../../utils/text';
@@ -78,85 +79,112 @@ const inviteText = sections
   .trim();
 ---
 
-<details class="event-invite">
-  <summary class="event-invite__toggle">Copy invite text</summary>
-  <div class="event-invite__content stack-3">
-    <p class="text-sm" style="color: var(--color-text-muted);">
-      Starting point for a meeting reminder email. Copy, paste, and refine as needed.
-    </p>
-    <pre id="event-invite-text" class="event-invite__pre">{inviteText}</pre>
-    <button
-      id="event-invite-copy"
-      class="button"
-      data-variant="secondary"
-      data-size="sm"
-      type="button"
-    >
-      Copy to clipboard
-    </button>
-  </div>
-</details>
+<button
+  class="invite-copy-btn"
+  type="button"
+  title="Copy invite text"
+  aria-label="Copy invite text to clipboard"
+  data-invite-text={inviteText}
+>
+  <!-- Copy icon (stacked rectangles) -->
+  <svg
+    class="invite-copy-btn__icon invite-copy-btn__icon--clipboard"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+  </svg>
+  <!-- Checkmark icon (shown briefly after copy) -->
+  <svg
+    class="invite-copy-btn__icon invite-copy-btn__icon--check"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+</button>
 
 <script>
-  const btn = document.getElementById('event-invite-copy') as HTMLButtonElement | null;
-  const pre = document.getElementById('event-invite-text') as HTMLPreElement | null;
-
-  if (btn && pre) {
+  document.querySelectorAll<HTMLButtonElement>('.invite-copy-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(pre.textContent ?? '');
-        btn.textContent = 'Copied!';
-        setTimeout(() => {
-          btn.textContent = 'Copy to clipboard';
-        }, 2000);
-      } catch {
-        // Fallback: select the text for manual copy
-        const range = document.createRange();
-        range.selectNode(pre);
-        window.getSelection()?.removeAllRanges();
-        window.getSelection()?.addRange(range);
-        btn.textContent = 'Text selected — press Ctrl+C / Cmd+C';
-        setTimeout(() => {
-          btn.textContent = 'Copy to clipboard';
-        }, 3000);
+      const text = btn.dataset.inviteText ?? '';
+
+      async function doCopy() {
+        if (navigator.clipboard) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch {
+            // fall through
+          }
+        }
+        // execCommand fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      const ok = await doCopy();
+      if (ok) {
+        btn.classList.add('invite-copy-btn--copied');
+        setTimeout(() => btn.classList.remove('invite-copy-btn--copied'), 2000);
       }
     });
-  }
+  });
 </script>
 
 <style>
-  .event-invite {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md, 4px);
-    padding: var(--space-4);
-  }
-
-  .event-invite__toggle {
-    cursor: pointer;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+  .invite-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    border: none;
+    background: transparent;
     color: var(--color-text-muted);
-    user-select: none;
+    cursor: pointer;
+    border-radius: var(--radius-sm, 2px);
+    vertical-align: middle;
+    transition: color 0.15s;
   }
 
-  .event-invite__toggle:hover {
+  .invite-copy-btn:hover {
     color: var(--color-text);
   }
 
-  .event-invite__content {
-    margin-block-start: var(--space-4);
+  .invite-copy-btn__icon--check {
+    display: none;
+    color: var(--color-success, currentColor);
   }
 
-  .event-invite__pre {
-    font-family: var(--font-mono, monospace);
-    font-size: var(--font-size-sm);
-    white-space: pre-wrap;
-    word-break: break-word;
-    background: var(--color-surface-raised, var(--color-surface));
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm, 2px);
-    padding: var(--space-4);
-    max-height: 20rem;
-    overflow-y: auto;
+  .invite-copy-btn--copied .invite-copy-btn__icon--clipboard {
+    display: none;
+  }
+
+  .invite-copy-btn--copied .invite-copy-btn__icon--check {
+    display: inline;
   }
 </style>

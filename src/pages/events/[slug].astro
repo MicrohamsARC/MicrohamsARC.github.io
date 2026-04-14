@@ -42,9 +42,6 @@ const onlineMeetingConfig = event.data.onlineMeeting
   ? getOnlineMeeting(event.data.onlineMeeting)
   : undefined;
 
-// Resolve location: frontmatter overrides venue config
-const location = event.data.location || venueConfig?.address;
-
 // Determine event type
 const isExternal = !!event.data.eventLink;
 const hasInPerson = !!(event.data.venue || event.data.location);
@@ -68,16 +65,26 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
           <!-- Title -->
           <h1>{event.data.title}</h1>
 
-          <!-- Date & Time (interactive toggle) -->
-          <EventDateTime
-            eventDate={event.data.eventDate}
-            startTime={event.data.startTime}
-            endTime={event.data.endTime}
-            venue={event.data.venue}
-            timezone={event.data.timezone}
-            class="text-sm"
-            style="color: var(--color-text-muted);"
-          />
+          <!-- Date & Time with inline copy button -->
+          <div class="event-header__datetime">
+            <EventDateTime
+              eventDate={event.data.eventDate}
+              startTime={event.data.startTime}
+              endTime={event.data.endTime}
+              venue={event.data.venue}
+              timezone={event.data.timezone}
+              class="text-sm"
+              style="color: var(--color-text-muted);"
+            />
+            <EventInviteText
+              event={event}
+              slug={slug!}
+              venueConfig={venueConfig}
+              virtualUrl={virtualUrl}
+              hasInPerson={hasInPerson}
+              hasVirtual={hasVirtual}
+            />
+          </div>
 
           <!-- Attendance CTAs -->
           <div class="cluster" style="--cluster-gap: var(--space-3);">
@@ -142,16 +149,6 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
               />
             )
           }
-
-          {/* Invite text for copy-paste into email */}
-          <EventInviteText
-            event={event}
-            slug={slug!}
-            venueConfig={venueConfig}
-            virtualUrl={virtualUrl}
-            hasInPerson={hasInPerson}
-            hasVirtual={hasVirtual}
-          />
         </div>
       </div>
     </section>
@@ -163,8 +160,6 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
           class="stack-3 text-sm"
           style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);"
         >
-          {location && <div>{location}</div>}
-
           {
             event.data.contactPerson && (
               <div>
@@ -197,3 +192,11 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
     </section>
   </article>
 </PageLayout>
+
+<style>
+  .event-header__datetime {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+</style>

@@ -1,60 +1,48 @@
 ---
 /**
  * Site Footer - Global Footer
- *
- * The main site footer with navigation and copyright.
- * Extracted as a component for composition in different layouts.
  */
 ---
 
 <footer class="site-footer">
   <div class="wrapper">
     <div class="site-footer__inner">
-      <div class="stack-2">
+      <div class="stack-1">
         <p class="font-semibold">MicroHAMS</p>
         <p class="text-sm">Amateur Radio Community</p>
       </div>
 
-      <div class="stack-2">
-        <p class="text-sm font-semibold">Navigation</p>
-        <nav>
-          <ul class="footer-links" role="list">
-            <li><a href="/">Home</a></li>
-            <li><a href="/events">Events</a></li>
-            <li><a href="/articles">Articles</a></li>
-            <li><a href="/docs">Docs</a></li>
-          </ul>
-        </nav>
+      <div class="site-footer__meta stack-1 text-xs">
+        <p>© {new Date().getFullYear()} MicroHAMS</p>
+        <p>
+          <a href="/about#location--contact">Contact</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/MicrohamsARC/MicrohamsARC.github.io/issues">GitHub</a>
+        </p>
       </div>
-
-      <div class="stack-2">
-        <p class="text-sm font-semibold">Connect</p>
-        <ul class="footer-links" role="list">
-          <li><a href="https://github.com/MicrohamsARC/MicrohamsARC.github.io/">GitHub</a></li>
-          <li><a href="/about#location--contact">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="text-center" style="margin-block-start: var(--space-8);">
-      <p class="text-xs">
-        © {new Date().getFullYear()} MicroHAMS. Built with <a href="https://astro.build">Astro</a>.
-      </p>
     </div>
   </div>
 </footer>
 
 <style>
-  .footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .site-footer__inner {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
   }
 
-  .footer-links a {
-    font-size: var(--text-sm);
+  .site-footer__meta {
+    color: var(--color-text-muted);
+  }
+
+  .site-footer__meta a,
+  .site-footer__meta p {
+    color: inherit;
+  }
+
+  .site-footer__meta span {
+    margin-inline: var(--space-1);
   }
 </style>
