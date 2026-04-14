@@ -1,0 +1,162 @@
+---
+/**
+ * EventInviteText
+ *
+ * Renders a collapsible plain-text meeting invite suitable for
+ * copy-pasting into an email client. Generated at build time.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { stripMarkdown } from '../../utils/text';
+import { siteConfig, dateTimeFormats, getVenueTimezone } from '../../site.config';
+
+interface Props {
+  event: CollectionEntry<'events'>;
+  slug: string;
+  venueConfig?: { name: string; address: string };
+  virtualUrl?: string;
+  hasInPerson: boolean;
+  hasVirtual: boolean;
+}
+
+const { event, slug, venueConfig, virtualUrl, hasInPerson, hasVirtual } = Astro.props;
+const { title, eventDate, startTime, endTime, eventLink, venue, timezone } = event.data;
+
+// Resolve timezone: explicit → venue → site default
+const tz = timezone ?? getVenueTimezone(venue);
+
+// Format date as "Tuesday, April 21, 2026"
+const dateStr = new Intl.DateTimeFormat(siteConfig.locale, {
+  ...dateTimeFormats.dateLong,
+  timeZone: tz,
+}).format(eventDate);
+
+// Timezone abbreviation
+const tzAbbr =
+  new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: tz,
+    timeZoneName: 'short',
+  })
+    .formatToParts(eventDate)
+    .find((p) => p.type === 'timeZoneName')?.value ?? 'PT';
+
+const timeStr =
+  startTime && endTime
+    ? `${startTime} – ${endTime} ${tzAbbr}`
+    : startTime
+      ? `${startTime} ${tzAbbr}`
+      : '';
+
+// Build location lines
+const locationLines: string[] = [];
+if (hasInPerson && venueConfig) {
+  locationLines.push(`In person: ${venueConfig.name}, ${venueConfig.address}`);
+}
+if (hasVirtual && virtualUrl) {
+  locationLines.push(`Online: ${virtualUrl}`);
+}
+
+// Strip markdown from body
+const body = event.body ? stripMarkdown(event.body) : '';
+
+// Assemble invite text
+const pageUrl = `https://microhams.com/events/${slug}`;
+const sections: string[] = [title, '', timeStr ? `${dateStr} | ${timeStr}` : dateStr];
+
+if (locationLines.length > 0) {
+  sections.push('', ...locationLines);
+}
+
+if (body) {
+  sections.push('', '---', '', body, '', '---');
+}
+
+sections.push('', eventLink ? `More info: ${eventLink}` : `Full details: ${pageUrl}`);
+
+const inviteText = sections
+  .join('\n')
+  .replace(/\n{3,}/g, '\n\n')
+  .trim();
+---
+
+<details class="event-invite">
+  <summary class="event-invite__toggle">Copy invite text</summary>
+  <div class="event-invite__content stack-3">
+    <p class="text-sm" style="color: var(--color-text-muted);">
+      Starting point for a meeting reminder email. Copy, paste, and refine as needed.
+    </p>
+    <pre id="event-invite-text" class="event-invite__pre">{inviteText}</pre>
+    <button
+      id="event-invite-copy"
+      class="button"
+      data-variant="secondary"
+      data-size="sm"
+      type="button"
+    >
+      Copy to clipboard
+    </button>
+  </div>
+</details>
+
+<script>
+  const btn = document.getElementById('event-invite-copy') as HTMLButtonElement | null;
+  const pre = document.getElementById('event-invite-text') as HTMLPreElement | null;
+
+  if (btn && pre) {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent ?? '');
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.textContent = 'Copy to clipboard';
+        }, 2000);
+      } catch {
+        // Fallback: select the text for manual copy
+        const range = document.createRange();
+        range.selectNode(pre);
+        window.getSelection()?.removeAllRanges();
+        window.getSelection()?.addRange(range);
+        btn.textContent = 'Text selected — press Ctrl+C / Cmd+C';
+        setTimeout(() => {
+          btn.textContent = 'Copy to clipboard';
+        }, 3000);
+      }
+    });
+  }
+</script>
+
+<style>
+  .event-invite {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    padding: var(--space-4);
+  }
+
+  .event-invite__toggle {
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    user-select: none;
+  }
+
+  .event-invite__toggle:hover {
+    color: var(--color-text);
+  }
+
+  .event-invite__content {
+    margin-block-start: var(--space-4);
+  }
+
+  .event-invite__pre {
+    font-family: var(--font-mono, monospace);
+    font-size: var(--font-size-sm);
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--color-surface-raised, var(--color-surface));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm, 2px);
+    padding: var(--space-4);
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+</style>
