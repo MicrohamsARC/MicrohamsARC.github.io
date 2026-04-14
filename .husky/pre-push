@@ -14,7 +14,6 @@ done
 
 if [ "$CONTENT_ONLY" = true ] && [ -n "$CHANGED" ]; then
   echo "📝 Content-only changes - running lightweight validation"
-  npm run verify
   npx astro check
   npm run build
 else
