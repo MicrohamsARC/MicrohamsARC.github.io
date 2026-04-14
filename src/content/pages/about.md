@@ -61,24 +61,24 @@ Microcontroller projects, automated antenna systems, remote station control, and
 
 ## Leadership
 
-### Board of Directors (2025-2026)
+### Board of Directors (2026-2027)
 
-**President**  
-Brian Stucker, KB2S
-
-**Vice President**  
+**President**
 Scott Honaker, N7SS
 
-**Secretary**  
+**Vice President**
+Don Marshall, KE7ARH
+
+**Secretary**
 Grant Hopper, KB7WSD
 
-**Treasurer**  
+**Treasurer**
 David Jenni, W7CF
 
-**Members at Large**  
-Don Marshall, KE7ARH
-Paolo Asandri, KK7JCN  
-Miguel Mayorga, KC7IGT
+**Directors at Large**
+Brian Stucker, KB2S
+Paolo Asandri, KK7JCN
+Andreas Hofmann, KU7T
 
 The Board meets regularly and works as a team to plan activities, manage club resources, and coordinate with other amateur radio organizations.
 
@@ -153,4 +153,4 @@ The MicroHAMS Digital Conference has become a respected annual event in the amat
 **MicroHAMS Amateur Radio Club**  
 _Inspire, Inform, and Educate_
 
-_Last updated: January 11, 2026_
+_Last updated: April 14, 2026_
