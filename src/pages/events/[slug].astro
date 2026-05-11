@@ -5,7 +5,7 @@
  * Dynamic route for displaying individual event details
  */
 
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import EventLogistics from '../../components/event/EventLogistics.astro';
@@ -19,7 +19,7 @@ export const getStaticPaths = (async () => {
   const events = await getCollection('events', publishedFilter);
   type Event = (typeof events)[number];
   return events.map((event: Event) => ({
-    params: { slug: event.slug },
+    params: { slug: event.id },
     props: { event },
   }));
 }) satisfies GetStaticPaths;
@@ -31,7 +31,7 @@ if (!event) {
   return Astro.redirect('/404');
 }
 
-const { Content } = await event.render();
+const { Content } = await render(event);
 
 // Get timezone options for formatting
 const timezoneOptions = { venue: event.data.venue, timezone: event.data.timezone };

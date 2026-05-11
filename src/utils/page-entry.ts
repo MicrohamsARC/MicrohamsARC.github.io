@@ -1,8 +1,8 @@
-import { getEntry } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 type PagesEntry = CollectionEntry<'pages'>;
-type RenderedPagesEntry = Awaited<ReturnType<PagesEntry['render']>>;
+type RenderedPagesEntry = Awaited<ReturnType<typeof render>>;
 
 type LoadedPageEntry = {
   frontmatter: PagesEntry['data'];
@@ -22,7 +22,7 @@ export async function loadRenderedPageEntry(
     return null;
   }
 
-  const { Content, headings } = await entry.render();
+  const { Content, headings } = await render(entry);
 
   return {
     frontmatter: entry.data,

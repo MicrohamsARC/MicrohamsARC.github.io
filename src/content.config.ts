@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 /**
  * Content Collections Configuration
@@ -37,7 +38,7 @@ const fields = {
 // =============================================================================
 
 const pages = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
   schema: ({ image }) =>
     z.object({
       title: fields.title,
@@ -64,7 +65,7 @@ const pages = defineCollection({
 // =============================================================================
 
 const articles = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
   schema: ({ image }) =>
     z.object({
       title: fields.title,
@@ -90,7 +91,7 @@ const articles = defineCollection({
 // =============================================================================
 
 const docs = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/docs' }),
   schema: ({ image }) =>
     z.object({
       title: fields.title,
@@ -137,7 +138,7 @@ const customVenueSchema = z
   .describe('One-off venue details (use instead of venue key for non-recurring locations)');
 
 const events = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/events' }),
   schema: ({ image }) =>
     z.object({
       title: fields.title,
@@ -165,7 +166,12 @@ const events = defineCollection({
 
       // --- Physical Location ---
       venue: z
-        .enum(['building-31', 'puyallup-fairgrounds-pavilion', 'yakima-office-of-emergency-management-parking-lot', 'custom'])
+        .enum([
+          'building-31',
+          'puyallup-fairgrounds-pavilion',
+          'yakima-office-of-emergency-management-parking-lot',
+          'custom',
+        ])
         .optional()
         .describe('Venue key from site.config.ts (provides address, coords, directions)'),
       customVenue: customVenueSchema

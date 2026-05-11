@@ -14,7 +14,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import { contributingNav } from '../../config/contributing-nav';
 import { siteConfig, getGitHubUrl } from '../../site.config';
 import { z } from 'astro:content';
-import { collections } from '../../content/config';
+import { collections } from '../../content.config';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
 const currentPath = '/contributing/schemas';
@@ -190,7 +190,7 @@ function getFieldsByGroup(
     This reference documents the structure and validation rules for all content types in the site.
     These schemas define what fields are required, what types they accept, and what validation rules
     apply. The documentation below is auto-generated directly from the Zod schemas in <code
-      >src/content/config.ts</code
+      >src/content.config.ts</code
     >, so it's always in sync with the actual code—no manual updates needed.
   </p>
   <p class="lead">

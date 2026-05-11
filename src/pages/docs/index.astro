@@ -50,10 +50,7 @@ const docsBySection = docs.reduce((acc: Record<string, Doc[]>, doc: Doc) => {
                   <article class="card" data-variant="interactive">
                     <div class="card__header">
                       <h3 class="card__title">
-                        <a
-                          href={`/docs/${doc.slug}`}
-                          style="text-decoration: none; color: inherit;"
-                        >
+                        <a href={`/docs/${doc.id}`} style="text-decoration: none; color: inherit;">
                           {doc.data.title}
                         </a>
                       </h3>

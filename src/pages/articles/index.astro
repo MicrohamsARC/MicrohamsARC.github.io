@@ -19,7 +19,7 @@ const articles = (await getCollection('articles', publishedFilter)).sort(
 // Warn about articles missing tags at build time
 articles.forEach((article: Article) => {
   if (!article.data.tags || article.data.tags.length === 0) {
-    console.warn(`[articles] Warning: "${article.data.title}" (${article.slug}) has no tags`);
+    console.warn(`[articles] Warning: "${article.data.title}" (${article.id}) has no tags`);
   }
 });
 
@@ -74,7 +74,7 @@ const allTags = [
                   </div>
                   <h2 class="card__title">
                     <a
-                      href={`/articles/${article.slug}`}
+                      href={`/articles/${article.id}`}
                       style="text-decoration: none; color: inherit;"
                     >
                       {article.data.title}

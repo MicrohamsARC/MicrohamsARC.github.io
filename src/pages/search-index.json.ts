@@ -14,13 +14,13 @@ export const GET: APIRoute = async () => {
   const searchIndex = [
     ...articles.map((article: CollectionEntry<'articles'>) => ({
       title: article.data.title,
-      slug: article.slug,
+      slug: article.id,
       description: article.data.description || '',
       type: 'article' as const,
     })),
     ...docs.map((doc: CollectionEntry<'docs'>) => ({
       title: doc.data.title,
-      slug: doc.slug,
+      slug: doc.id,
       description: doc.data.description || '',
       type: 'doc' as const,
     })),
