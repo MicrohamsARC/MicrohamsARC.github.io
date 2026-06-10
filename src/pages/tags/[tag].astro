@@ -38,7 +38,7 @@ export async function getStaticPaths() {
       .filter((e: Event) => e.data.tags?.includes(tag))
       .sort(
         (a: Event, b: Event) =>
-          (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0)
+          (b.data.eventDate?.getTime() ?? 0) - (a.data.eventDate?.getTime() ?? 0)
       );
 
     const filteredDocs = docs
@@ -110,6 +110,7 @@ const totalCount = articles.length + events.length + docs.length;
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric',
+                              timeZone: 'UTC',
                             })}
                           </time>
                         )}
@@ -165,15 +166,16 @@ const totalCount = articles.length + events.length + docs.length;
                     </div>
                     <div class="card__content">
                       <div class="cluster">
-                        {event.data.startDate && (
+                        {event.data.eventDate && (
                           <time
                             class="text-sm text-muted"
-                            datetime={event.data.startDate.toISOString()}
+                            datetime={event.data.eventDate.toISOString()}
                           >
-                            {event.data.startDate.toLocaleDateString('en-US', {
+                            {event.data.eventDate.toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric',
+                              timeZone: 'UTC',
                             })}
                           </time>
                         )}
