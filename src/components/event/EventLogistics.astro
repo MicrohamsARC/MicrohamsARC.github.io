@@ -15,6 +15,15 @@ import { getVenue, getOnlineMeeting } from '../../site.config';
 interface Props {
   /** Physical venue key from site.config.ts */
   venue?: string;
+  /** One-off venue details for non-recurring locations (use instead of venue key) */
+  customVenue?: {
+    name: string;
+    address: string;
+    room?: string;
+    mapUrl?: string;
+    latitude?: number;
+    longitude?: number;
+  };
   /** Custom location string when venue is not in config */
   location?: string;
   /** Override map coordinates (uses venue config if not provided) */
@@ -39,6 +48,7 @@ interface Props {
 
 const {
   venue: venueKey,
+  customVenue,
   location,
   latitude: propLatitude,
   longitude: propLongitude,
@@ -55,15 +65,15 @@ const venue = venueKey ? getVenue(venueKey) : undefined;
 const meeting = meetingKey ? getOnlineMeeting(meetingKey) : undefined;
 const teams = meeting || legacyTeams;
 
-// Resolve coordinates: props override venue config
-const latitude = propLatitude ?? venue?.latitude;
-const longitude = propLongitude ?? venue?.longitude;
+// Resolve coordinates: props override venue config, then one-off venue
+const latitude = propLatitude ?? venue?.latitude ?? customVenue?.latitude;
+const longitude = propLongitude ?? venue?.longitude ?? customVenue?.longitude;
 
 // Resolve coord frequency: props override venue config
 const coordFrequency = propFreq || venue?.coordFrequency;
 
-// Location display: props override venue config
-const displayLocation = location || venue?.name;
+// Location display: props override venue config, then one-off venue
+const displayLocation = location || venue?.name || customVenue?.name;
 
 // Simple markdown bold to HTML conversion
 function mdBold(text: string): string {
@@ -112,6 +122,51 @@ const escortHtml = venue?.arrival?.escort
             {Object.values(venue.directions).map((direction) => (
               <p set:html={mdBold(direction)} />
             ))}
+            {latitude && longitude && (
+              <EventMap
+                location={displayLocation || ''}
+                latitude={latitude}
+                longitude={longitude}
+              />
+            )}
+          </div>
+        </div>
+      </details>
+    </div>
+  )
+}
+
+{
+  !venue && customVenue && (
+    <div id="location">
+      <h2>Join In Person</h2>
+
+      <details id="directions-details" style="margin-block-start: var(--space-3);" open>
+        <summary class="h6" style="cursor: pointer;">
+          Directions & Map
+        </summary>
+        <div class="stack-4" style="padding-block-start: var(--space-3);">
+          <div class="stack-3">
+            <p>
+              <>
+                <strong>{customVenue.name}</strong>
+                <br />
+              </>
+              <span class="text-muted">{customVenue.address}</span>
+              {customVenue.room && (
+                <>
+                  <br />
+                  <span class="text-muted">{customVenue.room}</span>
+                </>
+              )}
+            </p>
+            {customVenue.mapUrl && (
+              <p>
+                <a href={customVenue.mapUrl} target="_blank" rel="noopener noreferrer">
+                  Open in Google Maps →
+                </a>
+              </p>
+            )}
             {latitude && longitude && (
               <EventMap
                 location={displayLocation || ''}
