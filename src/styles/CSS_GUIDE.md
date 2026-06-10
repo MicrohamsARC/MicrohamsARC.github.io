@@ -71,7 +71,7 @@ All spacing derives from `--space-unit: 4px`.
 --color-text-muted: var(--color-gray-600);
 --color-border: var(--color-gray-200);
 --color-surface: var(--color-white);
---color-accent: oklch(55% 0.22 25);
+--color-accent: oklch(45% 0.22 240); /* single blue accent (hue 240); red retired */
 ```
 
 **Why OKLCH?** Perceptually uniform - 50% lightness looks 50% bright.

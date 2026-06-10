@@ -131,7 +131,7 @@ small,
 }
 
 .text-accent {
-  color: var(--color-text-subtle);
+  color: var(--color-accent);
 }
 
 /* Links */

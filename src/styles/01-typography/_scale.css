@@ -25,12 +25,8 @@
 
   /* ========================================
      FONT SIZE SCALE
-     Golden Ratio (φ) with Harmonic Thirds/Fourths
-     
-     Formula: size(n) = base × φ^n
-     Intermediate steps use Perfect Fourth (1.333)
-     
-     Sizes optimized for screen (96 DPI) and print (300 DPI)
+     Web modular scale: ~1.2 in the text band, ~1.25 in the display band.
+     Base 16px (1rem). Capped at 48px (--text-4xl) for screens.
      ======================================== */
 
   /* Micro Typography - Captions, footnotes, marginalia */

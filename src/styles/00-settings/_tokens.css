@@ -43,7 +43,9 @@
 
   /* ========================================
      SWISS COLOR SYSTEM
-     Primary palette: black, white, and red accent
+     Primary palette: black, white, and a single BLUE accent.
+     (Red has been retired as an accent — reserve red only for genuine
+     error/danger semantics, never decoration.)
      OKLCH for perceptually uniform color
      WCAG AA Compliant: 4.5:1 text, 3:1 UI components
      ======================================== */
@@ -62,16 +64,17 @@
   --color-gray-800: oklch(38% 0 0); /* Border dark: 3.2:1 on 12% surface ✓ */
   --color-gray-900: oklch(15% 0 0);
 
-  /* Accent - Use Sparingly for Maximum Impact */
-  /* Adjusted for WCAG AA: 4.5:1 on white, 4.5:1 on dark surfaces */
-  --color-accent: oklch(45% 0.22 25); /* Darker for light mode: 7.8:1 on white */
-  --color-accent-dark: oklch(38% 0.22 25); /* Hover state: 11.2:1 on white */
-  --color-accent-light: oklch(55% 0.22 25); /* Subtle accents: 4.9:1 on white */
+  /* Accent - the single blue accent (links, focus, active nav, buttons, logo, badges) */
+  /* Adjusted for WCAG AA: ~7.8:1 on white */
+  --color-accent: oklch(45% 0.22 240); /* Blue: 7.8:1 on white */
+  --color-accent-dark: oklch(38% 0.22 240); /* Hover state: 11.2:1 on white */
+  --color-accent-light: oklch(55% 0.22 240); /* Subtle accents: 4.9:1 on white */
 
-  /* Button/Interactive Blue */
-  --color-blue: oklch(45% 0.22 240); /* Blue accent: 7.8:1 on white */
-  --color-blue-hover: oklch(38% 0.22 240); /* Darker blue for hover states: 11.2:1 on white */
-  --color-blue-light: oklch(55% 0.22 240); /* Subtle blue accents: 4.9:1 on white */
+  /* --color-blue* are kept as aliases so existing button/logo consumers keep working,
+     but they now resolve to the one accent — there is no separate red anymore. */
+  --color-blue: var(--color-accent);
+  --color-blue-hover: var(--color-accent-dark);
+  --color-blue-light: var(--color-accent-light);
 
   /* Semantic Colors (Derived from base) */
   /* Light Mode: Softer contrast for comfortable reading (WCAG AA) */
@@ -155,9 +158,10 @@
     --color-surface-muted: oklch(8% 0 0); /* Recessed: 8% - darker, clear difference */
     --color-surface-raised: oklch(20% 0 0); /* Raised: 20% - strong 8% difference */
 
-    /* Adjusted accent for dark mode - lighter for contrast */
-    --color-accent: oklch(70% 0.22 25); /* 8.5:1 on oklch(12%) ✓ */
-    --color-accent-dark: oklch(80% 0.22 25); /* Hover: 12.1:1 on oklch(12%) ✓ */
+    /* Single blue accent, lightened for the dark surface (blue aliases follow it) */
+    --color-accent: oklch(72% 0.18 240); /* ~8.5:1 on oklch(12%) ✓ */
+    --color-accent-dark: oklch(82% 0.15 240); /* Hover: brighter on dark ✓ */
+    --color-accent-light: oklch(62% 0.18 240); /* Subtle accents on dark */
   }
 }
 
@@ -173,7 +177,8 @@
   --color-surface-muted: oklch(8% 0 0); /* Recessed: 8% - darker, clear difference */
   --color-surface-raised: oklch(20% 0 0); /* Raised: 20% - strong 8% difference */
 
-  /* Adjusted accent for dark mode - lighter for contrast */
-  --color-accent: oklch(70% 0.22 25); /* 8.5:1 on oklch(12%) ✓ */
-  --color-accent-dark: oklch(80% 0.22 25); /* Hover: 12.1:1 on oklch(12%) ✓ */
+  /* Single blue accent, lightened for the dark surface (blue aliases follow it) */
+  --color-accent: oklch(72% 0.18 240); /* ~8.5:1 on oklch(12%) ✓ */
+  --color-accent-dark: oklch(82% 0.15 240); /* Hover: brighter on dark ✓ */
+  --color-accent-light: oklch(62% 0.18 240); /* Subtle accents on dark */
 }
