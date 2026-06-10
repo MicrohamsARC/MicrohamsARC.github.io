@@ -11,7 +11,7 @@
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: var(--leading-loose); /* 1.777 - more readable */
+  line-height: var(--leading-relaxed); /* 1.6 - screen-reading optimum */
   font-weight: var(--font-weight-normal);
   letter-spacing: var(--tracking-normal); /* Atkinson is tuned for legibility — no extra tracking */
 }
@@ -91,7 +91,7 @@ h6,
 /* Body Text - Optimal measure for readability */
 p {
   margin-block-end: var(--space-4); /* 16px - tighter rhythm */
-  max-inline-size: var(--measure-wide);
+  max-inline-size: var(--measure-optimal); /* 62ch - screen reading sweet spot */
   hyphens: auto;
 }
 

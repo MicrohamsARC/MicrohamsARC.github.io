@@ -27,22 +27,25 @@ Specificity increases as you go down. Never skip layers.
 
 ## Design Tokens
 
-All values come from tokens defined in `00-settings/_tokens.css`.
+Spatial, color, and layout tokens are defined in `00-settings/_tokens.css`.
+**Type tokens** (sizes, leading, measure, tracking, weights, families) have a single source of
+truth in `01-typography/_scale.css` and `_fonts.css` — never redefine them in `_tokens.css`.
 
-### Typography Scale (Perfect Fourth: 1.333)
+### Typography Scale (web modular: ~1.2 text / ~1.25 display, 16px base)
 
 ```css
---text-xs: 0.75rem; /* 12px */
---text-sm: 0.875rem; /* 14px */
---text-base: 1rem; /* 16px - MINIMUM */
---text-lg: 1.333rem; /* 21px */
---text-xl: 1.777rem; /* 28px */
---text-2xl: 2.369rem; /* 38px */
---text-3xl: 3.157rem; /* 51px */
---text-4xl: 4.209rem; /* 67px */
+--text-sm: 0.875rem; /* 14px - labels */
+--text-base: 1rem; /* 16px - body (MINIMUM) */
+--text-md: 1.125rem; /* 18px - lead */
+--text-lg: 1.25rem; /* 20px - h5 */
+--text-xl: 1.5rem; /* 24px - h4 */
+--text-2xl: 1.875rem; /* 30px - h3 */
+--text-3xl: 2.25rem; /* 36px - h2 */
+--text-4xl: 3rem; /* 48px - h1 (capped for screens) */
 ```
 
-**Never use pixels for font sizes.** Always use the scale.
+**Never use pixels for font sizes.** Always use the scale. The ramp is capped at 48px — the old
+print-derived φ=1.618 scale (up to ~84px) was poster-aggressive and collided at h3/h4 on screen.
 
 ### Spacing (Powers of 2)
 

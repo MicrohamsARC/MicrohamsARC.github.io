@@ -8,63 +8,11 @@
 
 :root {
   /* ========================================
-     TYPOGRAPHY TOKENS
-     Golden Ratio Scale (φ = 1.618) with Harmonic Thirds/Fourths
-     Base: 16px - Never go below this (WCAG minimum)
-     Baseline Grid: 24px (1.5 × 16px) - Tufte's preference
+     TYPOGRAPHY TOKENS — single source of truth in 01-typography/_scale.css
+     (font sizes, leading, measure, tracking, font weights, font families).
+     Defined there, not here, to avoid the duplicate/divergent token blocks
+     this file used to carry. Spatial, color, and layout tokens live below.
      ======================================== */
-
-  /* Micro Typography - Captions, footnotes, marginalia */
-  --text-2xs: 0.694rem; /* 11.1px - φ^-2 - Smallest readable */
-  --text-xs: 0.833rem; /* 13.3px - φ^-1.5 - Footnotes */
-  --text-sm: 0.875rem; /* 14px - Captions, labels */
-
-  /* Body Typography - Primary reading sizes */
-  --text-base: 1rem; /* 16px - φ^0 - Sacred minimum (WCAG) */
-  --text-md: 1.125rem; /* 18px - Enhanced body text */
-  --text-lg: 1.25rem; /* 20px - Major Third - Large body */
-
-  /* Display Typography - Headings and emphasis */
-  --text-xl: 1.333rem; /* 21.3px - Perfect Fourth - H4 */
-  --text-2xl: 1.618rem; /* 25.9px - φ^1 - Golden! - H3 */
-  --text-3xl: 2.027rem; /* 32.4px - φ^1.25 - H2 */
-  --text-4xl: 2.618rem; /* 41.9px - φ^1.618 - H1 */
-  --text-5xl: 3.236rem; /* 51.8px - φ^2 - Display */
-  --text-6xl: 4.236rem; /* 67.8px - φ^2.5 - Hero */
-  --text-7xl: 5.236rem; /* 83.8px - φ^3 - Massive */
-
-  /* Font-family tokens (--font-sans / --font-mono) live in 01-typography/_fonts.css —
-     the single source of truth. Do not redefine them here. */
-
-  /* Font Weights - Exploit variable font axis */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Line Height System - Based on Golden Ratio and Baseline Grid */
-  --leading-none: 1; /* Display text only */
-  --leading-tightest: 1.111; /* 1/φ - Super condensed */
-  --leading-tight: 1.25; /* Major Third - Headlines */
-  --leading-snug: 1.333; /* Perfect Fourth - Subheads */
-  --leading-normal: 1.5; /* Baseline grid - Body (optimal) */
-  --leading-relaxed: 1.618; /* Golden Ratio - Airy body */
-  --leading-loose: 1.777; /* φ + 0.16 - Maximum readability */
-
-  /* Measure (Line Length) - Optimal Reading (Bringhurst & Tufte) */
-  --measure-compact: 45ch; /* Narrow columns, sidebars */
-  --measure-optimal: 66ch; /* Primary body text */
-  --measure-comfortable: 72ch; /* Comfortable sustained reading */
-  --measure-wide: 80ch; /* Wide layouts, max recommended */
-  --measure-full: 90ch; /* Technical content, tables */
-
-  /* Tracking (Letter Spacing) - Optical Adjustment */
-  --tracking-tightest: -0.05em; /* -50 - Display text, large sizes */
-  --tracking-tight: -0.025em; /* -25 - Headlines */
-  --tracking-normal: 0; /* 0 - Body text (never touch!) */
-  --tracking-wide: 0.025em; /* +25 - All-caps, UI labels */
-  --tracking-wider: 0.05em; /* +50 - Small text (<14px) */
-  --tracking-widest: 0.1em; /* +100 - Extreme spacing */
 
   /* ========================================
      SPATIAL SYSTEM
