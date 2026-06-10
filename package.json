@@ -32,6 +32,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.2.6",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@js-temporal/polyfill": "^0.5.1",
     "@types/leaflet": "^1.9.21",
     "astro": "^6.3.1",

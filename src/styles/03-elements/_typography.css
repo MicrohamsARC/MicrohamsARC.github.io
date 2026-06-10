@@ -13,13 +13,13 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-loose); /* 1.777 - more readable */
   font-weight: var(--font-weight-normal);
-  letter-spacing: 0.01em; /* Slight positive tracking for Geist - more open feel */
+  letter-spacing: var(--tracking-normal); /* Atkinson is tuned for legibility — no extra tracking */
 }
 
-/* Heading Scale - Golden Ratio (φ = 1.618) with fluid sizing */
+/* Headings use the JetBrains Mono display face; body stays Atkinson (h6 is a small UI label → body face) */
 h1,
 .h1 {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: clamp(1.75rem, 5vw + 1rem, var(--text-4xl));
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
@@ -29,10 +29,10 @@ h1,
 
 h2,
 .h2 {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: clamp(1.5rem, 3vw + 0.75rem, var(--text-3xl));
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-normal);
+  letter-spacing: var(--tracking-tight);
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 2);
   margin-block-end: var(--baseline-half);
@@ -41,10 +41,10 @@ h2,
 
 h3,
 .h3 {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-normal);
+  letter-spacing: var(--tracking-tight);
   font-weight: var(--font-weight-semibold);
   margin-block-start: calc(var(--baseline) * 1.5);
   margin-block-end: var(--baseline-half);
@@ -53,7 +53,7 @@ h3,
 
 h4,
 .h4 {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: var(--text-xl);
   line-height: var(--leading-snug);
   font-weight: var(--font-weight-medium);
@@ -63,7 +63,7 @@ h4,
 
 h5,
 .h5 {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: var(--text-lg);
   line-height: var(--leading-normal);
   font-weight: var(--font-weight-medium);
@@ -188,10 +188,10 @@ blockquote {
   padding-inline-start: calc(var(--baseline) * 1.5);
   border-inline-start: 3px solid var(--color-accent);
   color: var(--color-text-muted);
-  font-family: var(--font-serif);
+  font-family: var(--font-sans); /* Atkinson italic — no separate serif face */
   font-size: var(--text-lg);
   font-style: italic;
-  line-height: var(--leading-loose);
+  line-height: var(--leading-relaxed);
   font-weight: 400;
 }
 

@@ -32,14 +32,14 @@ All values come from tokens defined in `00-settings/_tokens.css`.
 ### Typography Scale (Perfect Fourth: 1.333)
 
 ```css
---text-xs: 0.75rem;      /* 12px */
---text-sm: 0.875rem;     /* 14px */
---text-base: 1rem;       /* 16px - MINIMUM */
---text-lg: 1.333rem;     /* 21px */
---text-xl: 1.777rem;     /* 28px */
---text-2xl: 2.369rem;    /* 38px */
---text-3xl: 3.157rem;    /* 51px */
---text-4xl: 4.209rem;    /* 67px */
+--text-xs: 0.75rem; /* 12px */
+--text-sm: 0.875rem; /* 14px */
+--text-base: 1rem; /* 16px - MINIMUM */
+--text-lg: 1.333rem; /* 21px */
+--text-xl: 1.777rem; /* 28px */
+--text-2xl: 2.369rem; /* 38px */
+--text-3xl: 3.157rem; /* 51px */
+--text-4xl: 4.209rem; /* 67px */
 ```
 
 **Never use pixels for font sizes.** Always use the scale.
@@ -47,12 +47,12 @@ All values come from tokens defined in `00-settings/_tokens.css`.
 ### Spacing (Powers of 2)
 
 ```css
---space-1: 0.25rem;   /* 4px */
---space-2: 0.5rem;    /* 8px */
---space-4: 1rem;      /* 16px - Base rhythm */
---space-8: 2rem;      /* 32px */
---space-16: 4rem;     /* 64px */
---space-24: 6rem;     /* 96px */
+--space-1: 0.25rem; /* 4px */
+--space-2: 0.5rem; /* 8px */
+--space-4: 1rem; /* 16px - Base rhythm */
+--space-8: 2rem; /* 32px */
+--space-16: 4rem; /* 64px */
+--space-24: 6rem; /* 96px */
 ```
 
 All spacing derives from `--space-unit: 4px`.
@@ -128,17 +128,17 @@ Auto-fit creates responsive columns without media queries.
 ### Button
 
 ```html
-<button class="button" data-variant="primary">
-  Click Me
-</button>
+<button class="button" data-variant="primary">Click Me</button>
 ```
 
 **Variants** (use `data-variant`):
+
 - `primary` - Main actions
 - `secondary` - Alternative actions
 - `ghost` - Subtle actions
 
 **Sizes** (use `data-size`):
+
 - `sm` - Compact
 - (default) - Normal
 - `lg` - Prominent
@@ -151,20 +151,15 @@ Auto-fit creates responsive columns without media queries.
     <h3 class="card__title">Title</h3>
     <p class="card__description">Description</p>
   </div>
-  <div class="card__content">
-    Main content here
-  </div>
-  <div class="card__footer">
-    Footer content
-  </div>
+  <div class="card__content">Main content here</div>
+  <div class="card__footer">Footer content</div>
 </article>
 ```
 
 ### Badge
 
 ```html
-<span class="badge">Default</span>
-<span class="badge" data-variant="accent">Accent</span>
+<span class="badge">Default</span> <span class="badge" data-variant="accent">Accent</span>
 ```
 
 ## Modern CSS Features
@@ -205,9 +200,9 @@ margin-right: var(--space-4);
 
 ```css
 font-size: clamp(
-  var(--text-xl),    /* minimum */
-  5vw + 1rem,        /* preferred */
-  var(--text-3xl)    /* maximum */
+  var(--text-xl),
+  /* minimum */ 5vw + 1rem,
+  /* preferred */ var(--text-3xl) /* maximum */
 );
 ```
 
@@ -245,7 +240,7 @@ margin-block-start: var(--space-6);
 
 ```css
 /* GOOD - flat specificity */
-.nav__link[data-active="true"] {
+.nav__link[data-active='true'] {
   color: var(--color-accent);
 }
 ```
@@ -267,7 +262,7 @@ margin-block-start: var(--space-6);
   /* Use layout primitives */
 }
 
-.card[data-variant="error"] {
+.card[data-variant='error'] {
   color: var(--color-error);
 }
 ```
@@ -299,22 +294,31 @@ margin-block-start: var(--space-6);
 ### Naming Conventions
 
 **BEM for components**:
+
 ```css
-.card { }
-.card__header { }
-.card__title { }
-.card--featured { }
+.card {
+}
+.card__header {
+}
+.card__title {
+}
+.card--featured {
+}
 ```
 
 **Data attributes for state**:
+
 ```html
-<button data-variant="primary" data-state="loading">
+<button data-variant="primary" data-state="loading"></button>
 ```
 
 **Kebab-case for utilities**:
+
 ```css
-.text-center { }
-.stack-4 { }
+.text-center {
+}
+.stack-4 {
+}
 ```
 
 ### Documentation Comments
@@ -352,7 +356,7 @@ Maintain WCAG AA minimum (4.5:1 for body text):
 
 ```css
 /* Use text-muted for secondary text */
-color: var(--color-text-muted);  /* 4.5:1+ contrast */
+color: var(--color-text-muted); /* 4.5:1+ contrast */
 ```
 
 ### Reduced Motion
@@ -376,21 +380,26 @@ Inline critical styles in `<head>`:
 
 ```html
 <style>
-  :root { /* tokens */ }
-  body { /* base typography */ }
-  .above-fold { /* hero section */ }
+  :root {
+    /* tokens */
+  }
+  body {
+    /* base typography */
+  }
+  .above-fold {
+    /* hero section */
+  }
 </style>
 ```
 
 ### Font Loading
 
-```css
-@font-face {
-  font-family: 'Geist Variable';
-  src: url('/fonts/geist-var.woff2') format('woff2-variations');
-  font-display: swap;  /* FOIT → FOUT */
-}
-```
+Fonts are **self-hosted via Fontsource** and imported in `src/layouts/RootLayout.astro`
+(`@fontsource-variable/atkinson-hyperlegible-next` for body/UI, `@fontsource-variable/jetbrains-mono`
+for headings/code). Vite bundles and fingerprints the woff2 and serves them same-origin — there is no
+`@font-face` to hand-write and no third-party request. Reference fonts only through the
+`--font-sans` / `--font-mono` tokens (defined once in `01-typography/_fonts.css`); never paste a raw
+or near-name family string into CSS.
 
 ## Quality Checklist
 

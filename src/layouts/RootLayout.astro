@@ -12,6 +12,14 @@
  */
 
 import { ClientRouter } from 'astro:transitions';
+
+// Self-hosted fonts (Fontsource → bundled woff2, no third-party request).
+// Atkinson Hyperlegible Next: body/UI (Braille Institute low-vision face, incl. italic).
+// JetBrains Mono: headings + code.
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
+import '@fontsource-variable/jetbrains-mono';
+
 import '../styles/main.css';
 
 interface Props {
@@ -53,13 +61,7 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
+    {/* Fonts are self-hosted via Fontsource (imported above) — no third-party request. */}
 
     <ClientRouter />
 

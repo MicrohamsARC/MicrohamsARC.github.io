@@ -1,25 +1,18 @@
 /**
- * FONT LOADING - Typography System
- * 
- * Typography is the foundation of all design.
- * 
- * System:
- * - Noto Serif JP: Primary serif (Japanese OpenType features)
- * - Geist: Sans-serif for UI and secondary text
- * - Geist Mono: Code and tabular data
- * 
- * Loading Strategy: FOUT over FOIT for perceived performance
- */
-
-/*
- * Fonts are loaded once via a single, preconnected <link> in RootLayout.astro
- * (Noto Serif JP + Geist + Geist Mono combined into one request).
+ * FONT TOKENS - Typography System
  *
- * Do NOT add `@import url('https://fonts.googleapis.com/...')` here: a remote
- * CSS @import is render-blocking, can't be preloaded, and duplicates the
- * <head> <link> — the browser would fetch the same stylesheets multiple times.
- * Keep all font-family fallbacks and feature-settings below; only the loading
- * lives in the document head.
+ * Typography is the foundation of all design.
+ *
+ * System:
+ * - Atkinson Hyperlegible Next: body & UI (Braille Institute low-vision face, incl. italic)
+ * - JetBrains Mono: headings & code
+ *
+ * Loading: self-hosted via Fontsource, imported in RootLayout.astro
+ * (`@fontsource-variable/...`). Vite bundles and fingerprints the woff2 and
+ * serves them same-origin — no third-party request, nothing to load here.
+ *
+ * Do NOT add `@import url('https://fonts.googleapis.com/...')` (render-blocking,
+ * privacy-leaking) and do NOT redefine the --font-* tokens in _tokens.css.
  */
 
 /**
@@ -27,22 +20,20 @@
  * Using system font-display: swap for optimal loading
  */
 
+/*
+ * Single source of truth for font-family tokens (do NOT redefine in _tokens.css).
+ * Fallback stacks use only generic CSS keywords (ui-sans-serif / ui-monospace / sans-serif /
+ * monospace) — never named system fonts, which keeps banned faces (and their kissing-cousins)
+ * out of the stack entirely.
+ */
 :root {
-  /* Primary Serif - Noto Serif JP */
-  /* Exceptional readability, classical proportions, OpenType features */
-  --font-serif: 'Noto Serif JP', 'Times New Roman', 'Georgia', serif;
+  /* Body & UI — Atkinson Hyperlegible Next (Braille Institute, designed for low vision; has italic) */
+  --font-sans: 'Atkinson Hyperlegible Next Variable', ui-sans-serif, sans-serif;
 
-  /* Sans Serif - Geist (Variable) */
-  /* Swiss precision, modern clarity, variable weight axis */
-  --font-sans:
-    'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  /* Headings & code — JetBrains Mono (technical, variable axis) */
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
-  /* Monospace - Geist Mono (Variable) */
-  /* Code, data tables, technical content */
-  --font-mono:
-    'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
-    'Courier New', monospace;
+  /* No serif face: blockquotes use the body font in italic (see 03-elements/_typography.css). */
 }
 
 /**
