@@ -42,9 +42,16 @@ const onlineMeetingConfig = event.data.onlineMeeting
   ? getOnlineMeeting(event.data.onlineMeeting)
   : undefined;
 
+// In-person venue for invite text: config venue, else one-off customVenue
+const inPersonVenue = venueConfig
+  ? { name: venueConfig.name, address: venueConfig.address }
+  : event.data.customVenue
+    ? { name: event.data.customVenue.name, address: event.data.customVenue.address }
+    : undefined;
+
 // Determine event type
 const isExternal = !!event.data.eventLink;
-const hasInPerson = !!(event.data.venue || event.data.location);
+const hasInPerson = !!(event.data.venue || event.data.customVenue || event.data.location);
 const hasVirtual = !!(onlineMeetingConfig || event.data.teams || event.data.virtualLink);
 const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.data.virtualLink;
 ---
@@ -79,7 +86,7 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
             <EventInviteText
               event={event}
               slug={slug!}
-              venueConfig={venueConfig}
+              venueConfig={inPersonVenue}
               virtualUrl={virtualUrl}
               hasInPerson={hasInPerson}
               hasVirtual={hasVirtual}
@@ -136,9 +143,13 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
 
           {/* Templated Logistics (venue directions, map, Teams details, disclaimers) */}
           {
-            (event.data.venue || event.data.teams || event.data.onlineMeeting) && (
+            (event.data.venue ||
+              event.data.customVenue ||
+              event.data.teams ||
+              event.data.onlineMeeting) && (
               <EventLogistics
                 venue={event.data.venue}
+                customVenue={event.data.customVenue}
                 location={event.data.location}
                 latitude={event.data.latitude}
                 longitude={event.data.longitude}
