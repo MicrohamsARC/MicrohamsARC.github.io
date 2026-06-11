@@ -72,16 +72,8 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
             {/* More upcoming events grid */}
             {moreEvents.length > 0 && (
               <div class="stack-4">
-                <h2
-                  class="text-sm font-semibold"
-                  style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);"
-                >
-                  Current & Upcoming
-                </h2>
-                <div
-                  class="grid"
-                  style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-4);"
-                >
+                <h2 class="eyebrow">Current & Upcoming</h2>
+                <div class="grid grid--auto-fit grid--gap-md" style="--grid-min-width: 280px;">
                   {moreEvents.map((event) => (
                     <EventCard event={event} variant="default" showDescription={false} />
                   ))}
@@ -100,7 +92,7 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
               <br />
               Community & Resources
             </h1>
-            <p class="lead" style="max-inline-size: var(--measure-comfortable);">
+            <p class="lead">
               Technical articles, projects, documentation, and community events for amateur radio
               enthusiasts in the Puget Sound area.
             </p>
@@ -112,7 +104,7 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
 
   <!-- Section Divider -->
   <div class="wrapper">
-    <hr style="margin-block: var(--space-4); border-color: var(--color-border);" />
+    <hr />
   </div>
 
   <!-- Featured Articles - Magazine Grid -->
@@ -122,20 +114,11 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
         <div class="wrapper">
           <div class="stack-8">
             <div class="stack-2">
-              <h2
-                class="text-sm font-semibold"
-                style="color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--tracking-wide);"
-              >
-                Featured
-              </h2>
+              <h2 class="eyebrow">Featured</h2>
               <h3 class="text-3xl">Recent Articles</h3>
             </div>
 
-            {/* Two-column magazine layout */}
-            <div
-              class="grid"
-              style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: var(--space-8);"
-            >
+            <div class="grid grid--auto-fit grid--gap-xl" style="--grid-min-width: 400px;">
               {articles.slice(0, 4).map((article: (typeof articles)[number]) => (
                 <article class="stack-3">
                   <div class="stack-2">
@@ -143,23 +126,14 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
                       <span class="badge">{article.data.tags[0]}</span>
                     )}
                     <h4 class="text-2xl">
-                      <a
-                        href={`/articles/${article.id}`}
-                        style="text-decoration: none; color: inherit;"
-                      >
+                      <a href={`/articles/${article.id}`} class="link-plain">
                         {article.data.title}
                       </a>
                     </h4>
                   </div>
-                  {article.data.description && (
-                    <p style="color: var(--color-text-muted);">{article.data.description}</p>
-                  )}
+                  {article.data.description && <p class="text-muted">{article.data.description}</p>}
                   {article.data.date && (
-                    <time
-                      class="text-sm"
-                      style="color: var(--color-text-subtle);"
-                      datetime={article.data.date.toISOString()}
-                    >
+                    <time class="text-sm text-subtle" datetime={article.data.date.toISOString()}>
                       {article.data.date.toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -173,7 +147,7 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
             </div>
 
             <div>
-              <a href="/articles" style="font-weight: var(--font-weight-medium);">
+              <a href="/articles" class="font-medium">
                 All Articles →
               </a>
             </div>
@@ -185,41 +159,41 @@ const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slic
 
   <!-- Section Divider -->
   <div class="wrapper">
-    <hr style="margin-block: var(--space-4); border-color: var(--color-border);" />
+    <hr />
   </div>
 
   <!-- Footer Editorial Section -->
-  <section class="region" style="background-color: var(--color-surface-muted);">
+  <section class="region region--muted">
     <div class="wrapper">
       <div
-        class="grid"
-        style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-12);"
+        class="grid grid--auto-fit"
+        style="--grid-min-width: 300px; --grid-gap: var(--space-12);"
       >
         <div class="stack-4">
           <h3 class="text-xl">About MicroHAMS</h3>
-          <p style="color: var(--color-text-muted);">
+          <p class="text-muted">
             A dynamic organization of amateur radio enthusiasts in the Puget Sound area dedicated to
             inspiring, informing, and educating through hands-on experimentation.
           </p>
-          <a href="/about" style="font-weight: var(--font-weight-medium);"> Learn More → </a>
+          <a href="/about" class="font-medium"> Learn More → </a>
         </div>
 
         <div class="stack-4">
           <h3 class="text-xl">Documentation</h3>
-          <p style="color: var(--color-text-muted);">
+          <p class="text-muted">
             Technical guides, reference materials, and educational resources for amateur radio
             operators of all skill levels.
           </p>
-          <a href="/docs" style="font-weight: var(--font-weight-medium);"> Browse Docs → </a>
+          <a href="/docs" class="font-medium"> Browse Docs → </a>
         </div>
 
         <div class="stack-4">
           <h3 class="text-xl">Events</h3>
-          <p style="color: var(--color-text-muted);">
+          <p class="text-muted">
             Monthly meetings, workshops, and special events featuring presentations from experts and
             community members.
           </p>
-          <a href="/events" style="font-weight: var(--font-weight-medium);"> View Calendar → </a>
+          <a href="/events" class="font-medium"> View Calendar → </a>
         </div>
       </div>
     </div>
