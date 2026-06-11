@@ -73,15 +73,9 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     <!-- Global Scripts -->
     <script>
-      // Theme Initialization
-      function applyTheme() {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
-      }
+      // Initial theme is set by the blocking inline script in <head>; <html> persists
+      // across View Transitions, so the theme does not need re-applying per navigation.
 
-      // Theme Toggle
       function toggleTheme() {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
@@ -89,12 +83,10 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
         localStorage.setItem('theme', next);
       }
 
-      // Active Nav State
+      // Reflect the current route in the nav (header persists, so update its attributes).
       function setActiveNav() {
         const currentPath = window.location.pathname;
-        const links = document.querySelectorAll('#active-nav .nav__link');
-
-        links.forEach((link) => {
+        document.querySelectorAll('#active-nav .nav__link').forEach((link) => {
           const linkPath = link.getAttribute('data-path');
           if (linkPath && (currentPath === linkPath || currentPath.startsWith(linkPath + '/'))) {
             link.setAttribute('data-active', 'true');
@@ -104,20 +96,18 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
         });
       }
 
-      function initPage() {
-        // Ensure persisted theme (if any) is applied
-        applyTheme();
-
-        const themeButton = document.getElementById('theme-toggle');
-        if (themeButton) {
-          themeButton.addEventListener('click', toggleTheme);
+      // This module runs once on initial load (Astro does not re-execute it on View
+      // Transition navigations), so register listeners directly — no per-page rebind.
+      // The header has transition:persist; a delegated click means the toggle handler
+      // is never stacked even though the button persists across navigations.
+      document.addEventListener('click', (e) => {
+        if (e.target instanceof Element && e.target.closest('#theme-toggle')) {
+          toggleTheme();
         }
-        setActiveNav();
-      }
+      });
+      document.addEventListener('astro:page-load', setActiveNav);
 
-      // Run on initial load and after View Transitions navigation
-      initPage();
-      document.addEventListener('astro:page-load', initPage);
+      setActiveNav();
     </script>
   </body>
 </html>
