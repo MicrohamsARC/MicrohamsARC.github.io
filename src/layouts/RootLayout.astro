@@ -73,12 +73,20 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     <!-- Global Scripts -->
     <script>
-      // Initial theme is set by the blocking inline script in <head>; <html> persists
-      // across View Transitions, so the theme does not need re-applying per navigation.
+      // Apply the saved/system theme to <html>. The <head> inline script does this for
+      // the very first paint; this function reapplies it after each View Transition swap.
+      function applyTheme() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute(
+          'data-theme',
+          stored || (prefersDark ? 'dark' : 'light')
+        );
+      }
 
       function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
+        const next =
+          document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
       }
@@ -97,15 +105,20 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
       }
 
       // This module runs once on initial load (Astro does not re-execute it on View
-      // Transition navigations), so register listeners directly — no per-page rebind.
-      // The header has transition:persist; a delegated click means the toggle handler
-      // is never stacked even though the button persists across navigations.
+      // Transition navigations), so register listeners directly. Delegated click means
+      // the toggle handler is never stacked even though the header persists.
       document.addEventListener('click', (e) => {
         if (e.target instanceof Element && e.target.closest('#theme-toggle')) {
           toggleTheme();
         }
       });
-      document.addEventListener('astro:page-load', setActiveNav);
+
+      // ClientRouter resets <html data-theme> on swap; reapply it (and refresh the active
+      // nav) in astro:after-swap, which fires BEFORE the new page paints — no flash.
+      document.addEventListener('astro:after-swap', () => {
+        applyTheme();
+        setActiveNav();
+      });
 
       setActiveNav();
     </script>
