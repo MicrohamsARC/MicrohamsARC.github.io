@@ -41,11 +41,13 @@ truth in `01-typography/_scale.css` and `_fonts.css` — never redefine them in 
 --text-xl: 1.5rem; /* 24px - h4 */
 --text-2xl: 1.875rem; /* 30px - h3 */
 --text-3xl: 2.25rem; /* 36px - h2 */
---text-4xl: 3rem; /* 48px - h1 (capped for screens) */
+--text-4xl: 2.8125rem; /* 45px - h1 (capped for screens) */
 ```
 
-**Never use pixels for font sizes.** Always use the scale. The ramp is capped at 48px — the old
-print-derived φ=1.618 scale (up to ~84px) was poster-aggressive and collided at h3/h4 on screen.
+The text band (12–20px) uses round, legible px steps; the **display band is exact alternating
+1.2 / 1.25** (20→24→30→36→45). **Never use pixels for font sizes** — always use the scale. h1 is
+capped at 45px; the old print φ=1.618 scale (up to ~84px) was poster-aggressive and collided at
+h3/h4 on screen.
 
 ### Spacing (Powers of 2)
 

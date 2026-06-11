@@ -5,9 +5,12 @@
  * _tokens.css intentionally does NOT redefine them.
  *
  * Base System (tuned for screens, not print):
- * - Base: 16px (1rem) — honors the browser/user default; never fights zoom.
- * - Text band ratio ≈1.2 (minor third), display band ≈1.25 (major third).
- * - Capped at 3rem/48px — the old print-derived φ=1.618 ramp (up to ~84px) was
+ * - Base: 16px (1rem) — `1rem` honors the browser/user default; never hardcoded,
+ *   never fights zoom.
+ * - Text/micro band (12–20px): round, legible px steps (not a strict ratio).
+ * - Display band (h5→h1: 20·24·30·36·45px): EXACT alternating ratios 1.2 / 1.25
+ *   (20→24 ×1.2, 24→30 ×1.25, 30→36 ×1.2, 36→45 ×1.25), continued for 5xl/6xl.
+ * - Capped at 2.8125rem/45px (h1) — the old print φ=1.618 ramp (up to ~84px) was
  *   poster-aggressive and collided at h3/h4 and lg/xl on screen.
  * - 24px baseline grid for vertical rhythm.
  */
@@ -25,8 +28,9 @@
 
   /* ========================================
      FONT SIZE SCALE
-     Web modular scale: ~1.2 in the text band, ~1.25 in the display band.
-     Base 16px (1rem). Capped at 48px (--text-4xl) for screens.
+     Text/micro band (2xs–lg): round, legible px steps.
+     Display band (lg→4xl): exact alternating 1.2 / 1.25 modular ratios.
+     Base 16px (1rem). h1 capped at 45px (--text-4xl) for screens.
      ======================================== */
 
   /* Micro Typography - Captions, footnotes, marginalia */
@@ -39,14 +43,14 @@
   --text-md: 1.125rem; /* 18px - lead / comfortable body */
   --text-lg: 1.25rem; /* 20px - h5 / large UI */
 
-  /* Display Typography - Headings (minor→major third, capped for screens) */
-  --text-xl: 1.5rem; /* 24px - h4 (was 21.3 → opens lg/xl gap) */
-  --text-2xl: 1.875rem; /* 30px - h3 (was 25.9 → fixes h3/h4 collision) */
-  --text-3xl: 2.25rem; /* 36px - h2 */
-  --text-4xl: 3rem; /* 48px - h1 (capped web hero; was 41.9) */
-  --text-5xl: 3.75rem; /* 60px - optional landing display */
-  --text-6xl: 4.5rem; /* 72px - rare full-bleed splash only */
-  --text-7xl: 4.5rem; /* alias of 6xl — no separate poster size on web */
+  /* Display Typography - Headings (exact alternating 1.2 / 1.25 from --text-lg) */
+  --text-xl: 1.5rem; /* 24px - h4   (20 ×1.2) */
+  --text-2xl: 1.875rem; /* 30px - h3   (24 ×1.25) */
+  --text-3xl: 2.25rem; /* 36px - h2   (30 ×1.2) */
+  --text-4xl: 2.8125rem; /* 45px - h1   (36 ×1.25, capped web hero) */
+  --text-5xl: 3.375rem; /* 54px - optional display (45 ×1.2) */
+  --text-6xl: 4.21875rem; /* 67.5px - rare splash only (54 ×1.25) */
+  --text-7xl: 4.21875rem; /* alias of 6xl — no separate poster size on web */
 
   /* ========================================
      LINE HEIGHT (Leading) - Harmonic Ratios
@@ -142,11 +146,11 @@
       /* Scales with viewport */ 1.125rem /* 18px maximum */
     );
 
-    /* Fluid display text (matches the capped --text-4xl) */
+    /* Fluid display text (matches the capped --text-4xl = 45px) */
     --text-4xl-fluid: clamp(
       2rem,
       /* 32px minimum */ 1.25rem + 2.5vw,
-      /* scales with viewport */ 3rem /* 48px maximum (web hero cap) */
+      /* scales with viewport */ 2.8125rem /* 45px maximum (web hero cap) */
     );
   }
 }
