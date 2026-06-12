@@ -2,11 +2,14 @@
 /**
  * Homepage - MicroHAMS
  *
- * Demonstrates design system and layout primitives
+ * Bento composition: a featured-event hero paired with a quick-fact rail,
+ * then a ranked article column beside a quiet "explore" rail. One 12-col
+ * grid per band, no full-width dividers — space and surface do the work.
  */
 
 import PageLayout from '../layouts/PageLayout.astro';
 import EventCard from '../components/event/EventCard.astro';
+import EventDateTime from '../components/event/EventDateTime.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../utils/content';
 import { getEventStartMs, getEventEndMs } from '../utils/event-time';
@@ -47,7 +50,7 @@ const upcomingEvents = allEvents
     return getEventStartMs(a) - getEventStartMs(b);
   });
 
-// Combined for hero selection and grid
+// Combined for hero selection and rail
 const currentAndUpcoming = [...currentEvents, ...upcomingEvents];
 
 // Hero event: prioritize featured current (happening now), then featured upcoming, then soonest overall
@@ -56,145 +59,196 @@ const featuredCurrent = currentEvents.find((e: Event) => e.data.featured);
 const featuredUpcoming = upcomingEvents.find((e: Event) => e.data.featured);
 const heroEvent = featuredCurrent || featuredUpcoming || currentAndUpcoming[0];
 
-// Next 3 events after the hero
-const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slice(0, 3);
+// The soonest upcoming meeting, surfaced as a quick-fact tile — but only when
+// it isn't already the hero (no point answering "next meeting" twice).
+const nextMeeting = upcomingEvents.find(
+  (e: Event) => e.data.eventType === 'meeting' && e !== heroEvent
+);
+
+// Anything else current/upcoming, for the rail's running list
+const railEvents = currentAndUpcoming
+  .filter((e: Event) => e !== heroEvent && e !== nextMeeting)
+  .slice(0, 2);
+
+// Articles: one lead, a few quieted followers
+const leadArticle = articles[0];
+const followerArticles = articles.slice(1, 4);
+
+// Calendar dates render in UTC so a midnight date doesn't shift a day in Pacific
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 ---
 
 <PageLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
-  <!-- Featured Event Hero -->
-  {
-    heroEvent ? (
-      <section class="region">
-        <div class="wrapper">
-          <div class="stack-6">
-            <EventCard event={heroEvent} variant="featured" />
+  <section class="region">
+    <div class="wrapper">
+      <div class="stack-12">
+        {/* ===== Band 1 — What's happening ===== */}
+        <div class="modular-grid grid--gap-lg">
+          {/* Hero / featured event */}
+          <div class="span-8">
+            {
+              heroEvent ? (
+                <EventCard event={heroEvent} variant="featured" />
+              ) : (
+                <div class="stack-4">
+                  <h1 class="text-5xl">
+                    Amateur Radio
+                    <br />
+                    Community &amp; Resources
+                  </h1>
+                  <p class="lead">
+                    Technical articles, projects, documentation, and community events for amateur
+                    radio enthusiasts in the Puget Sound area.
+                  </p>
+                </div>
+              )
+            }
+          </div>
 
-            {/* More upcoming events grid */}
-            {moreEvents.length > 0 && (
-              <div class="stack-4">
-                <h2 class="eyebrow">Current & Upcoming</h2>
-                <div class="grid grid--auto-fit grid--gap-md" style="--grid-min-width: 280px;">
-                  {moreEvents.map((event) => (
-                    <EventCard event={event} variant="default" showDescription={false} />
+          {/* Rail: next meeting + running list */}
+          <div class="span-4 stack-6">
+            {
+              nextMeeting && (
+                <aside class="box box--lg box--bordered stack-3">
+                  <p class="eyebrow">Next Meeting</p>
+                  <p class="text-lg font-medium">{nextMeeting.data.title}</p>
+                  <EventDateTime
+                    eventDate={nextMeeting.data.eventDate}
+                    endDate={nextMeeting.data.endDate}
+                    startTime={nextMeeting.data.startTime}
+                    endTime={nextMeeting.data.endTime}
+                    venue={nextMeeting.data.venue}
+                    timezone={nextMeeting.data.timezone}
+                    class="text-sm text-muted"
+                  />
+                  <a href={`/events/${nextMeeting.id}`} class="font-medium">
+                    Details &amp; how to join →
+                  </a>
+                </aside>
+              )
+            }
+
+            {
+              railEvents.length > 0 && (
+                <div class="stack-3">
+                  <h2 class="eyebrow">Current &amp; Upcoming</h2>
+                  {railEvents.map((event) => (
+                    <EventCard event={event} variant="horizontal" showDescription={false} />
                   ))}
                 </div>
-              </div>
-            )}
+              )
+            }
+
+            <a href="/events" class="font-medium">Full calendar →</a>
           </div>
         </div>
-      </section>
-    ) : (
-      <section class="region">
-        <div class="wrapper">
-          <div class="stack-6">
-            <h1 class="text-5xl">
-              Amateur Radio
-              <br />
-              Community & Resources
-            </h1>
-            <p class="lead">
-              Technical articles, projects, documentation, and community events for amateur radio
-              enthusiasts in the Puget Sound area.
-            </p>
-          </div>
-        </div>
-      </section>
-    )
-  }
 
-  <!-- Section Divider -->
-  <div class="wrapper">
-    <hr />
-  </div>
+        {/* ===== Band 2 — Read + explore ===== */}
+        {
+          leadArticle && (
+            <div class="modular-grid grid--gap-xl">
+              {/* Articles: one lead, quieted followers */}
+              <div class="span-8 stack-6">
+                <h2 class="eyebrow">Latest</h2>
 
-  <!-- Featured Articles - Magazine Grid -->
-  {
-    articles.length > 0 && (
-      <section class="region">
-        <div class="wrapper">
-          <div class="stack-8">
-            <div class="stack-2">
-              <h2 class="eyebrow">Featured</h2>
-              <h3 class="text-3xl">Recent Articles</h3>
-            </div>
-
-            <div class="grid grid--auto-fit grid--gap-xl" style="--grid-min-width: 400px;">
-              {articles.slice(0, 4).map((article: (typeof articles)[number]) => (
                 <article class="stack-3">
                   <div class="stack-2">
-                    {article.data.tags && article.data.tags.length > 0 && (
-                      <span class="badge">{article.data.tags[0]}</span>
+                    {leadArticle.data.tags?.[0] && (
+                      <span class="badge">{leadArticle.data.tags[0]}</span>
                     )}
-                    <h4 class="text-2xl">
-                      <a href={`/articles/${article.id}`} class="link-plain">
-                        {article.data.title}
+                    <h3 class="text-3xl">
+                      <a href={`/articles/${leadArticle.id}`} class="link-plain">
+                        {leadArticle.data.title}
                       </a>
-                    </h4>
+                    </h3>
                   </div>
-                  {article.data.description && <p class="text-muted">{article.data.description}</p>}
-                  {article.data.date && (
-                    <time class="text-sm text-subtle" datetime={article.data.date.toISOString()}>
-                      {article.data.date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        timeZone: 'UTC',
-                      })}
+                  {leadArticle.data.description && (
+                    <p class="lead">{leadArticle.data.description}</p>
+                  )}
+                  {leadArticle.data.date && (
+                    <time
+                      class="text-sm text-subtle"
+                      datetime={leadArticle.data.date.toISOString()}
+                    >
+                      {fmtDate(leadArticle.data.date)}
                     </time>
                   )}
                 </article>
-              ))}
+
+                {followerArticles.length > 0 && (
+                  <div class="proportion--thirds">
+                    {followerArticles.map((article) => (
+                      <article class="stack-2">
+                        {article.data.tags?.[0] && (
+                          <span class="badge">{article.data.tags[0]}</span>
+                        )}
+                        <h4 class="text-lg">
+                          <a href={`/articles/${article.id}`} class="link-plain">
+                            {article.data.title}
+                          </a>
+                        </h4>
+                        {article.data.date && (
+                          <time
+                            class="text-sm text-subtle"
+                            datetime={article.data.date.toISOString()}
+                          >
+                            {fmtDate(article.data.date)}
+                          </time>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                )}
+
+                <div>
+                  <a href="/articles" class="font-medium">
+                    All Articles →
+                  </a>
+                </div>
+              </div>
+
+              {/* Explore rail — quiet, muted */}
+              <aside class="span-4">
+                <div class="box box--lg box--surface-muted stack-8">
+                  <div class="stack-2">
+                    <h3 class="text-xl">About MicroHAMS</h3>
+                    <p class="text-muted text-sm">
+                      A dynamic organization of amateur radio enthusiasts in the Puget Sound area,
+                      dedicated to hands-on experimentation.
+                    </p>
+                    <a href="/about" class="font-medium">
+                      Learn more →
+                    </a>
+                  </div>
+                  <div class="stack-2">
+                    <h3 class="text-xl">Documentation</h3>
+                    <p class="text-muted text-sm">
+                      Technical guides and reference for operators of all skill levels.
+                    </p>
+                    <a href="/docs" class="font-medium">
+                      Browse docs →
+                    </a>
+                  </div>
+                  <div class="stack-2">
+                    <h3 class="text-xl">Events</h3>
+                    <p class="text-muted text-sm">
+                      Monthly meetings, workshops, and special on-air events.
+                    </p>
+                    <a href="/events" class="font-medium">
+                      View calendar →
+                    </a>
+                  </div>
+                </div>
+              </aside>
             </div>
-
-            <div>
-              <a href="/articles" class="font-medium">
-                All Articles →
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- Section Divider -->
-  <div class="wrapper">
-    <hr />
-  </div>
-
-  <!-- Footer Editorial Section -->
-  <section class="region region--muted">
-    <div class="wrapper">
-      <div
-        class="grid grid--auto-fit"
-        style="--grid-min-width: 300px; --grid-gap: var(--space-12);"
-      >
-        <div class="stack-4">
-          <h3 class="text-xl">About MicroHAMS</h3>
-          <p class="text-muted">
-            A dynamic organization of amateur radio enthusiasts in the Puget Sound area dedicated to
-            inspiring, informing, and educating through hands-on experimentation.
-          </p>
-          <a href="/about" class="font-medium"> Learn More → </a>
-        </div>
-
-        <div class="stack-4">
-          <h3 class="text-xl">Documentation</h3>
-          <p class="text-muted">
-            Technical guides, reference materials, and educational resources for amateur radio
-            operators of all skill levels.
-          </p>
-          <a href="/docs" class="font-medium"> Browse Docs → </a>
-        </div>
-
-        <div class="stack-4">
-          <h3 class="text-xl">Events</h3>
-          <p class="text-muted">
-            Monthly meetings, workshops, and special events featuring presentations from experts and
-            community members.
-          </p>
-          <a href="/events" class="font-medium"> View Calendar → </a>
-        </div>
+          )
+        }
       </div>
     </div>
   </section>
