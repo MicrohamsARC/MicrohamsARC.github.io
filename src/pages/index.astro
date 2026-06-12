@@ -70,9 +70,16 @@ const railEvents = currentAndUpcoming
   .filter((e: Event) => e !== heroEvent && e !== nextMeeting)
   .slice(0, 2);
 
-// Articles: one lead, a few quieted followers
-const leadArticle = articles[0];
-const followerArticles = articles.slice(1, 4);
+// Don't surface an article about the very event we're already featuring as
+// the hero (e.g. the Field Day write-up while Field Day is the hero tile).
+const heroPrimaryTag = heroEvent?.data.tags?.[0]?.toLowerCase();
+const homeArticles = (
+  heroPrimaryTag
+    ? articles.filter(
+        (a: Article) => !(a.data.tags ?? []).some((t: string) => t.toLowerCase() === heroPrimaryTag)
+      )
+    : articles
+).slice(0, 4);
 
 // Calendar dates render in UTC so a midnight date doesn't shift a day in Pacific
 const fmtDate = (d: Date) =>
@@ -87,7 +94,7 @@ const fmtDate = (d: Date) =>
 <PageLayout title="Home" description="MicroHAMS - Amateur Radio Community and Resources">
   <section class="region">
     <div class="wrapper">
-      <div class="stack-12">
+      <div class="stack-16">
         {/* ===== Band 1 — What's happening ===== */}
         <div class="modular-grid grid--gap-lg">
           {/* Hero / featured event */}
@@ -151,60 +158,35 @@ const fmtDate = (d: Date) =>
 
         {/* ===== Band 2 — Read + explore ===== */}
         {
-          leadArticle && (
+          homeArticles.length > 0 && (
             <div class="modular-grid grid--gap-xl">
-              {/* Articles: one lead, quieted followers */}
+              {/* Latest articles — each a bounded card */}
               <div class="span-8 stack-6 reveal">
                 <h2 class="eyebrow">Latest</h2>
 
-                <article class="stack-3">
-                  <div class="stack-2">
-                    {leadArticle.data.tags?.[0] && (
-                      <span class="badge">{leadArticle.data.tags[0]}</span>
-                    )}
-                    <h3 class="text-3xl">
-                      <a href={`/articles/${leadArticle.id}`} class="link-plain">
-                        {leadArticle.data.title}
-                      </a>
-                    </h3>
-                  </div>
-                  {leadArticle.data.description && (
-                    <p class="lead">{leadArticle.data.description}</p>
-                  )}
-                  {leadArticle.data.date && (
-                    <time
-                      class="text-sm text-subtle"
-                      datetime={leadArticle.data.date.toISOString()}
-                    >
-                      {fmtDate(leadArticle.data.date)}
-                    </time>
-                  )}
-                </article>
-
-                {followerArticles.length > 0 && (
-                  <div class="proportion--thirds">
-                    {followerArticles.map((article: Article) => (
-                      <article class="stack-2">
-                        {article.data.tags?.[0] && (
-                          <span class="badge">{article.data.tags[0]}</span>
-                        )}
-                        <h4 class="text-lg">
-                          <a href={`/articles/${article.id}`} class="link-plain">
-                            {article.data.title}
-                          </a>
-                        </h4>
-                        {article.data.date && (
-                          <time
-                            class="text-sm text-subtle"
-                            datetime={article.data.date.toISOString()}
-                          >
-                            {fmtDate(article.data.date)}
-                          </time>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                )}
+                <div class="grid grid--auto-fit grid--min-wide grid--gap-lg">
+                  {homeArticles.map((article: Article) => (
+                    <article class="card stack-3">
+                      {article.data.tags?.[0] && <span class="badge">{article.data.tags[0]}</span>}
+                      <h3 class="text-xl">
+                        <a href={`/articles/${article.id}`} class="link-plain">
+                          {article.data.title}
+                        </a>
+                      </h3>
+                      {article.data.description && (
+                        <p class="text-muted text-sm">{article.data.description}</p>
+                      )}
+                      {article.data.date && (
+                        <time
+                          class="text-sm text-subtle"
+                          datetime={article.data.date.toISOString()}
+                        >
+                          {fmtDate(article.data.date)}
+                        </time>
+                      )}
+                    </article>
+                  ))}
+                </div>
 
                 <div>
                   <a href="/articles" class="font-medium">
@@ -213,7 +195,8 @@ const fmtDate = (d: Date) =>
                 </div>
               </div>
 
-              {/* Explore rail — quiet, muted */}
+              {/* Explore rail — About + Docs only. Events already lives in the
+                  nav and the calendar link above, so it isn't repeated here. */}
               <aside class="span-4 reveal">
                 <div class="box box--lg box--surface-muted stack-8">
                   <div class="stack-2">
@@ -233,15 +216,6 @@ const fmtDate = (d: Date) =>
                     </p>
                     <a href="/docs" class="font-medium">
                       Browse docs →
-                    </a>
-                  </div>
-                  <div class="stack-2">
-                    <h3 class="text-xl">Events</h3>
-                    <p class="text-muted text-sm">
-                      Monthly meetings, workshops, and special on-air events.
-                    </p>
-                    <a href="/events" class="font-medium">
-                      View calendar →
                     </a>
                   </div>
                 </div>
