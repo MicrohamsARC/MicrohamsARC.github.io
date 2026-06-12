@@ -40,13 +40,16 @@ const tzAbbrev = getTimezoneAbbreviation(eventDate, timezone);
 // Multi-day when an endDate is set and lands on a different calendar day
 const isMultiDay = !!endDate && endDate.getTime() !== eventDate.getTime();
 
+// Omit the year when the event falls in the current year — it's noise for
+// near-term events and only earns its place for past/future-year dates.
+const currentYear = new Date().getFullYear();
 const longDate = (d: Date) =>
   d.toLocaleDateString('en-US', {
     timeZone: 'UTC',
     weekday: 'long',
     month: 'long',
     day: 'numeric',
-    year: 'numeric',
+    ...(d.getUTCFullYear() === currentYear ? {} : { year: 'numeric' }),
   });
 
 // Compact date for multi-day ranges (two dates already carry enough context)

@@ -161,18 +161,20 @@ function formatDisplay(
     return `${fmt(startInstant, startTime)} – ${fmt(endInstant, endTime)} ${tzAbbr}`;
   }
 
-  // Format date part
+  // Format date part — omit the year for current-year events (noise for
+  // near-term dates; kept for past/future years).
+  const currentYear = new Date().getFullYear();
   const dateStr = eventDate.toLocaleDateString('en-US', {
     timeZone: 'UTC', // Keep calendar date stable
     weekday: 'long',
     month: 'long',
     day: 'numeric',
-    year: 'numeric',
+    ...(eventDate.getUTCFullYear() === currentYear ? {} : { year: 'numeric' }),
   });
 
+  // No time → no timezone (a bare calendar date has no "PDT")
   if (!startTime) {
-    const tzAbbr = getTimezoneAbbr(eventDate, targetTz);
-    return `${dateStr} ${tzAbbr}`;
+    return dateStr;
   }
 
   // For time conversion, we need to create actual Date objects
