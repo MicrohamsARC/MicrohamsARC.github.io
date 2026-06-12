@@ -23,7 +23,16 @@
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* Tactile press */
+.button:active {
+  transform: translateY(1px);
 }
 
 .button:focus-visible {
@@ -92,11 +101,15 @@
   background-color: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  transition: box-shadow var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
 }
 
+/* Quiet lift on hover — depth without shadow-soup */
 .card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .card__header {
@@ -228,7 +241,9 @@
   font-weight: var(--font-weight-medium);
   line-height: var(--leading-normal); /* Consistent line-height */
   border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .nav__link:hover {
@@ -400,7 +415,7 @@
   border: none;
   border-radius: 0;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: opacity var(--transition-fast);
   vertical-align: text-bottom; /* Align to text bottom */
   /* Match nav link text properties */
   line-height: var(--leading-normal);
@@ -586,7 +601,10 @@
   border-radius: var(--radius-full);
   text-decoration: none;
   color: var(--color-text-muted);
-  transition: all var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .tag:hover {

@@ -280,6 +280,12 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
     block-size: 100%;
     object-fit: cover;
     aspect-ratio: 4 / 3;
+    transition: transform var(--transition-slow);
+  }
+
+  /* Slow, contained zoom — the image breathes, the frame crops it */
+  .featured-event:hover .featured-image {
+    transform: scale(1.03);
   }
 
   .featured-event__content {

@@ -183,7 +183,7 @@ const fmtDate = (d: Date) =>
 
                 {followerArticles.length > 0 && (
                   <div class="proportion--thirds">
-                    {followerArticles.map((article) => (
+                    {followerArticles.map((article: Article) => (
                       <article class="stack-2">
                         {article.data.tags?.[0] && (
                           <span class="badge">{article.data.tags[0]}</span>
