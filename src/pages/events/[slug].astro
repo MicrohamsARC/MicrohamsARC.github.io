@@ -76,6 +76,7 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
           <div class="event-header__datetime">
             <EventDateTime
               eventDate={event.data.eventDate}
+              endDate={event.data.endDate}
               startTime={event.data.startTime}
               endTime={event.data.endTime}
               venue={event.data.venue}

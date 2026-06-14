@@ -41,6 +41,7 @@ const { frontmatter } = Astro.props;
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
+                        timeZone: 'UTC',
                       })}
                     </time>
                   </span>
@@ -84,6 +85,7 @@ const { frontmatter } = Astro.props;
               year: 'numeric',
               month: 'long',
               day: 'numeric',
+              timeZone: 'UTC',
             })}
           </footer>
         )

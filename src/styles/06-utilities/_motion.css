@@ -1,0 +1,70 @@
+/**
+ * Motion - Scroll-driven enhancement (progressive, opt-in)
+ *
+ * Every effect here is:
+ *   - opt-in via a class (no blanket animation),
+ *   - gated behind @supports (animation-timeline) so unsupported browsers
+ *     get the final, static state — content is NEVER left hidden,
+ *   - silenced under prefers-reduced-motion.
+ *
+ * Scroll-driven timelines are not time-based, so the global reduced-motion
+ * reset (which only zeroes durations) does not neutralize them — hence the
+ * explicit prefers-reduced-motion gate around each block.
+ */
+
+/* ========================================
+   SCROLL REVEAL — fade + rise as content enters the viewport
+   Content already in view at load resolves to its final state (no flash).
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 25%;
+    }
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ========================================
+   SCROLL PROGRESS — a thin "tuning" line that fills as the page scrolls
+   ======================================== */
+
+.scroll-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  z-index: var(--z-sticky);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress {
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}

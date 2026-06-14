@@ -1,10 +1,10 @@
 /**
  * Event DateTime Toggle
- * 
+ *
  * Client-side script for toggling event times between:
  * - Browser local timezone (default)
  * - UTC
- * 
+ *
  * Usage: Add data attributes to a <button> element:
  * - data-event-datetime: ISO string of the event date
  * - data-start-time: Start time string (e.g., "6:00 PM")
@@ -17,6 +17,7 @@ type TimezoneMode = 'local' | 'utc';
 interface EventDateTimeElement extends HTMLButtonElement {
   _tzMode?: TimezoneMode;
   _eventDate?: Date;
+  _endDate?: Date;
   _startTime?: string;
   _endTime?: string;
   _eventTimezone?: string;
@@ -28,14 +29,14 @@ interface EventDateTimeElement extends HTMLButtonElement {
 function parseTime(timeStr: string): { hours: number; minutes: number } | null {
   const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
   if (!match) return null;
-  
+
   let hours = parseInt(match[1], 10);
   const minutes = parseInt(match[2], 10);
   const period = match[3]?.toUpperCase();
-  
+
   if (period === 'PM' && hours !== 12) hours += 12;
   if (period === 'AM' && hours === 12) hours = 0;
-  
+
   return { hours, minutes };
 }
 
@@ -43,27 +44,27 @@ function parseTime(timeStr: string): { hours: number; minutes: number } | null {
  * Create a Date object representing the event time as a UTC timestamp.
  * Given: calendar date (as UTC midnight), time string, and event timezone.
  * Returns: Date object where displaying in event timezone shows the correct time.
- * 
+ *
  * Example: Jan 20 + "6:00 PM" + Pacific → UTC timestamp for Jan 21 02:00:00Z
  * (because 6 PM Pacific = 2 AM UTC next day during PST)
  */
 function createEventDateTime(eventDate: Date, timeStr: string, eventTimezone: string): Date {
   const time = parseTime(timeStr);
   if (!time) return eventDate;
-  
+
   // Get calendar date parts from the event date (stored as UTC midnight)
   const year = eventDate.getUTCFullYear();
   const month = eventDate.getUTCMonth();
   const day = eventDate.getUTCDate();
-  
+
   // Create an ISO date-time string representing this time in the event timezone
   // Format: "2026-01-20T18:00:00" (no Z suffix - we'll interpret in target TZ)
   const localDateTimeStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}:00`;
-  
+
   // Use a trick: create a formatter that outputs the timezone offset
   // Then we can calculate what UTC instant this represents
   const testDate = new Date(localDateTimeStr + 'Z'); // Treat as UTC temporarily
-  
+
   // Get the timezone offset at this approximate time
   // Format the testDate in the event timezone and extract hour/minute
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -72,31 +73,31 @@ function createEventDateTime(eventDate: Date, timeStr: string, eventTimezone: st
     minute: 'numeric',
     hour12: false,
   }).formatToParts(testDate);
-  
-  const tzHour = parseInt(parts.find(p => p.type === 'hour')?.value || '0', 10);
-  const tzMinute = parseInt(parts.find(p => p.type === 'minute')?.value || '0', 10);
-  
+
+  const tzHour = parseInt(parts.find((p) => p.type === 'hour')?.value || '0', 10);
+  const tzMinute = parseInt(parts.find((p) => p.type === 'minute')?.value || '0', 10);
+
   // testDate as UTC shows time.hours:time.minutes
   // testDate in event TZ shows tzHour:tzMinute
   // The difference tells us the offset
-  // 
+  //
   // For PST (UTC-8): if testDate is 18:00 UTC, it shows 10:00 in Pacific
   // We want 18:00 in Pacific, so we need to ADD 8 hours to UTC
   // Offset = (what we want in local) - (what local shows for our UTC guess)
   //        = 18:00 - 10:00 = +8 hours
   // Correct UTC = 18:00 + 8:00 = 26:00 = 02:00 next day
-  
+
   const wantedMinutes = time.hours * 60 + time.minutes;
   const gotMinutes = tzHour * 60 + tzMinute;
   let diffMinutes = wantedMinutes - gotMinutes;
-  
+
   // Handle day wraparound (e.g., want 2:00, got 18:00 = -16 hours, but really +8)
   if (diffMinutes > 720) diffMinutes -= 1440;
   if (diffMinutes < -720) diffMinutes += 1440;
-  
+
   // The correct UTC time is the test date plus the difference
   const correctUTC = new Date(testDate.getTime() + diffMinutes * 60000);
-  
+
   return correctUTC;
 }
 
@@ -121,7 +122,7 @@ function getTimezoneAbbr(date: Date, timezone: string): string {
     timeZoneName: 'short',
   });
   const parts = formatter.formatToParts(date);
-  return parts.find(p => p.type === 'timeZoneName')?.value || '';
+  return parts.find((p) => p.type === 'timeZoneName')?.value || '';
 }
 
 /**
@@ -129,40 +130,66 @@ function getTimezoneAbbr(date: Date, timezone: string): string {
  */
 function formatDisplay(
   eventDate: Date,
+  endDate: Date | undefined,
   startTime: string | undefined,
   endTime: string | undefined,
   eventTimezone: string,
   mode: TimezoneMode
 ): string {
   const targetTz = mode === 'utc' ? 'UTC' : Intl.DateTimeFormat().resolvedOptions().timeZone;
-  
-  // Format date part
+
+  const isMultiDay = !!endDate && endDate.getTime() !== eventDate.getTime();
+
+  // Multi-day range: format each endpoint as date + time in the target zone.
+  // The actual instants carry the date, so converting to local/UTC shifts both
+  // the day and the time correctly (e.g. 11 AM PDT Sun → 6 PM UTC Sun).
+  if (isMultiDay) {
+    const startInstant = startTime
+      ? createEventDateTime(eventDate, startTime, eventTimezone)
+      : eventDate;
+    const endInstant = endTime ? createEventDateTime(endDate!, endTime, eventTimezone) : endDate!;
+    const fmt = (d: Date, time: string | undefined) => {
+      const dayStr = d.toLocaleDateString('en-US', {
+        timeZone: targetTz,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      });
+      return time ? `${dayStr}, ${formatTimeInZone(d, targetTz)}` : dayStr;
+    };
+    const tzAbbr = getTimezoneAbbr(startInstant, targetTz);
+    return `${fmt(startInstant, startTime)} – ${fmt(endInstant, endTime)} ${tzAbbr}`;
+  }
+
+  // Format date part — omit the year for current-year events (noise for
+  // near-term dates; kept for past/future years).
+  const currentYear = new Date().getFullYear();
   const dateStr = eventDate.toLocaleDateString('en-US', {
     timeZone: 'UTC', // Keep calendar date stable
     weekday: 'long',
     month: 'long',
     day: 'numeric',
-    year: 'numeric',
+    ...(eventDate.getUTCFullYear() === currentYear ? {} : { year: 'numeric' }),
   });
-  
+
+  // No time → no timezone (a bare calendar date has no "PDT")
   if (!startTime) {
-    const tzAbbr = getTimezoneAbbr(eventDate, targetTz);
-    return `${dateStr} ${tzAbbr}`;
+    return dateStr;
   }
-  
+
   // For time conversion, we need to create actual Date objects
   const startDateTime = createEventDateTime(eventDate, startTime, eventTimezone);
   const startFormatted = formatTimeInZone(startDateTime, targetTz);
-  
+
   let timeStr = startFormatted;
   if (endTime) {
     const endDateTime = createEventDateTime(eventDate, endTime, eventTimezone);
     const endFormatted = formatTimeInZone(endDateTime, targetTz);
     timeStr = `${startFormatted}–${endFormatted}`;
   }
-  
+
   const tzAbbr = getTimezoneAbbr(startDateTime, targetTz);
-  
+
   return `${dateStr} · ${timeStr} ${tzAbbr}`;
 }
 
@@ -171,21 +198,23 @@ function formatDisplay(
  */
 function initToggle(button: EventDateTimeElement): void {
   const isoDate = button.dataset.eventDatetime;
+  const isoEndDate = button.dataset.endDate;
   const startTime = button.dataset.startTime;
   const endTime = button.dataset.endTime;
   const timezone = button.dataset.timezone || 'America/Los_Angeles';
-  
+
   if (!isoDate) return;
-  
+
   button._eventDate = new Date(isoDate);
+  button._endDate = isoEndDate ? new Date(isoEndDate) : undefined;
   button._startTime = startTime;
   button._endTime = endTime;
   button._eventTimezone = timezone;
   button._tzMode = 'local';
-  
+
   // Set initial display
   updateDisplay(button);
-  
+
   // Add click handler
   button.addEventListener('click', (e) => {
     e.preventDefault();
@@ -206,15 +235,16 @@ function cycleMode(button: EventDateTimeElement): void {
  */
 function updateDisplay(button: EventDateTimeElement): void {
   if (!button._eventDate) return;
-  
+
   const display = formatDisplay(
     button._eventDate,
+    button._endDate,
     button._startTime,
     button._endTime,
     button._eventTimezone || 'America/Los_Angeles',
     button._tzMode || 'local'
   );
-  
+
   // Find or create the text span
   let textSpan = button.querySelector('.datetime-text');
   if (!textSpan) {
@@ -223,7 +253,7 @@ function updateDisplay(button: EventDateTimeElement): void {
     button.prepend(textSpan);
   }
   textSpan.textContent = display;
-  
+
   // Remove mode indicator - timezone is already shown in the display
   const modeSpan = button.querySelector('.datetime-mode');
   if (modeSpan) {
@@ -235,7 +265,7 @@ function updateDisplay(button: EventDateTimeElement): void {
  * Initialize all datetime toggles on the page
  */
 export function initDateTimeToggles(): void {
-  document.querySelectorAll<EventDateTimeElement>('[data-event-datetime]').forEach(button => {
+  document.querySelectorAll<EventDateTimeElement>('[data-event-datetime]').forEach((button) => {
     // Skip if already initialized
     if (button._eventDate) return;
     initToggle(button);
@@ -251,7 +281,7 @@ if (typeof document !== 'undefined') {
     // DOM already ready, initialize immediately
     initDateTimeToggles();
   }
-  
+
   // Re-initialize after Astro View Transitions swap content
   document.addEventListener('astro:page-load', initDateTimeToggles);
 }

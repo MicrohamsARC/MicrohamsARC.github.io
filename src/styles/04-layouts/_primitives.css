@@ -14,7 +14,8 @@
 /* ========================================
    STACK - Vertical Rhythm
    Creates consistent vertical spacing using the space scale
-    ======================================== */.stack {
+    ======================================== */
+.stack {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -53,26 +54,47 @@
   margin-block: 0;
 }
 
-.stack-xs { gap: var(--space-1); }  /* 4px - Micro spacing */
-.stack-1 { gap: var(--space-1); }
-.stack-2 { gap: var(--space-2); }   /* 8px - Tight grouping */
-.stack-3 { gap: var(--space-3); }   /* 12px - Related items */
-.stack-4 { gap: var(--space-4); }   /* 16px - Base rhythm (most common) */
-.stack-5 { gap: var(--space-5); }   /* 20px - Loose grouping */
-.stack-6 { gap: var(--space-6); }   /* 24px - Section spacing */
-.stack-8 { gap: var(--space-8); }   /* 32px - Major sections */
-.stack-12 { gap: var(--space-12); } /* 48px - Page sections */
-.stack-16 { gap: var(--space-16); } /* 64px - Hero sections */
+.stack-xs {
+  gap: var(--space-1);
+} /* 4px - Micro spacing */
+.stack-1 {
+  gap: var(--space-1);
+}
+.stack-2 {
+  gap: var(--space-2);
+} /* 8px - Tight grouping */
+.stack-3 {
+  gap: var(--space-3);
+} /* 12px - Related items */
+.stack-4 {
+  gap: var(--space-4);
+} /* 16px - Base rhythm (most common) */
+.stack-5 {
+  gap: var(--space-5);
+} /* 20px - Loose grouping */
+.stack-6 {
+  gap: var(--space-6);
+} /* 24px - Section spacing */
+.stack-8 {
+  gap: var(--space-8);
+} /* 32px - Major sections */
+.stack-12 {
+  gap: var(--space-12);
+} /* 48px - Page sections */
+.stack-16 {
+  gap: var(--space-16);
+} /* 64px - Hero sections */
 
 /* Recursive stack - applies to nested elements */
-.stack[data-recursive="true"] * {
+.stack[data-recursive='true'] * {
   margin-block: 0;
 }
 
 /* ========================================
    CLUSTER - Horizontal Grouping
    Groups items with consistent spacing and flexible wrapping
-    ======================================== */.cluster {
+    ======================================== */
+.cluster {
   display: flex;
   flex-wrap: wrap;
   gap: var(--cluster-gap, var(--space-4));
@@ -80,52 +102,107 @@
 }
 
 /* Spacing variations */
-.cluster--xs { --cluster-gap: var(--space-1); }
-.cluster--sm { --cluster-gap: var(--space-2); }
-.cluster--md { --cluster-gap: var(--space-4); }
-.cluster--lg { --cluster-gap: var(--space-6); }
-.cluster--xl { --cluster-gap: var(--space-8); }
+.cluster--xs {
+  --cluster-gap: var(--space-1);
+}
+.cluster--sm {
+  --cluster-gap: var(--space-2);
+}
+.cluster--md {
+  --cluster-gap: var(--space-4);
+}
+.cluster--lg {
+  --cluster-gap: var(--space-6);
+}
+.cluster--xl {
+  --cluster-gap: var(--space-8);
+}
 
 /* Legacy class names for backwards compatibility */
-.cluster-1 { gap: var(--space-1); }
-.cluster-2 { gap: var(--space-2); }
-.cluster-3 { gap: var(--space-3); }
-.cluster-4 { gap: var(--space-4); }
-.cluster-6 { gap: var(--space-6); }
+.cluster-1 {
+  gap: var(--space-1);
+}
+.cluster-2 {
+  gap: var(--space-2);
+}
+.cluster-3 {
+  gap: var(--space-3);
+}
+.cluster-4 {
+  gap: var(--space-4);
+}
+.cluster-6 {
+  gap: var(--space-6);
+}
 
 /* Cluster alignment variations */
-.cluster--start { justify-content: flex-start; }
-.cluster--center { justify-content: center; }
-.cluster--end { justify-content: flex-end; }
-.cluster--between { justify-content: space-between; }
-.cluster--around { justify-content: space-around; }
-.cluster--evenly { justify-content: space-evenly; }
+.cluster--start {
+  justify-content: flex-start;
+}
+.cluster--center {
+  justify-content: center;
+}
+.cluster--end {
+  justify-content: flex-end;
+}
+.cluster--between {
+  justify-content: space-between;
+}
+.cluster--around {
+  justify-content: space-around;
+}
+.cluster--evenly {
+  justify-content: space-evenly;
+}
 
 /* Vertical alignment */
-.cluster--align-start { align-items: flex-start; }
-.cluster--align-center { align-items: center; }
-.cluster--align-end { align-items: flex-end; }
-.cluster--align-baseline { align-items: baseline; }
+.cluster--align-start {
+  align-items: flex-start;
+}
+.cluster--align-center {
+  align-items: center;
+}
+.cluster--align-end {
+  align-items: flex-end;
+}
+.cluster--align-baseline {
+  align-items: baseline;
+}
 
 /* ========================================
    CENTER - Contained Content
    Centers content with max-width for optimal readability
-    ======================================== */.center {
+    ======================================== */
+.center {
   box-sizing: content-box;
   max-inline-size: var(--center-width, var(--width-normal));
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
 
-.center--narrow { --center-width: var(--width-narrow); }
-.center--normal { --center-width: var(--width-normal); }
-.center--wide { --center-width: var(--width-wide); }
-.center--full { --center-width: var(--width-full); }
+.center--narrow {
+  --center-width: var(--width-narrow);
+}
+.center--normal {
+  --center-width: var(--width-normal);
+}
+.center--wide {
+  --center-width: var(--width-wide);
+}
+.center--full {
+  --center-width: var(--width-full);
+}
 
 /* Measure-based centering for optimal readability */
-.center--measure { --center-width: var(--measure-optimal); }
-.center--measure-narrow { --center-width: var(--measure-narrow); }
-.center--measure-wide { --center-width: var(--measure-wide); }
+.center--measure {
+  --center-width: var(--measure-optimal);
+}
+.center--measure-narrow {
+  --center-width: var(--measure-narrow);
+}
+.center--measure-wide {
+  --center-width: var(--measure-wide);
+}
 
 /* Intrinsic centering - centers child that fits */
 .center--intrinsic {
@@ -142,18 +219,31 @@
 /* ========================================
    BOX - Consistent Internal Spacing
    Adds consistent internal spacing with discipline
-    ======================================== */.box {
+    ======================================== */
+.box {
   padding: var(--box-padding, var(--space-4));
   outline: var(--box-border-width, 0) solid transparent;
 }
 
 /* Padding scale - derived from spatial system */
-.box--xs { --box-padding: var(--space-2); }  /* 8px */
-.box--sm { --box-padding: var(--space-3); }  /* 12px */
-.box--md { --box-padding: var(--space-4); }  /* 16px - Base */
-.box--lg { --box-padding: var(--space-6); }  /* 24px */
-.box--xl { --box-padding: var(--space-8); }  /* 32px */
-.box--2xl { --box-padding: var(--space-12); } /* 48px */
+.box--xs {
+  --box-padding: var(--space-2);
+} /* 8px */
+.box--sm {
+  --box-padding: var(--space-3);
+} /* 12px */
+.box--md {
+  --box-padding: var(--space-4);
+} /* 16px - Base */
+.box--lg {
+  --box-padding: var(--space-6);
+} /* 24px */
+.box--xl {
+  --box-padding: var(--space-8);
+} /* 32px */
+.box--2xl {
+  --box-padding: var(--space-12);
+} /* 48px */
 
 /* Asymmetric padding for specific use cases */
 .box--inset-squish {
@@ -248,10 +338,18 @@
 }
 
 /* Gap variations */
-.grid--gap-sm { --grid-gap: var(--space-2); }
-.grid--gap-md { --grid-gap: var(--space-4); }
-.grid--gap-lg { --grid-gap: var(--space-6); }
-.grid--gap-xl { --grid-gap: var(--space-8); }
+.grid--gap-sm {
+  --grid-gap: var(--space-2);
+}
+.grid--gap-md {
+  --grid-gap: var(--space-4);
+}
+.grid--gap-lg {
+  --grid-gap: var(--space-6);
+}
+.grid--gap-xl {
+  --grid-gap: var(--space-8);
+}
 
 /* Auto-fit: fills space with columns as they fit */
 .grid--auto-fit {
@@ -264,10 +362,18 @@
 }
 
 /* Minimum column width variations */
-.grid--min-narrow { --grid-min-width: 200px; }
-.grid--min-normal { --grid-min-width: 250px; }
-.grid--min-wide { --grid-min-width: 300px; }
-.grid--min-full { --grid-min-width: 400px; }
+.grid--min-narrow {
+  --grid-min-width: 200px;
+}
+.grid--min-normal {
+  --grid-min-width: 250px;
+}
+.grid--min-wide {
+  --grid-min-width: 300px;
+}
+.grid--min-full {
+  --grid-min-width: 400px;
+}
 
 /* Fixed column grids - mobile-first (single column default) */
 .grid--2,
@@ -284,19 +390,37 @@
 
 /* md: 768px - expand to multi-column */
 @media (min-width: 768px) {
-  .grid--2 { grid-template-columns: repeat(2, 1fr); }
-  .grid--3 { grid-template-columns: repeat(3, 1fr); }
-  .grid--4 { grid-template-columns: repeat(4, 1fr); }
-  .grid--6 { grid-template-columns: repeat(6, 1fr); }
-  .grid--12 { grid-template-columns: repeat(12, 1fr); }
-  
+  .grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .grid--6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .grid--12 {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
   /* Golden ratio grid (1.618:1) */
-  .grid--golden { grid-template-columns: 1fr 1.618fr; }
-  .grid--golden-reverse { grid-template-columns: 1.618fr 1fr; }
-  
+  .grid--golden {
+    grid-template-columns: 1fr 1.618fr;
+  }
+  .grid--golden-reverse {
+    grid-template-columns: 1.618fr 1fr;
+  }
+
   /* Asymmetric grids */
-  .grid--sidebar { grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr); }
-  .grid--sidebar-reverse { grid-template-columns: minmax(0, 3fr) minmax(200px, 1fr); }
+  .grid--sidebar {
+    grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr);
+  }
+  .grid--sidebar-reverse {
+    grid-template-columns: minmax(0, 3fr) minmax(200px, 1fr);
+  }
 }
 
 /* ========================================
@@ -340,11 +464,21 @@
   align-items: center;
 }
 
-.frame--square { aspect-ratio: 1 / 1; }
-.frame--portrait { aspect-ratio: 3 / 4; }
-.frame--landscape { aspect-ratio: 4 / 3; }
-.frame--widescreen { aspect-ratio: 16 / 9; }
-.frame--ultrawide { aspect-ratio: 21 / 9; }
+.frame--square {
+  aspect-ratio: 1 / 1;
+}
+.frame--portrait {
+  aspect-ratio: 3 / 4;
+}
+.frame--landscape {
+  aspect-ratio: 4 / 3;
+}
+.frame--widescreen {
+  aspect-ratio: 16 / 9;
+}
+.frame--ultrawide {
+  aspect-ratio: 21 / 9;
+}
 
 .frame > * {
   inline-size: 100%;
@@ -364,11 +498,26 @@
 }
 
 /* Region size variations */
-.region--xs { --region-space: var(--space-4); }   /* 16px */
-.region--sm { --region-space: var(--space-8); }   /* 32px */
-.region--md { --region-space: var(--space-12); }  /* 48px - Base */
-.region--lg { --region-space: var(--section-gap); } /* 64px */
-.region--xl { --region-space: var(--space-32); }  /* 128px */
+.region--xs {
+  --region-space: var(--space-4);
+} /* 16px */
+.region--sm {
+  --region-space: var(--space-8);
+} /* 32px */
+.region--md {
+  --region-space: var(--space-12);
+} /* 48px - Base */
+.region--lg {
+  --region-space: var(--section-gap);
+} /* 64px */
+.region--xl {
+  --region-space: var(--space-32);
+} /* 128px */
+
+/* Region with a muted surface background (e.g. a closing editorial band) */
+.region--muted {
+  background-color: var(--color-surface-muted);
+}
 
 /* Legacy class names */
 .region--small {
@@ -394,15 +543,26 @@
    FLOW - Prose Spacing
    Adds consistent vertical rhythm to prose content
    Uses the "lobotomized owl" selector for elegant spacing
-    ======================================== */.flow > * + * {
+    ======================================== */
+.flow > * + * {
   margin-block-start: var(--flow-space, var(--space-4));
 }
 
-.flow--xs { --flow-space: var(--space-1); }
-.flow--sm { --flow-space: var(--space-2); }
-.flow--md { --flow-space: var(--space-4); }
-.flow--lg { --flow-space: var(--space-6); }
-.flow--xl { --flow-space: var(--space-8); }
+.flow--xs {
+  --flow-space: var(--space-1);
+}
+.flow--sm {
+  --flow-space: var(--space-2);
+}
+.flow--md {
+  --flow-space: var(--space-4);
+}
+.flow--lg {
+  --flow-space: var(--space-6);
+}
+.flow--xl {
+  --flow-space: var(--space-8);
+}
 
 /* Legacy class names */
 .flow--tight {
@@ -440,9 +600,18 @@
 }
 
 /* Module span utilities - full width on mobile */
-.span-1, .span-2, .span-3, .span-4,
-.span-5, .span-6, .span-7, .span-8,
-.span-9, .span-10, .span-11, .span-12 {
+.span-1,
+.span-2,
+.span-3,
+.span-4,
+.span-5,
+.span-6,
+.span-7,
+.span-8,
+.span-9,
+.span-10,
+.span-11,
+.span-12 {
   grid-column: span 1;
 }
 
@@ -451,28 +620,66 @@
   .modular-grid {
     grid-template-columns: repeat(var(--grid-modules, 12), 1fr);
   }
-  
-  .span-1 { grid-column: span 1; }
-  .span-2 { grid-column: span 2; }
-  .span-3 { grid-column: span 3; }
-  .span-4 { grid-column: span 4; }
-  .span-5 { grid-column: span 5; }
-  .span-6 { grid-column: span 6; }
-  .span-7 { grid-column: span 7; }
-  .span-8 { grid-column: span 8; }
-  .span-9 { grid-column: span 9; }
-  .span-10 { grid-column: span 10; }
-  .span-11 { grid-column: span 11; }
-  .span-12 { grid-column: span 12; }
-  
+
+  .span-1 {
+    grid-column: span 1;
+  }
+  .span-2 {
+    grid-column: span 2;
+  }
+  .span-3 {
+    grid-column: span 3;
+  }
+  .span-4 {
+    grid-column: span 4;
+  }
+  .span-5 {
+    grid-column: span 5;
+  }
+  .span-6 {
+    grid-column: span 6;
+  }
+  .span-7 {
+    grid-column: span 7;
+  }
+  .span-8 {
+    grid-column: span 8;
+  }
+  .span-9 {
+    grid-column: span 9;
+  }
+  .span-10 {
+    grid-column: span 10;
+  }
+  .span-11 {
+    grid-column: span 11;
+  }
+  .span-12 {
+    grid-column: span 12;
+  }
+
   /* Module positioning */
-  .start-1 { grid-column-start: 1; }
-  .start-2 { grid-column-start: 2; }
-  .start-3 { grid-column-start: 3; }
-  .start-4 { grid-column-start: 4; }
-  .start-5 { grid-column-start: 5; }
-  .start-6 { grid-column-start: 6; }
-  .start-7 { grid-column-start: 7; }
+  .start-1 {
+    grid-column-start: 1;
+  }
+  .start-2 {
+    grid-column-start: 2;
+  }
+  .start-3 {
+    grid-column-start: 3;
+  }
+  .start-4 {
+    grid-column-start: 4;
+  }
+  .start-5 {
+    grid-column-start: 5;
+  }
+  .start-6 {
+    grid-column-start: 6;
+  }
+  .start-7 {
+    grid-column-start: 7;
+  }
 }
 
 /* ========================================
@@ -495,12 +702,24 @@
 
 /* md: 768px - expand to proportional columns */
 @media (min-width: 768px) {
-  .proportion--golden { grid-template-columns: 1fr 1.618fr; }
-  .proportion--golden-thirds { grid-template-columns: 1fr 1.618fr 2.618fr; }
-  .proportion--fourth { grid-template-columns: 1fr 1.333fr; }
-  .proportion--thirds { grid-template-columns: repeat(3, 1fr); }
-  .proportion--emphasis-left { grid-template-columns: 2fr 1fr; }
-  .proportion--emphasis-right { grid-template-columns: 1fr 2fr; }
+  .proportion--golden {
+    grid-template-columns: 1fr 1.618fr;
+  }
+  .proportion--golden-thirds {
+    grid-template-columns: 1fr 1.618fr 2.618fr;
+  }
+  .proportion--fourth {
+    grid-template-columns: 1fr 1.333fr;
+  }
+  .proportion--thirds {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .proportion--emphasis-left {
+    grid-template-columns: 2fr 1fr;
+  }
+  .proportion--emphasis-right {
+    grid-template-columns: 1fr 2fr;
+  }
 }
 
 /* ========================================
@@ -517,11 +736,19 @@
 }
 
 /* Width variations - use these for content areas */
-.wrapper--narrow { --wrapper-width: var(--width-narrow); }  /* 576px - articles, docs */
-.wrapper--normal { --wrapper-width: var(--width-normal); }  /* 672px - default prose */
-.wrapper--wide { --wrapper-width: var(--width-wide); }      /* 768px - events, cards */
-.wrapper--full { --wrapper-width: var(--width-full); }      /* 1280px - grids, galleries */
-.wrapper--bleed { 
+.wrapper--narrow {
+  --wrapper-width: var(--width-narrow);
+} /* 576px - articles, docs */
+.wrapper--normal {
+  --wrapper-width: var(--width-normal);
+} /* 672px - default prose */
+.wrapper--wide {
+  --wrapper-width: var(--width-wide);
+} /* 768px - events, cards */
+.wrapper--full {
+  --wrapper-width: var(--width-full);
+} /* 1280px - grids, galleries */
+.wrapper--bleed {
   max-inline-size: none;
   padding-inline: 0;
 }

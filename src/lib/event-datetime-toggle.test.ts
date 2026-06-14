@@ -412,8 +412,10 @@ describe('Time Range Display', () => {
   });
 
   it('handles events without any time', async () => {
+    // Current-year events omit the year, so pin the fixture to the current year.
+    const thisYear = new Date().getUTCFullYear();
     const container = setupContainer(`
-      <button data-event-datetime="2026-01-20T00:00:00.000Z"
+      <button data-event-datetime="${thisYear}-01-20T00:00:00.000Z"
               data-timezone="UTC">
         <span class="datetime-text"></span>
       </button>
@@ -426,10 +428,30 @@ describe('Time Range Display', () => {
 
     expect(text).toContain('January');
     expect(text).toContain('20');
-    expect(text).toContain('2026');
-    // No time should be shown
+    // Current-year events omit the year
+    expect(text).not.toContain(String(thisYear));
+    // A bare calendar date shows neither a time nor a timezone
     expect(text).not.toContain('PM');
     expect(text).not.toContain('AM');
+    expect(text).not.toContain('UTC');
+
+    container.remove();
+  });
+
+  it('shows the year for events outside the current year', async () => {
+    const otherYear = new Date().getUTCFullYear() + 2;
+    const container = setupContainer(`
+      <button data-event-datetime="${otherYear}-01-20T00:00:00.000Z"
+              data-timezone="UTC">
+        <span class="datetime-text"></span>
+      </button>
+    `);
+
+    const { initDateTimeToggles } = await import('./event-datetime-toggle');
+    initDateTimeToggles();
+
+    const text = container.querySelector('.datetime-text')!.textContent!;
+    expect(text).toContain(String(otherYear));
 
     container.remove();
   });

@@ -8,90 +8,34 @@
 
 :root {
   /* ========================================
-     TYPOGRAPHY TOKENS
-     Golden Ratio Scale (φ = 1.618) with Harmonic Thirds/Fourths
-     Base: 16px - Never go below this (WCAG minimum)
-     Baseline Grid: 24px (1.5 × 16px) - Tufte's preference
+     TYPOGRAPHY TOKENS — single source of truth in 01-typography/_scale.css
+     (font sizes, leading, measure, tracking, font weights, font families).
+     Defined there, not here, to avoid the duplicate/divergent token blocks
+     this file used to carry. Spatial, color, and layout tokens live below.
      ======================================== */
-  
-  /* Micro Typography - Captions, footnotes, marginalia */
-  --text-2xs: 0.694rem;        /* 11.1px - φ^-2 - Smallest readable */
-  --text-xs: 0.833rem;         /* 13.3px - φ^-1.5 - Footnotes */
-  --text-sm: 0.875rem;         /* 14px - Captions, labels */
-  
-  /* Body Typography - Primary reading sizes */
-  --text-base: 1rem;           /* 16px - φ^0 - Sacred minimum (WCAG) */
-  --text-md: 1.125rem;         /* 18px - Enhanced body text */
-  --text-lg: 1.25rem;          /* 20px - Major Third - Large body */
-  
-  /* Display Typography - Headings and emphasis */
-  --text-xl: 1.333rem;         /* 21.3px - Perfect Fourth - H4 */
-  --text-2xl: 1.618rem;        /* 25.9px - φ^1 - Golden! - H3 */
-  --text-3xl: 2.027rem;        /* 32.4px - φ^1.25 - H2 */
-  --text-4xl: 2.618rem;        /* 41.9px - φ^1.618 - H1 */
-  --text-5xl: 3.236rem;        /* 51.8px - φ^2 - Display */
-  --text-6xl: 4.236rem;        /* 67.8px - φ^2.5 - Hero */
-  --text-7xl: 5.236rem;        /* 83.8px - φ^3 - Massive */
-
-  /* Font Families - Geist Sans (primary) + Noto Serif JP (accent) + Geist Mono */
-  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
-               'Helvetica Neue', Arial, sans-serif;
-  --font-serif: 'Noto Serif JP', 'Times New Roman', 'Georgia', serif;
-  --font-mono: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 
-               'Source Code Pro', Menlo, Consolas, 'Courier New', monospace;
-  
-  /* Font Weights - Exploit variable font axis */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Line Height System - Based on Golden Ratio and Baseline Grid */
-  --leading-none: 1;              /* Display text only */
-  --leading-tightest: 1.111;      /* 1/φ - Super condensed */
-  --leading-tight: 1.25;          /* Major Third - Headlines */
-  --leading-snug: 1.333;          /* Perfect Fourth - Subheads */
-  --leading-normal: 1.5;          /* Baseline grid - Body (optimal) */
-  --leading-relaxed: 1.618;       /* Golden Ratio - Airy body */
-  --leading-loose: 1.777;         /* φ + 0.16 - Maximum readability */
-
-  /* Measure (Line Length) - Optimal Reading (Bringhurst & Tufte) */
-  --measure-compact: 45ch;        /* Narrow columns, sidebars */
-  --measure-optimal: 66ch;        /* Primary body text */
-  --measure-comfortable: 72ch;    /* Comfortable sustained reading */
-  --measure-wide: 80ch;           /* Wide layouts, max recommended */
-  --measure-full: 90ch;           /* Technical content, tables */
-  
-  /* Tracking (Letter Spacing) - Optical Adjustment */
-  --tracking-tightest: -0.05em;   /* -50 - Display text, large sizes */
-  --tracking-tight: -0.025em;     /* -25 - Headlines */
-  --tracking-normal: 0;           /* 0 - Body text (never touch!) */
-  --tracking-wide: 0.025em;       /* +25 - All-caps, UI labels */
-  --tracking-wider: 0.05em;       /* +50 - Small text (<14px) */
-  --tracking-widest: 0.1em;       /* +100 - Extreme spacing */
 
   /* ========================================
      SPATIAL SYSTEM
      Powers of 2 Grid - Everything derives from base unit
      ======================================== */
-  
-  --space-unit: 4px;      /* Grid quantum */
-  
+
+  --space-unit: 4px; /* Grid quantum */
+
   --space-0: 0;
-  --space-1: 0.25rem;     /* 4px */
-  --space-2: 0.5rem;      /* 8px */
-  --space-3: 0.75rem;     /* 12px */
-  --space-4: 1rem;        /* 16px - Base rhythm */
-  --space-5: 1.25rem;     /* 20px */
-  --space-6: 1.5rem;      /* 24px */
-  --space-8: 2rem;        /* 32px */
-  --space-10: 2.5rem;     /* 40px */
-  --space-12: 3rem;       /* 48px */
-  --space-16: 4rem;       /* 64px */
-  --space-20: 5rem;       /* 80px */
-  --space-24: 6rem;       /* 96px */
-  --space-32: 8rem;       /* 128px */
-  
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px - Base rhythm */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+  --space-32: 8rem; /* 128px */
+
   /* Semantic Spacing */
   --gutter: var(--space-4);
   --section-gap: var(--space-16);
@@ -99,56 +43,59 @@
 
   /* ========================================
      SWISS COLOR SYSTEM
-     Primary palette: black, white, and red accent
+     Primary palette: black, white, and a single BLUE accent.
+     (Red has been retired as an accent — reserve red only for genuine
+     error/danger semantics, never decoration.)
      OKLCH for perceptually uniform color
      WCAG AA Compliant: 4.5:1 text, 3:1 UI components
      ======================================== */
-  
+
   /* Achromatic Base (Primary Palette) */
   --color-black: oklch(0% 0 0);
   --color-white: oklch(100% 0 0);
   --color-gray-50: oklch(98% 0 0);
   --color-gray-100: oklch(96% 0 0);
-  --color-gray-200: oklch(82% 0 0);     /* Border light: 3.1:1 on 95% surface ✓ */
+  --color-gray-200: oklch(82% 0 0); /* Border light: 3.1:1 on 95% surface ✓ */
   --color-gray-300: oklch(83% 0 0);
   --color-gray-400: oklch(64% 0 0);
-  --color-gray-500: oklch(53% 0 0);     /* Perfect middle gray */
+  --color-gray-500: oklch(53% 0 0); /* Perfect middle gray */
   --color-gray-600: oklch(42% 0 0);
   --color-gray-700: oklch(32% 0 0);
-  --color-gray-800: oklch(38% 0 0);     /* Border dark: 3.2:1 on 12% surface ✓ */
+  --color-gray-800: oklch(38% 0 0); /* Border dark: 3.2:1 on 12% surface ✓ */
   --color-gray-900: oklch(15% 0 0);
-  
-  /* Accent - Use Sparingly for Maximum Impact */
-  /* Adjusted for WCAG AA: 4.5:1 on white, 4.5:1 on dark surfaces */
-  --color-accent: oklch(45% 0.22 25);         /* Darker for light mode: 7.8:1 on white */
-  --color-accent-dark: oklch(38% 0.22 25);    /* Hover state: 11.2:1 on white */
-  --color-accent-light: oklch(55% 0.22 25);   /* Subtle accents: 4.9:1 on white */
-  
-  /* Button/Interactive Blue */
-  --color-blue: oklch(45% 0.22 240);          /* Blue accent: 7.8:1 on white */
-  --color-blue-hover: oklch(38% 0.22 240);    /* Darker blue for hover states: 11.2:1 on white */
-  --color-blue-light: oklch(55% 0.22 240);    /* Subtle blue accents: 4.9:1 on white */
-  
+
+  /* Accent - the single blue accent (links, focus, active nav, buttons, logo, badges) */
+  /* Adjusted for WCAG AA: ~7.8:1 on white */
+  --color-accent: oklch(45% 0.22 240); /* Blue: 7.8:1 on white */
+  --color-accent-dark: oklch(38% 0.22 240); /* Hover state: 11.2:1 on white */
+  --color-accent-light: oklch(55% 0.22 240); /* Subtle accents: 4.9:1 on white */
+
+  /* --color-blue* are kept as aliases so existing button/logo consumers keep working,
+     but they now resolve to the one accent — there is no separate red anymore. */
+  --color-blue: var(--color-accent);
+  --color-blue-hover: var(--color-accent-dark);
+  --color-blue-light: var(--color-accent-light);
+
   /* Semantic Colors (Derived from base) */
   /* Light Mode: Softer contrast for comfortable reading (WCAG AA) */
-  --color-text: oklch(22% 0 0);               /* ~11:1 on white ✓ - modern, easy on eyes */
-  --color-text-muted: oklch(40% 0 0);         /* ~6:1 on white ✓ */
-  --color-text-subtle: oklch(50% 0 0);        /* ~4.5:1 on white ✓ (AA) */
-  --color-border: var(--color-gray-200);      /* 3.1:1 on 95% surface ✓ (UI) */
+  --color-text: oklch(22% 0 0); /* ~11:1 on white ✓ - modern, easy on eyes */
+  --color-text-muted: oklch(40% 0 0); /* ~6:1 on white ✓ */
+  --color-text-subtle: oklch(50% 0 0); /* ~4.5:1 on white ✓ (AA) */
+  --color-border: var(--color-gray-200); /* 3.1:1 on 95% surface ✓ (UI) */
   --color-border-muted: var(--color-gray-100);
-  --color-surface: oklch(95% 0 0);                /* Base: 95% */
-  --color-surface-muted: oklch(92% 0 0);          /* Recessed: 92% - clear 3% difference */
-  --color-surface-raised: var(--color-white);     /* Raised: 100% - strong 5% difference */
-  
+  --color-surface: oklch(95% 0 0); /* Base: 95% */
+  --color-surface-muted: oklch(92% 0 0); /* Recessed: 92% - clear 3% difference */
+  --color-surface-raised: var(--color-white); /* Raised: 100% - strong 5% difference */
+
   /* Interactive States */
-  --color-link: var(--color-accent);          /* 7.8:1 on white ✓ */
+  --color-link: var(--color-accent); /* 7.8:1 on white ✓ */
   --color-link-hover: var(--color-accent-dark); /* 11.2:1 on white ✓ */
   --color-focus: var(--color-accent);
 
   /* ========================================
      LAYOUT TOKENS
      ======================================== */
-  
+
   /* Breakpoints - Mobile First
      Base styles (no query) = portrait phones (320-639px)
      Then progressively enhance for larger screens:
@@ -162,27 +109,32 @@
      so these values are documented here for consistency. */
 
   /* Container Widths */
-  --width-narrow: 36rem;      /* 576px - ~60ch */
-  --width-normal: 42rem;      /* 672px - ~72ch */
-  --width-wide: 48rem;        /* 768px - ~80ch */
-  --width-full: 80rem;        /* 1280px - full width layouts */
-  
+  --width-narrow: 36rem; /* 576px - ~60ch */
+  --width-normal: 42rem; /* 672px - ~72ch */
+  --width-wide: 48rem; /* 768px - ~80ch */
+  --width-full: 80rem; /* 1280px - full width layouts */
+
   /* Border Radius */
-  --radius-sm: 0.25rem;       /* 4px */
-  --radius-md: 0.5rem;        /* 8px */
-  --radius-lg: 1rem;          /* 16px */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 1rem; /* 16px */
   --radius-full: 9999px;
-  
+
   /* Shadows - Subtle, Swiss-inspired */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.06);
-  
+
+  /* Easing — refined deceleration curves (never bounce/elastic, which read as dated) */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
   /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  
+  --transition-fast: 150ms var(--ease-out-quart);
+  --transition-base: 200ms var(--ease-out-quart);
+  --transition-slow: 300ms var(--ease-out-quint);
+
   /* Z-Index Scale */
   --z-base: 0;
   --z-dropdown: 1000;
@@ -200,36 +152,38 @@
    ======================================== */
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme='light']) {
     /* Dark Mode: Softer contrast for comfortable reading (WCAG AA) */
-    --color-text: oklch(88% 0 0);               /* ~12:1 on oklch(12%) ✓ - modern, easy on eyes */
-    --color-text-muted: oklch(65% 0 0);         /* ~6:1 on oklch(12%) ✓ */
-    --color-text-subtle: oklch(55% 0 0);        /* ~4.5:1 on oklch(12%) ✓ (AA) */
-    --color-border: var(--color-gray-800);      /* 3.2:1 on oklch(12%) ✓ (UI) */
+    --color-text: oklch(88% 0 0); /* ~12:1 on oklch(12%) ✓ - modern, easy on eyes */
+    --color-text-muted: oklch(65% 0 0); /* ~6:1 on oklch(12%) ✓ */
+    --color-text-subtle: oklch(55% 0 0); /* ~4.5:1 on oklch(12%) ✓ (AA) */
+    --color-border: var(--color-gray-800); /* 3.2:1 on oklch(12%) ✓ (UI) */
     --color-border-muted: var(--color-gray-900);
-    --color-surface: oklch(12% 0 0);            /* Base: 12% - deep dark */
-    --color-surface-muted: oklch(8% 0 0);       /* Recessed: 8% - darker, clear difference */
-    --color-surface-raised: oklch(20% 0 0);     /* Raised: 20% - strong 8% difference */
-    
-    /* Adjusted accent for dark mode - lighter for contrast */
-    --color-accent: oklch(70% 0.22 25);         /* 8.5:1 on oklch(12%) ✓ */
-    --color-accent-dark: oklch(80% 0.22 25);    /* Hover: 12.1:1 on oklch(12%) ✓ */
+    --color-surface: oklch(12% 0 0); /* Base: 12% - deep dark */
+    --color-surface-muted: oklch(8% 0 0); /* Recessed: 8% - darker, clear difference */
+    --color-surface-raised: oklch(20% 0 0); /* Raised: 20% - strong 8% difference */
+
+    /* Single blue accent, lightened for the dark surface (blue aliases follow it) */
+    --color-accent: oklch(72% 0.18 240); /* ~8.5:1 on oklch(12%) ✓ */
+    --color-accent-dark: oklch(82% 0.15 240); /* Hover: brighter on dark ✓ */
+    --color-accent-light: oklch(62% 0.18 240); /* Subtle accents on dark */
   }
 }
 
 /* Manual dark mode override */
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   /* Dark Mode: Softer contrast for comfortable reading (WCAG AA) */
-  --color-text: oklch(88% 0 0);               /* ~12:1 on oklch(12%) ✓ - modern, easy on eyes */
-  --color-text-muted: oklch(65% 0 0);         /* ~6:1 on oklch(12%) ✓ */
-  --color-text-subtle: oklch(55% 0 0);        /* ~4.5:1 on oklch(12%) ✓ (AA) */
-  --color-border: var(--color-gray-800);      /* 3.2:1 on oklch(12%) ✓ (UI) */
+  --color-text: oklch(88% 0 0); /* ~12:1 on oklch(12%) ✓ - modern, easy on eyes */
+  --color-text-muted: oklch(65% 0 0); /* ~6:1 on oklch(12%) ✓ */
+  --color-text-subtle: oklch(55% 0 0); /* ~4.5:1 on oklch(12%) ✓ (AA) */
+  --color-border: var(--color-gray-800); /* 3.2:1 on oklch(12%) ✓ (UI) */
   --color-border-muted: var(--color-gray-900);
-  --color-surface: oklch(12% 0 0);            /* Base: 12% - deep dark */
-  --color-surface-muted: oklch(8% 0 0);       /* Recessed: 8% - darker, clear difference */
-  --color-surface-raised: oklch(20% 0 0);     /* Raised: 20% - strong 8% difference */
-  
-  /* Adjusted accent for dark mode - lighter for contrast */
-  --color-accent: oklch(70% 0.22 25);         /* 8.5:1 on oklch(12%) ✓ */
-  --color-accent-dark: oklch(80% 0.22 25);    /* Hover: 12.1:1 on oklch(12%) ✓ */
+  --color-surface: oklch(12% 0 0); /* Base: 12% - deep dark */
+  --color-surface-muted: oklch(8% 0 0); /* Recessed: 8% - darker, clear difference */
+  --color-surface-raised: oklch(20% 0 0); /* Raised: 20% - strong 8% difference */
+
+  /* Single blue accent, lightened for the dark surface (blue aliases follow it) */
+  --color-accent: oklch(72% 0.18 240); /* ~8.5:1 on oklch(12%) ✓ */
+  --color-accent-dark: oklch(82% 0.15 240); /* Hover: brighter on dark ✓ */
+  --color-accent-light: oklch(62% 0.18 240); /* Subtle accents on dark */
 }

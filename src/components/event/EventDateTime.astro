@@ -1,12 +1,12 @@
 ---
 /**
  * EventDateTime Component
- * 
+ *
  * Interactive datetime display that toggles between:
  * - Event timezone (default)
  * - Browser local timezone
  * - UTC
- * 
+ *
  * Falls back to static display without JavaScript.
  */
 
@@ -14,6 +14,7 @@ import { getEventTimezone, getTimezoneAbbreviation } from '../../utils/event-tim
 
 interface Props {
   eventDate: Date;
+  endDate?: Date;
   startTime?: string;
   endTime?: string;
   venue?: string;
@@ -22,32 +23,63 @@ interface Props {
   style?: string;
 }
 
-const { eventDate, startTime, endTime, venue, timezone: explicitTz, class: className, style } = Astro.props;
+const {
+  eventDate,
+  endDate,
+  startTime,
+  endTime,
+  venue,
+  timezone: explicitTz,
+  class: className,
+  style,
+} = Astro.props;
 
 const timezone = getEventTimezone(venue, explicitTz);
 const tzAbbrev = getTimezoneAbbreviation(eventDate, timezone);
 
+// Multi-day when an endDate is set and lands on a different calendar day
+const isMultiDay = !!endDate && endDate.getTime() !== eventDate.getTime();
+
+// Omit the year when the event falls in the current year — it's noise for
+// near-term events and only earns its place for past/future-year dates.
+const currentYear = new Date().getFullYear();
+const longDate = (d: Date) =>
+  d.toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    ...(d.getUTCFullYear() === currentYear ? {} : { year: 'numeric' }),
+  });
+
+// Compact date for multi-day ranges (two dates already carry enough context)
+const mediumDate = (d: Date) =>
+  d.toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+
 // Format static fallback
-const dateStr = eventDate.toLocaleDateString('en-US', {
-  timeZone: 'UTC',
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
-
-const timeStr = startTime 
-  ? `${startTime}${endTime ? `–${endTime}` : ''} ${tzAbbrev}`
-  : '';
-
-const fullDisplay = timeStr ? `${dateStr} · ${timeStr}` : dateStr;
+let fullDisplay: string;
+if (isMultiDay) {
+  // "Sat, Jun 27, 11:00 AM – Sun, Jun 28, 11:00 AM PDT"
+  const start = startTime ? `${mediumDate(eventDate)}, ${startTime}` : mediumDate(eventDate);
+  const end = endTime ? `${mediumDate(endDate!)}, ${endTime}` : mediumDate(endDate!);
+  fullDisplay = `${start} – ${end}${tzAbbrev ? ` ${tzAbbrev}` : ''}`;
+} else {
+  const timeStr = startTime ? `${startTime}${endTime ? `–${endTime}` : ''} ${tzAbbrev}` : '';
+  fullDisplay = timeStr ? `${longDate(eventDate)} · ${timeStr}` : longDate(eventDate);
+}
 ---
 
-<button 
+<button
   type="button"
-  class:list={["event-datetime", className]}
+  class:list={['event-datetime', className]}
   style={style}
   data-event-datetime={eventDate.toISOString()}
+  data-end-date={endDate?.toISOString()}
   data-start-time={startTime}
   data-end-time={endTime}
   data-timezone={timezone}
@@ -70,19 +102,19 @@ const fullDisplay = timeStr ? `${dateStr} · ${timeStr}` : dateStr;
     cursor: pointer;
     text-align: start;
   }
-  
+
   .event-datetime:hover {
     text-decoration: underline;
     text-decoration-style: dotted;
     text-underline-offset: 2px;
   }
-  
+
   .event-datetime:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
-  
+
   .datetime-mode {
     font-size: var(--text-xs);
     color: var(--color-text-subtle);

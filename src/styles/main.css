@@ -25,3 +25,6 @@
 
 /* Utilities - Single-purpose helper classes */
 @import './06-utilities/_utilities.css';
+
+/* Motion - Scroll-driven enhancement (progressive, opt-in) */
+@import './06-utilities/_motion.css';
