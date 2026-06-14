@@ -5,7 +5,7 @@ author: 'MicroHAMS'
 date: 2025-10-21
 heroImage: '/images/articles/helical-resonator-filter.jpg'
 tags: ['Field Day', 'HF']
-featured: true
+featured: false
 ---
 
 ## Introduction

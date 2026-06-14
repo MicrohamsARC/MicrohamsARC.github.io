@@ -70,16 +70,23 @@ const railEvents = currentAndUpcoming
   .filter((e: Event) => e !== heroEvent && e !== nextMeeting)
   .slice(0, 2);
 
-// Don't surface an article about the very event we're already featuring as
-// the hero (e.g. the Field Day write-up while Field Day is the hero tile).
+// Homepage "Latest": featured articles pin to the top, and a featured
+// article is always kept even if it shares the hero event's topic tag.
+// Otherwise we drop articles that merely echo the hero (e.g. the Field Day
+// write-up while the Field Day event is the hero tile).
 const heroPrimaryTag = heroEvent?.data.tags?.[0]?.toLowerCase();
-const homeArticles = (
-  heroPrimaryTag
-    ? articles.filter(
-        (a: Article) => !(a.data.tags ?? []).some((t: string) => t.toLowerCase() === heroPrimaryTag)
-      )
-    : articles
-).slice(0, 4);
+const homeArticles = articles
+  .filter(
+    (a: Article) =>
+      a.data.featured ||
+      !heroPrimaryTag ||
+      !(a.data.tags ?? []).some((t: string) => t.toLowerCase() === heroPrimaryTag)
+  )
+  .sort((a: Article, b: Article) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0);
+  })
+  .slice(0, 4);
 
 // Calendar dates render in UTC so a midnight date doesn't shift a day in Pacific
 const fmtDate = (d: Date) =>
