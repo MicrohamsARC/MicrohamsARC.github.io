@@ -33,6 +33,8 @@ Since 2007, we've hosted an annual conference focusing on digital communications
 
 We participate in ARRL Field Day, often partnering with BEARONS (Boeing Employee Amateur Radio Society), showcasing emergency communications capabilities and portable station operations. Our most recent Field Day operations were multi-station, multi-band, multi-op events held in the summer of 2024 and 2025 in an area with a low RF noise floor and good access for amateurs in and around the Seattle area.
 
+Read more about [our Field Day history and 2026 plans](/articles/microhams-field-day-history), or see the details for [ARRL Field Day 2026](/events/2026-06-arrl-field-day).
+
 ### Mike & Key Swapmeet Lightning Talks
 
 In spring of 2025 members and the board pulled together a series of lightning talks that were available to visitors of the annual Mike & Key Swapmeet in Puyallup, WA. The open format is designed to encourage engagement with the community to the benefit of all hams.
