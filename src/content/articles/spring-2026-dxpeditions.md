@@ -3,7 +3,7 @@ title: 'Spring 2026 DXpeditions: April & May on the Air'
 description: 'A roundup of notable DXpeditions active in April and May 2026, including TX9W to the Marquesas, C5B from the Gambia, and more—right in the peak of Cycle 25 propagation.'
 author: 'MicroHAMS'
 date: 2026-04-14
-featured: true
+featured: false
 tags: ['DX', 'propagation', 'HF']
 ---
 

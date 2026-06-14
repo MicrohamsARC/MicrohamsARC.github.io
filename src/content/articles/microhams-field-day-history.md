@@ -4,7 +4,7 @@ description: 'A look back at MicroHAMS Field Day — the rooftop-garage and park
 author: 'MicroHAMS'
 date: 2026-06-14
 draft: false
-featured: false
+featured: true
 tags: ['Field Day', 'HF']
 ---
 
