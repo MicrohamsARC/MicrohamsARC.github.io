@@ -1,134 +1,70 @@
-# MicroHAMS
+# MicroHAMS Website
 
-A static website for MicroHAMS, built with [Astro](https://astro.build).
+The public website for **MicroHAMS Amateur Radio Club**, deployed at [microhams.com](https://microhams.com).
 
-## Quick Start
+Built with [Astro](https://astro.build) and hosted on GitHub Pages. Pushing to `main` deploys automatically.
 
-```bash
-npm install
-npm run dev
-```
+---
 
-The dev server URL will be shown in the terminal (typically `http://localhost:4321`).
+## Adding and Updating Content
 
-## Project Structure
+All site content lives in `src/content/` as Markdown files. The full guide is at:
 
-```text
-├── src/
-│   ├── content/          # Markdown content collections
-│   │   ├── articles/     # Technical articles and guides
-│   │   ├── docs/         # Reference documentation
-│   │   ├── events/       # Club events and meetings
-│   │   ├── pages/        # Static pages (about)
-│   │   └── config.ts     # Content schemas
-│   ├── components/       # Astro components
-│   ├── layouts/          # Page layouts
-│   ├── pages/            # Route files
-│   ├── styles/           # CSS (ITCSS architecture)
-│   └── site.config.ts    # Site configuration (venues, meetings)
-├── playwright/           # E2E tests
-├── scripts/              # Build and validation scripts
-└── public/               # Static assets
-```
+**[microhams.com/contributing](https://microhams.com/contributing)**
 
-## Scripts
+Quick links:
 
-### Development
+- [Events](https://microhams.com/contributing/events) — Meetings, field days, swap meets
+- [Articles](https://microhams.com/contributing/articles) — Guides, tutorials, news
+- [Documentation](https://microhams.com/contributing/docs) — Technical reference
+- [Schema Reference](https://microhams.com/contributing/schemas) — All content fields
 
-| Command           | Description                      |
-| ----------------- | -------------------------------- |
-| `npm run dev`     | Development server with HMR      |
-| `npm run build`   | Build static site to `dist/`     |
-| `npm run preview` | Preview production build locally |
+### Typical workflow
 
-### Testing
+1. Create a branch, add or edit a Markdown file in `src/content/`
+2. Open a pull request — CI runs automatically
+3. Merge to `main` — site deploys within a minute or two
 
-| Command            | Description                       |
-| ------------------ | --------------------------------- |
-| `npm test`         | Unit tests in watch mode (Vitest) |
-| `npm run test:run` | Unit tests single run             |
-
-**E2E Tests (optional):**
-
-Playwright is optional and not installed by default. The test commands will guide you through setup if needed:
-
-| Command                   | Description                                  |
-| ------------------------- | -------------------------------------------- |
-| `npm run test:e2e`        | E2E tests (auto-installs browsers if needed) |
-| `npm run test:e2e:ui`     | E2E tests with interactive UI                |
-| `npm run test:e2e:update` | Update E2E snapshots                         |
-
-### Code Quality
-
-| Command              | Description                   |
-| -------------------- | ----------------------------- |
-| `npm run lint`       | Check for lint errors         |
-| `npm run lint:fix`   | Auto-fix lint errors          |
-| `npm run type-check` | TypeScript + Astro validation |
-
-### Validation
-
-| Command            | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `npm run verify`   | Check package versions + security audit           |
-| `npm run validate` | Design system + accessibility checks              |
-| `npm run ci`       | Local validation (lint, types, unit tests, build) |
-
-### Git Hooks
-
-Pre-configured via Husky:
-
-- **pre-commit**: Runs lint-staged (ESLint + Prettier) and `astro check`
-- **pre-push**: Runs `pre-push:fast` validation
-
-### Docker (Advanced)
-
-Docker provides a consistent environment for CI and E2E testing, useful when:
-
-- Local Playwright browser installation fails or behaves differently
-- You want to match the exact CI environment locally
-- Running on a machine without Node.js installed
-
-| Command                | Description                                           |
-| ---------------------- | ----------------------------------------------------- |
-| `npm run docker:build` | Build the Docker image                                |
-| `npm run docker:ci`    | Run full CI pipeline in container                     |
-| `npm run docker:unit`  | Run unit tests in container                           |
-| `npm run docker:e2e`   | Run E2E tests in container (Playwright pre-installed) |
-| `npm run docker:dev`   | Start dev server in container                         |
-
-First-time setup:
-
-```bash
-npm run docker:build
-npm run docker:ci
-```
-
-Configuration is in `.docker/`.
-
-## Adding Content
-
-For detailed content guidelines, schema documentation, and examples, see:
-
-**[Contributing Guide](https://microhams.com/contributing)**
-
-The contributing guide includes comprehensive information on:
-
-- Creating articles, events, and documentation
-- Content schemas and required fields
-- Venue and meeting configuration
-- Auto-generated schema documentation
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes
-4. Run `npm run ci` to validate
-5. Submit a pull request
+---
 
 ## Deployment
 
-Push to `main` triggers GitHub Actions deployment to GitHub Pages.
+| What           | Where                                                |
+| -------------- | ---------------------------------------------------- |
+| Live site      | [microhams.com](https://microhams.com)               |
+| Hosting        | GitHub Pages                                         |
+| Deploy trigger | Push or merge to `main`                              |
+| CI             | GitHub Actions (build, lint, type-check, unit tests) |
 
-Site: <https://microhams.com>
+Deployment status is visible under the [Actions tab](../../actions).
+
+---
+
+## Automation
+
+| Bot                     | What it does                                                          |
+| ----------------------- | --------------------------------------------------------------------- |
+| **Dependabot**          | Opens a grouped PR each Wednesday with minor/patch dependency updates |
+| **Broken link checker** | Runs after each deploy and weekly; opens an issue if links are broken |
+
+Dependabot PRs are safe to merge if CI passes. Major version bumps are excluded and handled manually.
+
+---
+
+## Repository Layout
+
+```text
+src/content/        # All Markdown content (events, articles, docs, pages)
+src/pages/          # Route files and contributing guide
+src/components/     # Astro components
+src/layouts/        # Page layouts
+src/styles/         # CSS (ITCSS architecture)
+src/site.config.ts  # Venues, recurring meeting links, site-wide settings
+.github/            # CI, deploy, Dependabot, and link-check workflows
+```
+
+---
+
+## Developer Setup
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for local setup, available scripts, testing, and Docker.
