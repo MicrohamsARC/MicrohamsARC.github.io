@@ -8,7 +8,7 @@
 
 | Concern            | Tool                              |
 | ------------------ | --------------------------------- |
-| Framework          | Astro 5 (static site generator)   |
+| Framework          | Astro 6 (static site generator)   |
 | Language           | TypeScript                        |
 | Styling            | Vanilla CSS (ITCSS architecture)  |
 | Unit tests         | Vitest                            |
@@ -27,7 +27,7 @@
 
 Four Markdown-driven content types, each with Zod-validated schemas:
 
-- **`articles/`** — Technical articles and guides (SDR, digital modes, filters, DXpeditions)
+- **`articles/`** — Technical articles and guides (field day, filters, propagation, DXpeditions)
 - **`docs/`** — Reference documentation (antenna theory, APRS gateways)
 - **`events/`** — Club events and meetings (monthly meetings, field day, swap meets), optionally with images
 - **`pages/`** — Static informational pages (About)
@@ -64,15 +64,25 @@ Four Markdown-driven content types, each with Zod-validated schemas:
 
 ## Common Commands
 
-| Command              | Description                                                  |
-| -------------------- | ------------------------------------------------------------ |
-| `npm run dev`        | Start development server (typically `http://localhost:4321`) |
-| `npm run build`      | Build static site to `dist/`                                 |
-| `npm run preview`    | Preview production build locally                             |
-| `npm test`           | Unit tests in watch mode (Vitest)                            |
-| `npm run test:run`   | Unit tests single run                                        |
-| `npm run test:e2e`   | E2E tests via Playwright (auto-installs browsers if needed)  |
-| `npm run lint`       | Check for lint errors                                        |
-| `npm run lint:fix`   | Auto-fix lint errors                                         |
-| `npm run type-check` | TypeScript + Astro validation                                |
-| `npm run ci`         | Full local validation (lint, types, unit tests, build)       |
+| Command               | Description                                                                 |
+| --------------------- | --------------------------------------------------------------------------- |
+| `npm run dev`         | Start development server (typically `http://localhost:4321`)                |
+| `npm run build`       | Build static site to `dist/`                                                |
+| `npm run preview`     | Preview production build locally                                            |
+| `npm test`            | Unit tests in watch mode (Vitest)                                           |
+| `npm run test:run`    | Unit tests single run                                                       |
+| `npm run test:e2e`    | E2E tests via Playwright (auto-installs browsers if needed)                 |
+| `npm run lint`        | Check for lint errors                                                       |
+| `npm run lint:fix`    | Auto-fix lint errors                                                        |
+| `npm run type-check`  | TypeScript + Astro validation                                               |
+| `npm run check:links` | Verify internal links in the built `dist/` (needs a prior `build`)          |
+| `npm run ci`          | Full local validation (verify, lint, types, unit tests, build, check:links) |
+
+---
+
+## Conventions & Gotchas
+
+- **`pre-push` runs the full validation suite** (lint, type-check, content validation, unit tests, build) via a Husky hook — pushes take ~20s and are gated on it passing.
+- **Deploy = publish.** Push or merge to `main` triggers `deploy.yml`; the change is live at [microhams.com](https://microhams.com) within a minute or two. There is no staging environment.
+- **Public repository.** Never commit secrets or personal contact details — git history is permanent and world-readable.
+- **Link checking is internal-only and runs in CI** (`ci.yml` → `check:links`), verifying links resolve within the built site. External-link/URL-rot checking is intentionally out of scope. No third-party GitHub Actions are used.

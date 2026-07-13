@@ -67,26 +67,27 @@ Playwright is not installed by default. The test commands will prompt for setup 
 
 ### Code Quality
 
-| Command              | Description                   |
-| -------------------- | ----------------------------- |
-| `npm run lint`       | Check for lint errors         |
-| `npm run lint:fix`   | Auto-fix lint errors          |
-| `npm run type-check` | TypeScript + Astro validation |
+| Command               | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `npm run lint`        | Check for lint errors                                |
+| `npm run lint:fix`    | Auto-fix lint errors                                 |
+| `npm run type-check`  | TypeScript + Astro validation                        |
+| `npm run check:links` | Verify internal links in `dist/` (run `build` first) |
 
 ### Validation
 
-| Command            | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `npm run verify`   | Check package versions + security audit           |
-| `npm run validate` | Design system + accessibility checks              |
-| `npm run ci`       | Local validation (lint, types, unit tests, build) |
+| Command            | Description                                                            |
+| ------------------ | ---------------------------------------------------------------------- |
+| `npm run verify`   | Check package versions + security audit                                |
+| `npm run validate` | Design system + accessibility checks                                   |
+| `npm run ci`       | Local validation (verify, lint, types, unit tests, build, check:links) |
 
 ## Git Hooks
 
 Pre-configured via Husky, run automatically on git operations:
 
 - **pre-commit**: lint-staged (ESLint + Prettier) + `astro check`
-- **pre-push**: full validation suite (lint, type-check, unit tests, build)
+- **pre-push**: full validation suite (lint, type-check, content validation, unit tests, build)
 
 ## Docker
 
@@ -111,11 +112,10 @@ Configuration is in `.docker/`.
 
 ## CI / GitHub Actions
 
-| Workflow         | Trigger               | What it does                     |
-| ---------------- | --------------------- | -------------------------------- |
-| `ci.yml`         | PR and push to `main` | Lint, type-check, unit tests     |
-| `deploy.yml`     | Push to `main`        | Build and deploy to GitHub Pages |
-| `link-check.yml` | Post-deploy + weekly  | Check for broken links           |
+| Workflow     | Trigger               | What it does                                             |
+| ------------ | --------------------- | -------------------------------------------------------- |
+| `ci.yml`     | PR and push to `main` | Lint, type-check, unit tests, build, internal link check |
+| `deploy.yml` | Push to `main`        | Build and deploy to GitHub Pages                         |
 
 ## Contributing
 
