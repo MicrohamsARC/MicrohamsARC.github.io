@@ -68,6 +68,13 @@
     "@playwright/test": "^1.61.1",
     "playwright-core": "^1.56.1"
   },
+  "overrides": {
+    "undici": "^7.28.0",
+    "postcss": "^8.5.16",
+    "js-yaml": "^4.3.0",
+    "@xmldom/xmldom": "^0.9.10",
+    "yaml": "^2.8.3"
+  },
   "lint-staged": {
     "*.{js,ts,astro}": [
       "eslint --fix",
