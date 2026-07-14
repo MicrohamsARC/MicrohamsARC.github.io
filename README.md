@@ -29,12 +29,12 @@ Quick links:
 
 ## Deployment
 
-| What           | Where                                                |
-| -------------- | ---------------------------------------------------- |
-| Live site      | [microhams.com](https://microhams.com)               |
-| Hosting        | GitHub Pages                                         |
-| Deploy trigger | Push or merge to `main`                              |
-| CI             | GitHub Actions (build, lint, type-check, unit tests) |
+| What           | Where                                                                     |
+| -------------- | ------------------------------------------------------------------------- |
+| Live site      | [microhams.com](https://microhams.com)                                    |
+| Hosting        | GitHub Pages                                                              |
+| Deploy trigger | Push or merge to `main`                                                   |
+| CI             | GitHub Actions (lint, type-check, unit tests, build, internal link check) |
 
 Deployment status is visible under the [Actions tab](../../actions).
 
@@ -42,12 +42,13 @@ Deployment status is visible under the [Actions tab](../../actions).
 
 ## Automation
 
-| Bot                     | What it does                                                          |
-| ----------------------- | --------------------------------------------------------------------- |
-| **Dependabot**          | Opens a grouped PR each Wednesday with minor/patch dependency updates |
-| **Broken link checker** | Runs after each deploy and weekly; opens an issue if links are broken |
+| Bot            | What it does                                                          |
+| -------------- | --------------------------------------------------------------------- |
+| **Dependabot** | Opens a grouped PR each Wednesday with minor/patch dependency updates |
 
 Dependabot PRs are safe to merge if CI passes. Major version bumps are excluded and handled manually.
+
+Internal links are verified as part of CI (`npm run check:links`) on every PR and push — no separate workflow or third-party action.
 
 ---
 
@@ -60,7 +61,7 @@ src/components/     # Astro components
 src/layouts/        # Page layouts
 src/styles/         # CSS (ITCSS architecture)
 src/site.config.ts  # Venues, recurring meeting links, site-wide settings
-.github/            # CI, deploy, Dependabot, and link-check workflows
+.github/            # CI, deploy, and Dependabot config
 ```
 
 ---
