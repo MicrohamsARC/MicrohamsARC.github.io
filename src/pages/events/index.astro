@@ -70,7 +70,7 @@ const pastEvents = sortedEvents
     <div class="wrapper wrapper--full">
       <div class="stack-4">
         <h1 class="text-4xl">Events</h1>
-        <p class="lead" style="max-inline-size: var(--measure-wide);">
+        <p class="lead">
           Join us for meetings, conferences, field days, and other amateur radio activities. Monthly
           meetings are typically held on the third Tuesday of each month at 6:00 PM Pacific. All
           members and guests are welcome!
@@ -83,7 +83,7 @@ const pastEvents = sortedEvents
   <section
     id="current-section"
     class="region"
-    style="background-color: var(--color-surface-accent); display: {currentEvents.length > 0 ? '' : 'none'};"
+    style={`background-color: var(--color-surface-accent);${currentEvents.length > 0 ? '' : ' display: none;'}`}
   >
     <div class="wrapper wrapper--full">
       <div class="stack-8">
