@@ -17,12 +17,10 @@
 // instant via Astro `prefetch` (see astro.config.mjs) and flicker-free via the
 // static CSS wave baseline + a persistent shader clock in SiteHeader.astro.
 
-// Self-hosted fonts (Fontsource → bundled woff2, no third-party request).
-// Atkinson Hyperlegible Next: body/UI (Braille Institute low-vision face, incl. italic).
-// JetBrains Mono: headings + code.
-import '@fontsource-variable/atkinson-hyperlegible-next';
-import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
-import '@fontsource-variable/jetbrains-mono';
+// Fonts are self-hosted and preloaded via Astro's native Fonts API (configured
+// in astro.config.mjs). <Font> injects the @font-face + metric-matched fallback
+// + <link rel="preload">, so text does not swap/reflow on load (no FOUT).
+import { Font } from 'astro:assets';
 
 import '../styles/main.css';
 
@@ -65,7 +63,9 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    {/* Fonts are self-hosted via Fontsource (imported above) — no third-party request. */}
+    {/* Self-hosted fonts, preloaded with metric-matched fallbacks (no FOUT). */}
+    <Font cssVariable="--font-atkinson" preload />
+    <Font cssVariable="--font-jetbrains" preload />
 
     {/* No <ClientRouter />: full-page nav + prefetch (see note atop this file). */}
 

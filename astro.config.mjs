@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import remarkMath from 'remark-math';
 import rehypeMathjax from 'rehype-mathjax';
 
@@ -22,6 +22,50 @@ export default defineConfig({
     // Cache busting via content hashing
     inlineStylesheets: 'auto',
   },
+  // Self-hosted fonts via Astro's native Fonts API (local provider — no
+  // build-time network). This preloads the woff2 and, because each fallback
+  // stack ends in a generic keyword, generates a metric-matched fallback face
+  // (size-adjust/ascent-override) so text does not visibly swap or reflow on
+  // load — eliminating the FOUT flicker on every navigation. Font files live in
+  // src/assets/fonts (latin subset, variable). The `--font-*` CSS variables are
+  // consumed in src/styles/01-typography/_fonts.css.
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: 'Atkinson Hyperlegible Next',
+      cssVariable: '--font-atkinson',
+      fallbacks: ['ui-sans-serif', 'sans-serif'],
+      options: {
+        variants: [
+          {
+            weight: '200 800',
+            style: 'normal',
+            src: ['./src/assets/fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2'],
+          },
+          {
+            weight: '200 800',
+            style: 'italic',
+            src: ['./src/assets/fonts/atkinson-hyperlegible-next-latin-wght-italic.woff2'],
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: 'JetBrains Mono',
+      cssVariable: '--font-jetbrains',
+      fallbacks: ['ui-monospace', 'monospace'],
+      options: {
+        variants: [
+          {
+            weight: '100 800',
+            style: 'normal',
+            src: ['./src/assets/fonts/jetbrains-mono-latin-wght-normal.woff2'],
+          },
+        ],
+      },
+    },
+  ],
   // Markdown configuration
   markdown: {
     shikiConfig: {
