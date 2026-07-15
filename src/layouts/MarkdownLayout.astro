@@ -16,11 +16,11 @@ const { frontmatter } = Astro.props;
   author={frontmatter.author}
 >
   <article class="region">
-    <div class="wrapper wrapper--wide">
+    <div class="wrapper">
       <!-- Article Header - Conditionally shown -->
       {
         !frontmatter.hideHeader && (
-          <header class="stack-4" style="margin-block-end: var(--space-8);">
+          <header class="stack-4 prose" style="margin-block-end: var(--space-8);">
             <h1>{frontmatter.title}</h1>
 
             {frontmatter.description && (
@@ -69,7 +69,7 @@ const { frontmatter } = Astro.props;
       }
 
       <!-- Article Content with Flow -->
-      <div class="flow" style="max-inline-size: var(--measure-wide);">
+      <div class="flow prose">
         <slot />
       </div>
 
@@ -77,8 +77,8 @@ const { frontmatter } = Astro.props;
       {
         frontmatter.updated && (
           <footer
-            class="text-sm text-muted"
-            style="margin-block-start: var(--space-12); padding-block-start: var(--space-4); border-block-start: 1px solid var(--color-border); max-inline-size: var(--measure-wide);"
+            class="text-sm text-muted prose"
+            style="margin-block-start: var(--space-12); padding-block-start: var(--space-4); border-block-start: 1px solid var(--color-border);"
           >
             Last updated:{' '}
             {frontmatter.updated.toLocaleDateString('en-US', {

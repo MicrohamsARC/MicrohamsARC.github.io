@@ -271,15 +271,15 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
 
   .featured-event__image {
     overflow: hidden;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg); /* match the article cards below */
   }
 
   .featured-image {
     display: block;
     inline-size: 100%;
-    block-size: 100%;
+    block-size: auto;
     object-fit: cover;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
     transition: transform var(--transition-slow);
   }
 
@@ -315,20 +315,22 @@ const dateStr = formatEventDate(event.data.eventDate, tzOptions);
     color: var(--color-text-subtle);
   }
 
-  /* Desktop: side-by-side layout */
+  /* Desktop: text left, image right, spanning the full content width to match
+     the cards below. The copy column is capped so it stays a tight, filled
+     block; the image takes all remaining width to the page edge. */
   @media (min-width: 768px) {
     .featured-event {
-      grid-template-columns: 1fr 1fr;
-      align-items: stretch;
-    }
-
-    .featured-event__image {
-      order: 1;
+      grid-template-columns: minmax(0, 34rem) minmax(0, 1fr);
+      column-gap: var(--space-8);
+      align-items: center;
     }
 
     .featured-event__content {
+      order: 1;
+    }
+
+    .featured-event__image {
       order: 2;
-      padding-block: var(--space-4);
     }
 
     .featured-event__title {

@@ -1,0 +1,79 @@
+/**
+ * Tables — data grids rendered from Markdown
+ *
+ * Markdown emits bare <table>/<thead>/<tbody> and the reset leaves them
+ * untouched, so they collapse into cramped, border-less text with the
+ * headers running together. These are the base element defaults: real cell
+ * padding, hairline row rules, a distinct header, and tabular figures so
+ * columns of numbers line up. GFM column alignment (`:---`, `---:`) still
+ * wins per-cell via the inline text-align it emits.
+ */
+
+table {
+  /* Shrink to content, but hold a deliberate minimum so a small data table
+     reads as an intentional block instead of a narrow scrap adrift in the
+     measure. Never overflow the text column. */
+  inline-size: auto;
+  min-inline-size: min(34rem, 100%);
+  max-inline-size: 100%;
+  border-collapse: collapse;
+  margin-block: var(--space-8);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-variant-numeric: tabular-nums;
+}
+
+caption {
+  caption-side: bottom;
+  margin-block-start: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: start;
+}
+
+th,
+td {
+  /* Tight vertical rhythm for a dense data grid; generous horizontal room so
+     columns stay clearly separated. */
+  padding: var(--space-2) var(--space-6);
+  vertical-align: baseline;
+  border-block-end: 1px solid var(--color-border);
+}
+
+/* Default to reading direction, but never clobber GFM's per-column alignment,
+   which arrives as an `align` attribute (a low-priority presentational hint a
+   plain `text-align` would otherwise override). */
+th:not([align]),
+td:not([align]) {
+  text-align: start;
+}
+
+thead th {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+  border-block-end: 2px solid var(--color-text);
+  white-space: nowrap;
+}
+
+/* The row above the last one already draws the divider, so drop the trailing
+   rule — a bold summary row (e.g. **Total**) then reads as the table's base. */
+tbody tr:last-child td,
+tbody tr:last-child th {
+  border-block-end: none;
+}
+
+/* Flush the outer edges so the grid aligns to the text column, not floating
+   inside phantom side padding. */
+th:first-child,
+td:first-child {
+  padding-inline-start: 0;
+}
+
+th:last-child,
+td:last-child {
+  padding-inline-end: 0;
+}
