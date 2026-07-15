@@ -17,16 +17,13 @@ tags: ['Field Day']
 
 ### Field Day 2026 Debrief — N7OS at Camp Freeman
 
-This month we look back at **[ARRL Field Day 2026](/events/2026-06-arrl-field-day)**, our N7OS operation at **Camp Freeman near Monroe**. We'll recap how the weekend went — what worked, what we learned, and how the scores shook out:
+N7OS finished ARRL Field Day 2026 with **449 contacts** and a preliminary score of **2,224**, up over last year in every mode. This month we'll go through the results together — where the contacts came from, how the stations held up, the bonus points we earned and the ones we left on the table, and the antenna and filter changes we're already planning for 2027.
 
-- **The stations:** how our 3A HF setup and the VHF station performed on the air
-- **Antennas and power:** raising, tuning, and the solar setup that kept the radios running
-- **Bonus points:** satellite contacts, the W1AW bulletin, NTS messages, and the other activities that added up
-- **Lessons learned:** what we'd keep and what we'd change for next year
+The full breakdown is in **[Field Day 2026 Results: N7OS Posts 2,224](/articles/field-day-2026-results)**.
 
-### Share Your Field Day Story
+### Share your Field Day story
 
-Field Day is different for everyone, and we want to hear from you. Whether you operated at N7OS, activated from home, chased contacts on the road, or got on the air for the very first time — bring your story. This is an open mic: photos, logs, memorable QSOs, hard-won lessons, and good radio yarns all welcome.
+Field Day looks different for everyone, and we want to hear it. Whether you operated at Camp Freeman, got on from home, worked the bands mobile, or made your first-ever contact, bring the story. Photos, memorable contacts, and hard-won lessons all welcome — this part of the night is an open mic.
 
 ## Meeting Schedule
 
@@ -38,4 +35,4 @@ Field Day is different for everyone, and we want to hear from you. Whether you o
 
 **6:30 PM - Presentation:**
 
-- Field Day 2026 Debrief — N7OS at Camp Freeman, and member Field Day stories
+- Field Day 2026 debrief and member stories
