@@ -7,7 +7,7 @@ featured: true
 tags: ['Field Day', 'ARRL', 'N7OS']
 ---
 
-MicroHAMS operated ARRL Field Day 2026 as **N7OS** from Camp Freeman near Monroe, finishing with **449 logged contacts** and a **preliminary score of 2,224**. Twenty-five participants ran a 3A station on generator, battery, and solar power across the June 27–28 weekend. Contact totals were up over 2025 in every mode, though the club claimed fewer bonus points than the year before.
+MicroHAMS operated ARRL Field Day 2026 as **N7OS** from Camp Freeman near Monroe, finishing with **449 logged contacts** and a **preliminary score of 2,224**. Twenty-five participants ran a 3A station on generator, battery, and solar power across the June 27–28 weekend. Contact totals were up over 2025 in every mode, and the club is already lining up new ways to add to the score in 2027.
 
 ## The numbers
 
@@ -34,17 +34,21 @@ The story of 2026 is a busier station. "When I compare the data to last year, we
 
 Band conditions moved the contacts around. More of the action landed on 80 and 15 meters than in past years, which Hopper read as a sign that more people spent more time at the radios. "That sounds like a good thing to me," he said.
 
-## The bonus points left on the table
+## Looking ahead to 2027
 
-Against the gains on the air, bonus points came in below 2025 — and Hopper put that squarely on planning. "We did have fewer bonus points, but that's on me," he said. "I didn't do much of a job recruiting for those needs/roles."
+With contact numbers already up across the board, the clearest path to a bigger score next year runs through the bonus categories — each one a set piece the club can plan for and hand to a volunteer who wants to own it.
 
-He named four areas to target for next year: message handling, social media and publicity, a satellite contact, and an educational activity or demonstration. A visit from an elected official is another standing bonus the club has struggled to land, though Hopper noted the rules don't specify what kind. A commissioner from the water district, for instance, might be a more realistic ask than a legislator, and worth pursuing for 2027.
+> **Open bonus opportunities for 2027**
+>
+> - **Message handling** — pass formal NTS traffic during the event
+> - **Publicity** — a public-information effort and outreach to local media
+> - **Satellite contact** — work a pass for the bonus
+> - **Educational activity** — run a demonstration or class on site
+> - **Served-agency or official visit** — host a guest from a partner agency or local government
 
-## Filters and antennas for 2027
+Each of these is worth 100 points, and most come down to lining someone up ahead of the weekend. The official visit, in particular, is more approachable than it sounds: the rules don't specify what kind of official, so a commissioner from the water district or a similar local office is a realistic ask for 2027.
 
-The stations performed, but not without friction. With three HF transmitters and a VHF station running at once, transmissions from one radio found their way into others. The club plans to take a closer look at its filters and antenna layout before next year.
-
-"To be sure, they did work very good, but we had some 'edge case' issues that we can probably engineer around for 2027," Hopper said. Reworking the filtering and the spacing between antennas is on the list for the next planning cycle.
+The stations themselves performed well, and there's room to sharpen them too. With three HF transmitters and a VHF station running at once, some signals found their way between radios. "To be sure, they did work very good, but we had some 'edge case' issues that we can probably engineer around for 2027," Hopper said. A closer look at the filtering and antenna spacing is on the list for the next planning cycle.
 
 ## Thanks
 
