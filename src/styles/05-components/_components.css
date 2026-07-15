@@ -299,6 +299,18 @@
    Flush left alignment for clarity and modern readability
    ======================================== */
 
+/* Disable EVERY view-transition animation so client-side navigation is an
+   instant swap with no crossfade. This is essential for the persisted WebGL
+   header: the browser cannot rasterise a live GL canvas into a transition
+   snapshot, so any crossfade would flash it blank ("monochrome") on Safari.
+   With zero-duration transitions there is no snapshot window to show — the
+   persisted header (and its running canvas) simply carries straight over. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+}
+
 .site-header {
   position: sticky;
   top: 0;

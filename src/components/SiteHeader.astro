@@ -4,10 +4,14 @@
  *
  * The main site header with logo, tagline, and navigation.
  * Extracted as a component for composition in different layouts.
+ *
+ * `transition:persist` keeps this whole subtree — including the live WebGL
+ * canvas — as a single DOM node across client-side navigations, so the wave
+ * animation never restarts and the nav never re-inits.
  */
 ---
 
-<header class="site-header">
+<header class="site-header" transition:persist="site-header">
   <div class="scroll-progress" aria-hidden="true"></div>
   <canvas
     class="site-header__wave"
@@ -75,35 +79,14 @@
   // Animated header wave — a few slow sine bands in the brand blue, drawn with
   // WebGL. Progressive enhancement: the static SVG in `.site-header::before`
   // shows if WebGL is unavailable, and reduced-motion renders a single frame.
-  function initHeaderWave() {
-    const canvas = document.querySelector<HTMLCanvasElement>('.site-header__wave');
-    if (!canvas || canvas.dataset.init) return;
-
-    // Fail-in: reveal the static SVG fallback only if WebGL can't take over.
-    const fail = () => canvas.closest('.site-header')?.classList.add('site-header--wave-failed');
-
-    const gl = canvas.getContext('webgl', {
-      alpha: true,
-      premultipliedAlpha: false,
-      antialias: true,
-    });
-    if (!gl) return fail();
-
-    canvas.dataset.init = '1';
-
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
-    };
-    const vs = compile(
-      gl.VERTEX_SHADER,
-      'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}'
-    );
-    const fs = compile(
-      gl.FRAGMENT_SHADER,
-      `precision mediump float;
+  //
+  // Because the header is `transition:persist`ed, this canvas normally lives for
+  // the whole session and the animation never restarts across navigations. The
+  // one exception is a lost GL context (some browsers drop it when a canvas is
+  // re-attached during a DOM swap): `build()` re-creates every GL resource on
+  // `webglcontextrestored`, while the loop control lives outside it so a rebuild
+  // can never leave two rAF loops running.
+  const FRAG = `precision mediump float;
        uniform vec2 u_res; uniform float u_time; uniform vec3 u_color; uniform float u_alpha;
        void main(){
          vec2 uv = gl_FragCoord.xy / u_res;                 // uv.y = 1.0 at the top
@@ -140,36 +123,69 @@
          float edge = smoothstep(0.0, 0.04, uv.x) * smoothstep(0.0, 0.04, 1.0 - uv.x);
 
          gl_FragColor = vec4(u_color, clamp(g, 0.0, 1.0) * u_alpha * band * edge);
-       }`
-    );
-    if (!vs || !fs) return fail();
+       }`;
 
-    const prog = gl.createProgram()!;
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return fail();
-    gl.useProgram(prog);
+  function initHeaderWave() {
+    const canvas = document.querySelector<HTMLCanvasElement>('.site-header__wave');
+    // The one-time wiring (listeners, context-loss handlers) runs once; the
+    // canvas persists across navigations so this guard skips re-wiring.
+    if (!canvas || canvas.dataset.init) return;
+    canvas.dataset.init = '1';
 
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, 'p');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const fail = () => canvas.closest('.site-header')?.classList.add('site-header--wave-failed');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-    const uRes = gl.getUniformLocation(prog, 'u_res');
-    const uTime = gl.getUniformLocation(prog, 'u_time');
-    const uColor = gl.getUniformLocation(prog, 'u_color');
-    const uAlpha = gl.getUniformLocation(prog, 'u_alpha');
+    let gl: WebGLRenderingContext | null = null;
+    let uRes: WebGLUniformLocation | null = null;
+    let uTime: WebGLUniformLocation | null = null;
+    let uColor: WebGLUniformLocation | null = null;
+    let uAlpha: WebGLUniformLocation | null = null;
+    let raf = 0;
 
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // Anchor the wave to a persistent epoch so that on the rare full-page load
+    // (or a context rebuild) it resumes at the phase it would have reached,
+    // rather than snapping back to zero. Elapsed time is wrapped to the shader's
+    // temporal period, so sin() is identical across the wrap (no jump) and
+    // u_time stays small enough for mediump precision.
+    const WAVE_PERIOD = (2 * Math.PI) / 0.45; // matches `u_time * 0.45` in the shader
+    let epoch = Number(sessionStorage.getItem('headerWaveEpoch'));
+    if (!epoch) {
+      epoch = Date.now();
+      try {
+        sessionStorage.setItem('headerWaveEpoch', String(epoch));
+      } catch {
+        /* sessionStorage unavailable (private mode) — continuity is best-effort */
+      }
+    }
+
+    // Per-frame work is ONLY the time uniform + the draw call. Colour and size
+    // change rarely, so they are hoisted out of the loop (observers below).
+    const draw = () => {
+      if (!gl) return;
+      gl.uniform1f(uTime, ((Date.now() - epoch) / 1000) % WAVE_PERIOD);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    const loop = () => {
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const start = () => {
+      if (raf || !gl) return;
+      if (reduce.matches) {
+        draw(); // single static frame
+      } else {
+        raf = requestAnimationFrame(loop);
+      }
+    };
 
     const setColor = () => {
-      // Read theme robustly: the router briefly clears <html data-theme> during
-      // a swap, so fall back to the persisted localStorage value (never to the
-      // OS preference) to avoid a colour flip mid-navigation.
+      if (!gl) return;
+      // Read theme robustly: fall back to the persisted localStorage value
+      // (never the OS preference) so a transient data-theme reset can't flip it.
       const stored = document.documentElement.dataset.theme || localStorage.getItem('theme');
       const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
       if (dark) {
@@ -185,6 +201,7 @@
     };
 
     const resize = () => {
+      if (!gl) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
       const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
@@ -196,50 +213,63 @@
       gl.uniform2f(uRes, w, h);
     };
 
-    // Anchor the wave to a persistent epoch so the animation stays continuous
-    // across full-page navigations. JS state (and rAF's clock) resets on every
-    // load, but the wall clock does not — so deriving u_time from a stored epoch
-    // makes the wave pick up exactly where it left off. Elapsed time is wrapped
-    // to the shader's exact temporal period, so sin() is identical across the
-    // wrap (no jump) and u_time stays small enough for mediump precision.
-    const WAVE_PERIOD = (2 * Math.PI) / 0.45; // matches `u_time * 0.45` in the shader
-    let epoch = Number(sessionStorage.getItem('headerWaveEpoch'));
-    if (!epoch) {
-      epoch = Date.now();
-      try {
-        sessionStorage.setItem('headerWaveEpoch', String(epoch));
-      } catch {
-        /* sessionStorage unavailable (private mode) — continuity is best-effort */
-      }
-    }
+    // (Re)create the GL context and all its resources. Runs on first init and
+    // again on `webglcontextrestored`. Stops any running loop first so a rebuild
+    // never stacks a second rAF loop.
+    const build = () => {
+      stop();
+      gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
+      if (!gl) return fail();
 
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-    let raf = 0;
-    // Per-frame work is ONLY the time uniform + the draw call. Colour and size
-    // change rarely, so they are hoisted out of the loop (see setColor/resize
-    // observers below) — reading localStorage or canvas layout every frame was
-    // pure waste that kept the main thread busier than the animation needs.
-    const draw = () => {
-      gl.uniform1f(uTime, ((Date.now() - epoch) / 1000) % WAVE_PERIOD);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    };
-    const loop = () => {
-      draw();
-      raf = requestAnimationFrame(loop);
-    };
-    const start = () => {
-      if (raf) return;
-      if (reduce.matches) {
-        draw(); // single static frame
-      } else {
-        raf = requestAnimationFrame(loop);
-      }
-    };
-    const stop = () => {
-      cancelAnimationFrame(raf);
-      raf = 0;
+      const compile = (type: number, src: string) => {
+        const s = gl!.createShader(type)!;
+        gl!.shaderSource(s, src);
+        gl!.compileShader(s);
+        return gl!.getShaderParameter(s, gl!.COMPILE_STATUS) ? s : null;
+      };
+      const vs = compile(
+        gl.VERTEX_SHADER,
+        'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}'
+      );
+      const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+      if (!vs || !fs) return fail();
+
+      const prog = gl.createProgram()!;
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return fail();
+      gl.useProgram(prog);
+
+      const bufObj = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, bufObj);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const locP = gl.getAttribLocation(prog, 'p');
+      gl.enableVertexAttribArray(locP);
+      gl.vertexAttribPointer(locP, 2, gl.FLOAT, false, 0, 0);
+
+      uRes = gl.getUniformLocation(prog, 'u_res');
+      uTime = gl.getUniformLocation(prog, 'u_time');
+      uColor = gl.getUniformLocation(prog, 'u_color');
+      uAlpha = gl.getUniformLocation(prog, 'u_alpha');
+
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+      resize();
+      setColor();
+      start();
     };
 
+    // Context-loss resilience: prevent default so the browser will fire
+    // `webglcontextrestored`, then rebuild everything when it does.
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      stop();
+    });
+    canvas.addEventListener('webglcontextrestored', () => build());
+
+    // One-time listeners (registered once; build() is what re-runs on restore).
     document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
     reduce.addEventListener('change', () => {
       stop();
@@ -249,17 +279,12 @@
       resize();
       if (reduce.matches) draw();
     }).observe(canvas);
-
-    // Set colour/size once up front, then update colour only when the theme
-    // attribute actually flips (not every frame).
-    resize();
-    setColor();
     new MutationObserver(() => setColor()).observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme'],
     });
 
-    start();
+    build();
   }
 
   initHeaderWave();

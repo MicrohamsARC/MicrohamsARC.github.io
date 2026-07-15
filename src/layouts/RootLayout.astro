@@ -11,11 +11,14 @@
  * Other layouts compose on top of this.
  */
 
-// ClientRouter (SPA view transitions) is intentionally NOT used: its native
-// snapshot renders the live WebGL header canvas as a flat monochrome smear in
-// Safari during the crossfade. We navigate with full-page loads instead, made
-// instant via Astro `prefetch` (see astro.config.mjs) and flicker-free via the
-// static CSS wave baseline + a persistent shader clock in SiteHeader.astro.
+// Client-side routing (Astro ClientRouter): navigation swaps only the page
+// content and PERSISTS the header (`transition:persist` in SiteHeader.astro), so
+// its live WebGL canvas is never destroyed or re-initialised — no reload, no
+// wave restart, no content reflow. All view-transition animations are disabled
+// (see `::view-transition-*` in _components.css) so there is NO crossfade
+// snapshot — which is what previously rendered the WebGL canvas as a monochrome
+// smear on Safari. Swaps are therefore instant.
+import { ClientRouter } from 'astro:transitions';
 
 // Fonts are self-hosted and preloaded via Astro's native Fonts API (configured
 // in astro.config.mjs). <Font> injects the @font-face + metric-matched fallback
@@ -67,7 +70,8 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
     <Font cssVariable="--font-atkinson" preload />
     <Font cssVariable="--font-jetbrains" preload />
 
-    {/* No <ClientRouter />: full-page nav + prefetch (see note atop this file). */}
+    {/* Client-side routing: header persists, all VT animations disabled (see note above). */}
+    <ClientRouter />
 
     <title>{title} | MicroHAMS</title>
   </head>
