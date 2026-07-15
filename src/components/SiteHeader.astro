@@ -28,26 +28,31 @@
         <ul class="nav__list">
           <li>
             <a href="/events" class="nav__link" data-path="/events" data-astro-prefetch="viewport"
-              >Events</a>
+              >Events</a
+            >
           </li>
           <li>
             <a
               href="/articles"
               class="nav__link"
               data-path="/articles"
-              data-astro-prefetch="viewport">Articles</a>
+              data-astro-prefetch="viewport">Articles</a
+            >
           </li>
           <li>
             <a href="/docs" class="nav__link" data-path="/docs" data-astro-prefetch="viewport"
-              >Docs</a>
+              >Docs</a
+            >
           </li>
           <li>
             <a href="/dues" class="nav__link" data-path="/dues" data-astro-prefetch="viewport"
-              >Dues</a>
+              >Dues</a
+            >
           </li>
           <li>
             <a href="/about" class="nav__link" data-path="/about" data-astro-prefetch="viewport"
-              >About</a>
+              >About</a
+            >
           </li>
           <li>
             <button
@@ -210,9 +215,11 @@
 
     const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     let raf = 0;
+    // Per-frame work is ONLY the time uniform + the draw call. Colour and size
+    // change rarely, so they are hoisted out of the loop (see setColor/resize
+    // observers below) — reading localStorage or canvas layout every frame was
+    // pure waste that kept the main thread busier than the animation needs.
     const draw = () => {
-      resize();
-      setColor();
       gl.uniform1f(uTime, ((Date.now() - epoch) / 1000) % WAVE_PERIOD);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -242,6 +249,15 @@
       resize();
       if (reduce.matches) draw();
     }).observe(canvas);
+
+    // Set colour/size once up front, then update colour only when the theme
+    // attribute actually flips (not every frame).
+    resize();
+    setColor();
+    new MutationObserver(() => setColor()).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
     start();
   }

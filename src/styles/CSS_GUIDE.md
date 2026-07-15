@@ -399,10 +399,10 @@ Inline critical styles in `<head>`:
 
 ### Font Loading
 
-Fonts are **self-hosted via Fontsource** and imported in `src/layouts/RootLayout.astro`
-(`@fontsource-variable/atkinson-hyperlegible-next` for body/UI, `@fontsource-variable/jetbrains-mono`
-for headings/code). Vite bundles and fingerprints the woff2 and serves them same-origin — there is no
-`@font-face` to hand-write and no third-party request. Reference fonts only through the
+Fonts are **self-hosted via Astro's native Fonts API** (configured in `astro.config.mjs`, injected by
+`<Font>` in `src/layouts/RootLayout.astro`; woff2 files in `src/assets/fonts/`). Astro preloads them
+and generates metric-matched fallback faces, so text does not swap or reflow on load (no FOUT). There
+is no `@font-face` to hand-write and no third-party request. Reference fonts only through the
 `--font-sans` / `--font-mono` tokens (defined once in `01-typography/_fonts.css`); never paste a raw
 or near-name family string into CSS.
 
