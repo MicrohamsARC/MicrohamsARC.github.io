@@ -48,7 +48,7 @@ With contact numbers already up across the board, the clearest path to a bigger 
 
 Each of these is worth 100 points, and most come down to lining someone up ahead of the weekend. The official visit, in particular, is more approachable than it sounds: the rules don't specify what kind of official, so a commissioner from the water district or a similar local office is a realistic ask for 2027.
 
-The stations themselves performed well, and there's room to sharpen them too. With three HF transmitters and a VHF station running at once, some signals found their way between radios. "To be sure, they did work very good, but we had some 'edge case' issues that we can probably engineer around for 2027," Hopper said. A closer look at the filtering and antenna spacing is on the list for the next planning cycle.
+The stations themselves performed well, and there's room to sharpen them too. With three HF transmitters and a VHF station running at once, some signals found their way between radios. "To be sure, they did work very well, but we had some 'edge case' issues that we can probably engineer around for 2027," Hopper said. A closer look at the filtering and antenna spacing is on the list for the next planning cycle.
 
 ## Thanks
 
