@@ -16,6 +16,7 @@
 
 /* Elements - Base HTML element styles */
 @import './03-elements/_typography.css';
+@import './03-elements/_tables.css';
 
 /* Layouts - Composable layout primitives */
 @import './04-layouts/_primitives.css';

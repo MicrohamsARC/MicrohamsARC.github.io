@@ -9,9 +9,9 @@
 
 import PageLayout from '../layouts/PageLayout.astro';
 import EventCard from '../components/event/EventCard.astro';
-import EventDateTime from '../components/event/EventDateTime.astro';
 import { getCollection } from 'astro:content';
 import { publishedFilter } from '../utils/content';
+import { formatLabel } from '../utils/text';
 import { getEventStartMs, getEventEndMs } from '../utils/event-time';
 
 // Get all published articles, sorted by date (newest first)
@@ -59,16 +59,9 @@ const featuredCurrent = currentEvents.find((e: Event) => e.data.featured);
 const featuredUpcoming = upcomingEvents.find((e: Event) => e.data.featured);
 const heroEvent = featuredCurrent || featuredUpcoming || currentAndUpcoming[0];
 
-// The soonest upcoming meeting, surfaced as a quick-fact tile — but only when
-// it isn't already the hero (no point answering "next meeting" twice).
-const nextMeeting = upcomingEvents.find(
-  (e: Event) => e.data.eventType === 'meeting' && e !== heroEvent
-);
-
-// Anything else current/upcoming, for the rail's running list
-const railEvents = currentAndUpcoming
-  .filter((e: Event) => e !== heroEvent && e !== nextMeeting)
-  .slice(0, 2);
+// Any other current/upcoming events beyond the hero, surfaced as a compact row
+// under it. Empty (and hidden) when the hero is the only thing on the calendar.
+const moreEvents = currentAndUpcoming.filter((e: Event) => e !== heroEvent).slice(0, 3);
 
 // Homepage "Latest": featured articles pin to the top, and a featured
 // article is always kept even if it shares the hero event's topic tag.
@@ -102,135 +95,114 @@ const fmtDate = (d: Date) =>
   <section class="region">
     <div class="wrapper">
       <div class="stack-16">
-        {/* ===== Band 1 — What's happening ===== */}
-        <div class="modular-grid grid--gap-lg">
-          {/* Hero / featured event */}
-          <div class="span-8">
-            {
-              heroEvent ? (
-                <EventCard event={heroEvent} variant="featured" />
-              ) : (
-                <div class="stack-4">
-                  <h1 class="text-5xl">
-                    Amateur Radio
-                    <br />
-                    Community &amp; Resources
-                  </h1>
-                  <p class="lead">
-                    Technical articles, projects, documentation, and community events for amateur
-                    radio enthusiasts in the Puget Sound area.
-                  </p>
-                </div>
-              )
-            }
-          </div>
-
-          {/* Rail: next meeting + running list */}
-          <div class="span-4 stack-6">
-            {
-              nextMeeting && (
-                <aside class="box box--lg box--bordered stack-3">
-                  <p class="eyebrow">Next Meeting</p>
-                  <p class="text-lg font-medium">{nextMeeting.data.title}</p>
-                  <EventDateTime
-                    eventDate={nextMeeting.data.eventDate}
-                    endDate={nextMeeting.data.endDate}
-                    startTime={nextMeeting.data.startTime}
-                    endTime={nextMeeting.data.endTime}
-                    venue={nextMeeting.data.venue}
-                    timezone={nextMeeting.data.timezone}
-                    class="text-sm text-muted"
-                  />
-                  <a href={`/events/${nextMeeting.id}`} class="font-medium">
-                    Details &amp; how to join →
-                  </a>
-                </aside>
-              )
-            }
-
-            {
-              railEvents.length > 0 && (
-                <div class="stack-3">
-                  <h2 class="eyebrow">Current &amp; Upcoming</h2>
-                  {railEvents.map((event) => (
-                    <EventCard event={event} variant="horizontal" showDescription={false} />
-                  ))}
-                </div>
-              )
-            }
-
-            <a href="/events" class="font-medium">Full calendar →</a>
-          </div>
-        </div>
-
-        {/* ===== Band 2 — Read + explore ===== */}
+        {/* ===== Hero — the featured event, full width (text left, image right) ===== */}
         {
-          homeArticles.length > 0 && (
-            <div class="modular-grid grid--gap-xl">
-              {/* Latest articles — each a bounded card */}
-              <div class="span-8 stack-6 reveal">
-                <h2 class="eyebrow">Latest</h2>
-
-                <div class="grid grid--auto-fit grid--min-wide grid--gap-lg">
-                  {homeArticles.map((article: Article) => (
-                    <article class="card stack-3">
-                      {article.data.tags?.[0] && <span class="badge">{article.data.tags[0]}</span>}
-                      <h3 class="text-xl">
-                        <a href={`/articles/${article.id}`} class="link-plain">
-                          {article.data.title}
-                        </a>
-                      </h3>
-                      {article.data.description && (
-                        <p class="text-muted text-sm">{article.data.description}</p>
-                      )}
-                      {article.data.date && (
-                        <time
-                          class="text-sm text-subtle"
-                          datetime={article.data.date.toISOString()}
-                        >
-                          {fmtDate(article.data.date)}
-                        </time>
-                      )}
-                    </article>
-                  ))}
-                </div>
-
-                <div>
-                  <a href="/articles" class="font-medium">
-                    All Articles →
-                  </a>
-                </div>
-              </div>
-
-              {/* Explore rail — About + Docs only. Events already lives in the
-                  nav and the calendar link above, so it isn't repeated here. */}
-              <aside class="span-4 reveal">
-                <div class="box box--lg box--surface-muted stack-8">
-                  <div class="stack-2">
-                    <h3 class="text-xl">About MicroHAMS</h3>
-                    <p class="text-muted text-sm">
-                      A dynamic organization of amateur radio enthusiasts in the Puget Sound area,
-                      dedicated to hands-on experimentation.
-                    </p>
-                    <a href="/about" class="font-medium">
-                      Learn more →
-                    </a>
-                  </div>
-                  <div class="stack-2">
-                    <h3 class="text-xl">Documentation</h3>
-                    <p class="text-muted text-sm">
-                      Technical guides and reference for operators of all skill levels.
-                    </p>
-                    <a href="/docs" class="font-medium">
-                      Browse docs →
-                    </a>
-                  </div>
-                </div>
-              </aside>
+          heroEvent ? (
+            <EventCard event={heroEvent} variant="featured" />
+          ) : (
+            <div class="stack-4">
+              <h1 class="text-5xl">
+                Amateur Radio
+                <br />
+                Community &amp; Resources
+              </h1>
+              <p class="lead">
+                Technical articles, projects, documentation, and community events for amateur radio
+                enthusiasts in the Puget Sound area.
+              </p>
             </div>
           )
         }
+
+        {/* ===== More upcoming — only when there's something beyond the hero ===== */}
+        {
+          moreEvents.length > 0 && (
+            <div class="stack-6">
+              <h2 class="eyebrow">More upcoming</h2>
+              <div class="grid grid--auto-fit grid--min-wide grid--gap-lg">
+                {moreEvents.map((event) => (
+                  <EventCard event={event} variant="horizontal" showDescription={false} />
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {/* ===== Latest articles ===== */}
+        {
+          homeArticles.length > 0 && (
+            <div class="stack-6 reveal">
+              <h2 class="eyebrow">Latest</h2>
+
+              <div class="grid grid--auto-fit grid--min-wide grid--gap-lg">
+                {homeArticles.map((article: Article) => (
+                  <article class="card stack-3">
+                    {article.data.tags?.[0] && (
+                      <span class="badge">{formatLabel(article.data.tags[0])}</span>
+                    )}
+                    <h3 class="text-xl">
+                      <a href={`/articles/${article.id}`} class="link-plain">
+                        {article.data.title}
+                      </a>
+                    </h3>
+                    {article.data.description && (
+                      <p class="text-muted text-sm">{article.data.description}</p>
+                    )}
+                    {article.data.date && (
+                      <time class="text-sm text-subtle" datetime={article.data.date.toISOString()}>
+                        {fmtDate(article.data.date)}
+                      </time>
+                    )}
+                  </article>
+                ))}
+              </div>
+
+              <div>
+                <a href="/articles" class="font-medium">
+                  All articles →
+                </a>
+              </div>
+            </div>
+          )
+        }
+
+        {/* ===== Explore — About + Documentation as deliberate sibling cards ===== */}
+        <div class="modular-grid grid--gap-lg reveal">
+          <aside class="span-6">
+            <div class="box box--lg box--surface-muted stack-3 explore-card">
+              <h2 class="text-xl">About MicroHAMS</h2>
+              <p class="text-muted">
+                A dynamic organization of amateur radio enthusiasts in the Puget Sound area,
+                dedicated to hands-on experimentation.
+              </p>
+              <a href="/about" class="font-medium explore-card__link"> Learn more → </a>
+            </div>
+          </aside>
+          <aside class="span-6">
+            <div class="box box--lg box--surface-muted stack-3 explore-card">
+              <h2 class="text-xl">Documentation</h2>
+              <p class="text-muted">
+                Technical guides and reference for operators of all skill levels.
+              </p>
+              <a href="/docs" class="font-medium explore-card__link"> Browse docs → </a>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   </section>
 </PageLayout>
+
+<style>
+  /* Explore cards fill their grid cell so the pair stays the same height and
+     the links line up along a shared bottom edge. */
+  .explore-card {
+    display: flex;
+    flex-direction: column;
+    block-size: 100%;
+  }
+
+  .explore-card__link {
+    margin-block-start: auto;
+  }
+</style>

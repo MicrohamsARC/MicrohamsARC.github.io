@@ -64,8 +64,8 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
   <article>
     <!-- Event Header -->
     <section class="region--sm">
-      <div class="wrapper wrapper--wide">
-        <div class="stack-4">
+      <div class="wrapper">
+        <div class="stack-4 prose">
           <!-- Back link -->
           <a href="/events" class="text-sm" style="color: var(--color-text-muted);">← Events</a>
 
@@ -138,8 +138,8 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
 
     <!-- Event Content + Logistics in unified flow for consistent spacing -->
     <section class="region">
-      <div class="wrapper wrapper--wide">
-        <div class="flow flow--lg">
+      <div class="wrapper">
+        <div class="flow flow--lg prose">
           <Content />
 
           {/* Templated Logistics (venue directions, map, Teams details, disclaimers) */}
@@ -167,9 +167,9 @@ const virtualUrl = onlineMeetingConfig?.link || event.data.teams?.link || event.
 
     <!-- Footer meta -->
     <section class="region--sm">
-      <div class="wrapper wrapper--wide">
+      <div class="wrapper">
         <div
-          class="stack-3 text-sm"
+          class="stack-3 text-sm prose"
           style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); color: var(--color-text-muted);"
         >
           {

@@ -83,9 +83,11 @@
   --color-text-subtle: oklch(50% 0 0); /* ~4.5:1 on white ✓ (AA) */
   --color-border: var(--color-gray-200); /* 3.1:1 on 95% surface ✓ (UI) */
   --color-border-muted: var(--color-gray-100);
-  --color-surface: oklch(95% 0 0); /* Base: 95% */
-  --color-surface-muted: oklch(92% 0 0); /* Recessed: 92% - clear 3% difference */
-  --color-surface-raised: var(--color-white); /* Raised: 100% - strong 5% difference */
+  --color-surface: oklch(
+    96.5% 0.004 240
+  ); /* Base: lighter, a whisper of cool brand tint so the field reads calm, not warm/beige */
+  --color-surface-muted: oklch(93.5% 0.006 240); /* Recessed: 3% below base, same cool tint */
+  --color-surface-raised: var(--color-white); /* Raised: 100% */
 
   /* Interactive States */
   --color-link: var(--color-accent); /* 7.8:1 on white ✓ */

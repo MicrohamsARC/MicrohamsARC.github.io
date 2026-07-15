@@ -10,6 +10,8 @@ eventType: 'meeting'
 registrationRequired: false
 draft: false
 featured: false
+cover: './cover.png'
+coverAlt: 'N7OS Field Day at night — the Camp Freeman pavilion lit from within with operating stations, a campfire and two operators at left, and the Snohomish County Emergency Management communications van at right beneath a VHF antenna.'
 tags: ['Field Day']
 ---
 

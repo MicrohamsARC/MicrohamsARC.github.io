@@ -752,3 +752,11 @@
   max-inline-size: none;
   padding-inline: 0;
 }
+
+/* Reading-measure column for long-form prose — the ONE source of truth for
+   article body width, so content can't drift via ad-hoc inline max-widths.
+   Sits inside the standard full-width `.wrapper`. */
+.prose {
+  max-inline-size: var(--measure-wide);
+  margin-inline: auto;
+}

@@ -7,8 +7,14 @@
  */
 ---
 
-<header class="site-header" transition:persist="site-header">
+<header class="site-header">
   <div class="scroll-progress" aria-hidden="true"></div>
+  <canvas
+    class="site-header__wave"
+    aria-hidden="true"
+    width="0"
+    height="0"
+    style="position:absolute;inset:0;width:100%;height:100%"></canvas>
   <div class="wrapper">
     <div class="site-header__inner">
       <div class="site-header__brand">
@@ -20,11 +26,29 @@
 
       <nav class="nav" id="active-nav">
         <ul class="nav__list">
-          <li><a href="/events" class="nav__link" data-path="/events">Events</a></li>
-          <li><a href="/articles" class="nav__link" data-path="/articles">Articles</a></li>
-          <li><a href="/docs" class="nav__link" data-path="/docs">Docs</a></li>
-          <li><a href="/dues" class="nav__link" data-path="/dues">Dues</a></li>
-          <li><a href="/about" class="nav__link" data-path="/about">About</a></li>
+          <li>
+            <a href="/events" class="nav__link" data-path="/events" data-astro-prefetch="viewport"
+              >Events</a>
+          </li>
+          <li>
+            <a
+              href="/articles"
+              class="nav__link"
+              data-path="/articles"
+              data-astro-prefetch="viewport">Articles</a>
+          </li>
+          <li>
+            <a href="/docs" class="nav__link" data-path="/docs" data-astro-prefetch="viewport"
+              >Docs</a>
+          </li>
+          <li>
+            <a href="/dues" class="nav__link" data-path="/dues" data-astro-prefetch="viewport"
+              >Dues</a>
+          </li>
+          <li>
+            <a href="/about" class="nav__link" data-path="/about" data-astro-prefetch="viewport"
+              >About</a>
+          </li>
           <li>
             <button
               id="theme-toggle"
@@ -41,3 +65,187 @@
     </div>
   </div>
 </header>
+
+<script>
+  // Animated header wave — a few slow sine bands in the brand blue, drawn with
+  // WebGL. Progressive enhancement: the static SVG in `.site-header::before`
+  // shows if WebGL is unavailable, and reduced-motion renders a single frame.
+  function initHeaderWave() {
+    const canvas = document.querySelector<HTMLCanvasElement>('.site-header__wave');
+    if (!canvas || canvas.dataset.init) return;
+
+    // Fail-in: reveal the static SVG fallback only if WebGL can't take over.
+    const fail = () => canvas.closest('.site-header')?.classList.add('site-header--wave-failed');
+
+    const gl = canvas.getContext('webgl', {
+      alpha: true,
+      premultipliedAlpha: false,
+      antialias: true,
+    });
+    if (!gl) return fail();
+
+    canvas.dataset.init = '1';
+
+    const compile = (type: number, src: string) => {
+      const s = gl.createShader(type)!;
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    };
+    const vs = compile(
+      gl.VERTEX_SHADER,
+      'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}'
+    );
+    const fs = compile(
+      gl.FRAGMENT_SHADER,
+      `precision mediump float;
+       uniform vec2 u_res; uniform float u_time; uniform vec3 u_color; uniform float u_alpha;
+       void main(){
+         vec2 uv = gl_FragCoord.xy / u_res;                 // uv.y = 1.0 at the top
+         float aspect = u_res.x / max(u_res.y, 1.0);
+         float x = uv.x * aspect;                           // isotropic horizontal axis
+
+         // Amplitude eases left -> right (relaxed coils easing toward a nearly
+         // straight line), but opacity is NOT tied to this, so the line stays a
+         // full-width through-line rather than a corner smudge.
+         float decay = mix(1.0, 0.14, smoothstep(0.0, 1.0, uv.x));
+         float amp = 0.17 * decay;
+         float y0 = 0.5;                                    // vertically centered in the band
+
+         // A calm few gentle waves, travelling left -> right: sin(k*x - w*t).
+         float phase = x * 1.35 - u_time * 0.45;
+         float y1 = y0 + amp * sin(phase);
+         float y2 = y0 + amp * 0.6 * sin(phase + 0.9);      // faint parallel echo
+
+         // Gaussian cross-section whose dispersion (sigma) grows left -> right,
+         // so the sinusoid is a crisp-ish hint at the left that dissolves into a
+         // soft suggestion toward the right.
+         float sigma = mix(0.04, 0.22, smoothstep(0.0, 1.0, uv.x));
+         float d1 = uv.y - y1;
+         float d2 = uv.y - y2;
+         float g = exp(-(d1 * d1) / (2.0 * sigma * sigma));
+         g = max(g, exp(-(d2 * d2) / (2.0 * sigma * sigma)) * 0.45);
+         // Wider dispersion -> lower peak, so the right reads as a suggestion.
+         g *= mix(1.0, 0.5, smoothstep(0.0, 1.0, uv.x));
+
+         // Symmetric vertical falloff so the line stays centered, easing out
+         // toward both the top and bottom edges.
+         float band = smoothstep(0.0, 0.35, uv.y) * smoothstep(1.0, 0.65, uv.y);
+         // Whisper of edge fade so the line doesn't hard-clip at the header ends.
+         float edge = smoothstep(0.0, 0.04, uv.x) * smoothstep(0.0, 0.04, 1.0 - uv.x);
+
+         gl_FragColor = vec4(u_color, clamp(g, 0.0, 1.0) * u_alpha * band * edge);
+       }`
+    );
+    if (!vs || !fs) return fail();
+
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return fail();
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes = gl.getUniformLocation(prog, 'u_res');
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+    const uColor = gl.getUniformLocation(prog, 'u_color');
+    const uAlpha = gl.getUniformLocation(prog, 'u_alpha');
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    const setColor = () => {
+      // Read theme robustly: the router briefly clears <html data-theme> during
+      // a swap, so fall back to the persisted localStorage value (never to the
+      // OS preference) to avoid a colour flip mid-navigation.
+      const stored = document.documentElement.dataset.theme || localStorage.getItem('theme');
+      const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) {
+        // Higher-lightness blue: compositing over near-black darkens it to a soft glow.
+        gl.uniform3f(uColor, 0.3, 0.6, 0.85);
+        gl.uniform1f(uAlpha, 0.5);
+      } else {
+        // On near-white, partial coverage composites toward white — so the wave
+        // must be a genuinely dark, saturated blue at high alpha to read at all.
+        gl.uniform3f(uColor, 0.08, 0.28, 0.7);
+        gl.uniform1f(uAlpha, 0.72);
+      }
+    };
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
+      const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        gl.viewport(0, 0, w, h);
+      }
+      gl.uniform2f(uRes, w, h);
+    };
+
+    // Anchor the wave to a persistent epoch so the animation stays continuous
+    // across full-page navigations. JS state (and rAF's clock) resets on every
+    // load, but the wall clock does not — so deriving u_time from a stored epoch
+    // makes the wave pick up exactly where it left off. Elapsed time is wrapped
+    // to the shader's exact temporal period, so sin() is identical across the
+    // wrap (no jump) and u_time stays small enough for mediump precision.
+    const WAVE_PERIOD = (2 * Math.PI) / 0.45; // matches `u_time * 0.45` in the shader
+    let epoch = Number(sessionStorage.getItem('headerWaveEpoch'));
+    if (!epoch) {
+      epoch = Date.now();
+      try {
+        sessionStorage.setItem('headerWaveEpoch', String(epoch));
+      } catch {
+        /* sessionStorage unavailable (private mode) — continuity is best-effort */
+      }
+    }
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    let raf = 0;
+    const draw = () => {
+      resize();
+      setColor();
+      gl.uniform1f(uTime, ((Date.now() - epoch) / 1000) % WAVE_PERIOD);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    const loop = () => {
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (raf) return;
+      if (reduce.matches) {
+        draw(); // single static frame
+      } else {
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    reduce.addEventListener('change', () => {
+      stop();
+      start();
+    });
+    new ResizeObserver(() => {
+      resize();
+      if (reduce.matches) draw();
+    }).observe(canvas);
+
+    start();
+  }
+
+  initHeaderWave();
+  document.addEventListener('astro:page-load', initHeaderWave);
+</script>

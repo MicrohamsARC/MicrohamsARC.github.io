@@ -11,7 +11,11 @@
  * Other layouts compose on top of this.
  */
 
-import { ClientRouter } from 'astro:transitions';
+// ClientRouter (SPA view transitions) is intentionally NOT used: its native
+// snapshot renders the live WebGL header canvas as a flat monochrome smear in
+// Safari during the crossfade. We navigate with full-page loads instead, made
+// instant via Astro `prefetch` (see astro.config.mjs) and flicker-free via the
+// static CSS wave baseline + a persistent shader clock in SiteHeader.astro.
 
 // Self-hosted fonts (Fontsource → bundled woff2, no third-party request).
 // Atkinson Hyperlegible Next: body/UI (Braille Institute low-vision face, incl. italic).
@@ -63,7 +67,7 @@ const { title, description = 'MicroHAMS - Amateur Radio Community', author } = A
 
     {/* Fonts are self-hosted via Fontsource (imported above) — no third-party request. */}
 
-    <ClientRouter />
+    {/* No <ClientRouter />: full-page nav + prefetch (see note atop this file). */}
 
     <title>{title} | MicroHAMS</title>
   </head>

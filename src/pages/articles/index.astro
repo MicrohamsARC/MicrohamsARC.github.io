@@ -8,6 +8,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { publishedFilter } from '../../utils/content';
+import { formatLabel } from '../../utils/text';
 
 type Article = CollectionEntry<'articles'>;
 
@@ -38,7 +39,7 @@ const allTags = [
     <div class="wrapper wrapper--full">
       <div class="stack-4">
         <h1 class="text-4xl">Articles</h1>
-        <p class="lead" style="max-inline-size: var(--measure-wide);">
+        <p class="lead">
           Technical guides, tutorials, and in-depth articles covering all aspects of amateur radio.
         </p>
       </div>
@@ -70,7 +71,9 @@ const allTags = [
               <article class="card" data-variant="interactive">
                 <div class="card__header">
                   <div class="cluster" style="--cluster-gap: var(--space-xs);">
-                    {article.data.category && <span class="badge">{article.data.category}</span>}
+                    {article.data.category && (
+                      <span class="badge">{formatLabel(article.data.category)}</span>
+                    )}
                   </div>
                   <h2 class="card__title">
                     <a

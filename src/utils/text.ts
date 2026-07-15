@@ -1,4 +1,29 @@
 /**
+ * Format a tag/category label for display in a pill.
+ *
+ * Capitalises the first letter of each word so labels read consistently
+ * ("community" → "Community"), but leaves two kinds of token exactly as
+ * authored:
+ *   - all-caps tokens — acronyms and callsigns (ARRL, HF, N7OS)
+ *   - tokens with an interior capital — proper names (MicroHAMS)
+ *
+ * Spaces and hyphens are preserved as separators and each sub-word is treated
+ * independently ("field-day" → "Field-Day").
+ */
+export function formatLabel(label: string): string {
+  const capitalize = (word: string): string => {
+    if (!word) return word;
+    if (word === word.toUpperCase()) return word; // acronym / callsign
+    if (/[A-Z]/.test(word.slice(1))) return word; // interior caps (MicroHAMS)
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  };
+  return label
+    .split(/(\s+|-)/)
+    .map((part) => (/^(\s+|-)$/.test(part) ? part : capitalize(part)))
+    .join('');
+}
+
+/**
  * Strip Markdown formatting from a string, producing clean plain text.
  * Intended for generating email-friendly plain text from Markdown content.
  */
