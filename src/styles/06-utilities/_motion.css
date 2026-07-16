@@ -39,32 +39,6 @@
 }
 
 /* ========================================
-   PAGE ENTER — a soft fade + rise on the first paint of each full-page
-   navigation. Because we navigate with full-page loads (no client router), this
-   plays once per page and gently masks the paint hand-off. Animates ONLY opacity
-   and transform — never layout properties — so it cannot cause CLS. The resting
-   state is fully visible, so if motion is disabled the content simply shows with
-   no intro (never left hidden).
-   ======================================== */
-
-@media (prefers-reduced-motion: no-preference) {
-  .page-enter {
-    animation: page-enter 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(0.75rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ========================================
    SCROLL PROGRESS — a thin "tuning" line that fills as the page scrolls
    ======================================== */
 

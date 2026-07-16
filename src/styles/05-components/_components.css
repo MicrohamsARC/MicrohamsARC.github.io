@@ -299,6 +299,18 @@
    Flush left alignment for clarity and modern readability
    ======================================== */
 
+/* Disable EVERY view-transition animation so client-side navigation is an
+   instant swap with no crossfade. This is essential for the persisted WebGL
+   header: the browser cannot rasterise a live GL canvas into a transition
+   snapshot, so any crossfade would flash it blank ("monochrome") on Safari.
+   With zero-duration transitions there is no snapshot window to show — the
+   persisted header (and its running canvas) simply carries straight over. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -310,16 +322,15 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle elevation */
 }
 
-/* Static SVG wave — the ALWAYS-PAINTED baseline, not a fail-only fallback.
-   Because it is pure CSS, it paints at the new document's FIRST PAINT on every
-   full-page navigation, before the deferred WebGL script has compiled and drawn
-   its first frame. That covers the load gap where the canvas is briefly blank,
-   so the header never flashes to bare surface between pages. The live canvas
-   then layers on top; kept subtle so the canvas reads as the wave and this is
-   just a soft static underlay (and the sole wave if WebGL fails). */
+/* Static SVG wave — fail-only fallback (hidden by default). It is a different
+   shape than the WebGL shader, so painting it as an always-on baseline made it
+   visibly snap to the shader on every full-page reload. It now shows ONLY when
+   WebGL can't initialise (via `.site-header--wave-failed`), so it never competes
+   with the live canvas. The brief pre-canvas frame on load is just the header's
+   own surface colour, which is imperceptible on a fast static load. */
 .site-header::before {
   content: '';
-  display: block;
+  display: none;
   opacity: 0.6;
   position: absolute;
   top: 0;
@@ -356,9 +367,10 @@
   filter: blur(6px);
 }
 
-/* WebGL failure no longer needs to toggle the SVG — it is always painted now.
-   `.site-header--wave-failed` simply means the canvas never draws, leaving the
-   static wave as the only layer, which is exactly the baseline. */
+/* Reveal the static SVG fallback only when WebGL init failed. */
+.site-header--wave-failed::before {
+  display: block;
+}
 
 .site-header__inner {
   display: flex;
