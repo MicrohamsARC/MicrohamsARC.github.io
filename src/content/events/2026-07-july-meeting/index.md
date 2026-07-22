@@ -17,6 +17,11 @@ tags: ['Field Day']
 
 ## Program
 
+Note: this meeting will be online only and it will use Zoom instead of Teams.
+
+Here is the link to joing the meeting:
+[Join Zoom meeting](https://us02web.zoom.us/j/82943848113?pwd=16oCPRue0mM0cFmncPiWED4AuiV8V2.1)
+
 ### Field Day 2026 Debrief — N7OS at Camp Freeman
 
 N7OS finished ARRL Field Day 2026 with **449 contacts** and a preliminary score of **2,224**, up over last year in every mode. This month we'll go through the results together — where the contacts came from, how the stations held up, the bonus points we earned and the ones we left on the table, and the antenna and filter changes we're already planning for 2027.
